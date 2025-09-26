@@ -2,25 +2,59 @@ create database ChargingPoint
 go
 use   ChargingPoint;
 go
-create table Department(
+-- Bảng tài khoản (nên tạo trước)
+CREATE TABLE Account (
+  Account_id  BIGINT IDENTITY PRIMARY KEY,
+  Email VARCHAR(100) UNIQUE NOT NULL,
+  PasswordHash VARCHAR(200) NOT NULL,           -- lưu hash
+  AccountType VARCHAR(50) NOT NULL,             -- guest, admin, customer, chỉ có thể làm acc admin khi có đuôi của tổ chức là "ufm.edu.vn"
+  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),
+  UpdatedAt DATETIME2(3) NULL,
+  Status VARCHAR(50), 
+  CONSTRAINT CK_Account_Type CHECK (AccountType IN ('guest','admin','customer'))
+);
+select * from [dbo].[AspNetUsers];
+select * from [dbo].[station];
+delete from [dbo].[AspNetUsers];
+rollback;
+-- Bảng phòng ban / chi nhánh
 
-id BIGINT IDENTITY PRIMARY KEY,  
-name nvarchar(200), --tên cơ sở, danh mục cha là cơ các cái chi nhánh của công ty theo 3 miền Nam,  Trung, Bắc // còn danh mục con thì là phòng kỹ thuật,...
-address nvarchar(300), -- null nếu là phòng ban 
-parent_id int, ---nối lại với mã danh mục cha
+CREATE TABLE Department (
+  DepartmentId BIGINT IDENTITY PRIMARY KEY,
+  Name NVARCHAR(200) NOT NULL, 
+  BranchId BIGINT,
 );
-create table Account 
-(
-  id  BIGINT IDENTITY PRIMARY KEY, 
-  Password   VARCHAR(100) ,							  ---hash
-  Email VARCHAR(100),                             -- 
-  SDT NVARCHAR(50),                       -- 
-  Address NVARCHAR(500),						  --
-  Name DECIMAL(10,6) NULL,                    --họ tên nv
-  Position NVARCHAR(100),
-  department_id int,
-  CONSTRAINT FK_Account_Department FOREIGN KEY (department_id) REFERENCES Department(id)
+-- Bảng nhân viên
+CREATE TABLE Employee (
+  EmployeeId BIGINT IDENTITY PRIMARY KEY,
+  FullName NVARCHAR(100) NOT NULL,
+  PhoneNumber VARCHAR(20) NULL,
+  Birthday Date NULL,
+  Address NVARCHAR(255) NULL,
+  JobTitle NVARCHAR(200),
+  Department_id BIGINT NOT NULL,
+  Account_id BIGINT NOT NULL,
+  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),
+  UpdatedAt DATETIME2(3) NULL,
+  CONSTRAINT FK_Employee_Department FOREIGN KEY (Department_id) REFERENCES Department(DepartmentId),
+  CONSTRAINT FK_Employee_Account FOREIGN KEY (Account_id) REFERENCES Account(Account_id)
 );
+-- Bảng khách hàng
+CREATE TABLE Customer (
+  CustomerID BIGINT IDENTITY PRIMARY KEY,
+  FullName NVARCHAR(100) NOT NULL,
+  PhoneNumber VARCHAR(20) NULL,
+  Birthday Date NULL,
+  Address NVARCHAR(255) NULL,
+  NationalID VARCHAR(50) UNIQUE NULL,           -- CCCD/Hộ chiếu
+  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),
+  UpdatedAt DATETIME2(3) NULL,
+  Account_id BIGINT NOT NULL,
+  CONSTRAINT FK_Customer_Account FOREIGN KEY (Account_id) REFERENCES Account(Account_id)
+);
+
+
+
 select * from Station;
 delete from Station where StationId <=2;
  INSERT INTO Station (Tag, Name, StationType, Address, Latitude, Longitude, Notes, CreatedAt, BuiltDate)
@@ -59,7 +93,8 @@ StationId BIGINT IDENTITY PRIMARY KEY,
   Notes NVARCHAR(500),                            -- Ghi chú thêm
   CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),-- Ngày tạo
   BuiltDate DATE,                                 -- Ngày xây dựng
-
+  BranchId BIGINT,
+  CONSTRAINT FK_Station_BranchId FOREIGN KEY (BranchId) REFERENCES Branch(BranchId)
 );
 
 CREATE TABLE Charger (
@@ -98,7 +133,7 @@ CREATE TABLE Connector (
 -- Vehicle
 CREATE TABLE Vehicle (
   VehicleId BIGINT IDENTITY PRIMARY KEY,          -- Khóa chính
-  OwnerID BIGINT NOT NULL,                        -- FK tới bảng Owner
+  CustomerID BIGINT NOT NULL,                        -- FK tới bảng Owner
   VehicleType NVARCHAR(20) NOT NULL,              -- Loại xe: 'Ô tô' / 'Xe máy'
   Model NVARCHAR(100) NOT NULL,                   -- Tên xe (VD: VF e34, Feliz S)
   ProductionDate DATE NULL,                       -- Ngày sản xuất
@@ -111,23 +146,14 @@ CREATE TABLE Vehicle (
   LicensePlate VARCHAR(30) UNIQUE NULL,           -- Biển số xe
   VIN NVARCHAR(50) UNIQUE NULL,                   -- Số khung xe (VIN)
   CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),-- Ngày tạo
-  CONSTRAINT FK_Vehicle_Owner FOREIGN KEY (OwnerID) REFERENCES Owner(OwnerID),
+  CONSTRAINT FK_Vehicle_Customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
   CONSTRAINT CK_Vehicle_VinFast CHECK (Model LIKE 'VF%' OR Model LIKE 'Feliz%' OR Model LIKE 'Klara%' OR Model LIKE 'Theon%')
 );
 
-CREATE TABLE Owner (
-  OwnerID BIGINT IDENTITY PRIMARY KEY,            -- Khóa chính
-  FullName NVARCHAR(100) NOT NULL,                -- Họ tên
-  PhoneNumber VARCHAR(20) NULL,                   -- Số điện thoại
-  Email VARCHAR(100) NULL UNIQUE,                 -- Email (unique)
-  Address NVARCHAR(255) NULL,                     -- Địa chỉ
-  NationalID VARCHAR(50) NULL UNIQUE,             -- CCCD/Hộ chiếu
-  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),-- Ngày tạo
-  UpdatedAt DATETIME2(3) NULL                     -- Ngày cập nhật gần nhất
-);
 
 
--- Charging Session
+
+-- Charging Session: chỉ thông tin và chỉ số liên quan đến phiên sạc
 CREATE TABLE ChargingSession (
   SessionId BIGINT IDENTITY PRIMARY KEY,          -- Khóa chính
   ConnectorId BIGINT NOT NULL,                    -- FK tới Connector
@@ -155,34 +181,80 @@ CREATE TABLE PriceHistory (
   EndDate DATE,                                   -- Ngày hết hạn (NULL = hiện hành)
   Price DECIMAL(9,3)                              -- Giá (VNĐ/kWh)
 ); */
+
+
 -- Invoice
 CREATE TABLE Invoice (
-  InvoiceId BIGINT IDENTITY PRIMARY KEY,          -- Khóa chính
+  InvoiceId varchar(20)  PRIMARY KEY,          -- Khóa chính
   SessionId BIGINT NOT NULL,                      -- FK tới ChargingSession
   CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),-- Ngày tạo hóa đơn
-  EnergyKWh DECIMAL(10,4),                        -- Số điện đã sạc
-  EnergyCost DECIMAL(12,2),                       -- Tiền điện
+  TotalEnergyKWh DECIMAL(10,4),                        -- Số điện đã sạc
+  UnitPrice DECIMAL(10,2) NOT NULL,				  -- Đơn giá sạc (VNĐ/kWh)
+  ExtraFee DECIMAL(10,2) NULL  , -- Phí phát sinh
+  IdleUnitPrice DECIMAL(10,2) default 1000 NULL, -- Đơn giá phí sạc lâu
+  OverDueMinutes INT NULL, -- Số phút vượt
+  Total_IdleFee DECIMAL(10,2) NULL as (IdleUnitPrice*OverDueMinutes)  , -- Tổng phí sạc lâu
+  EnergyCost DECIMAL(12,2),                       -- Tiền điện = UnitPrice* TotalEnergyKWh
   IdleFee DECIMAL(12,2),                          -- Phí phạt chờ quá lâu
   ExtraFees DECIMAL(12,2),                        -- Phí bổ sung khác
-  TotalAmount DECIMAL(12,2),                      -- Tổng cộng
-  Currency NVARCHAR(10) DEFAULT 'VND',            -- Loại tiền
+  Tax DECIMAL(5,2) DEFAULT 10.00,			-- VAT 10%
+  TotalCost AS ((TotalEnergyKWh * UnitPrice) + ISNULL(IdleFee,0) + ISNULL(ExtraFee,0) ) PERSISTED, -- Tổng tiền
+  FinalCost AS (TotalCost + (TotalCost * ISNULL(Tax, 0)/100)) PERSISTED,
+  PaymentLink VARCHAR(500),  -- Thêm để lưu link thanh toán
+  EmployeeId int ,
+  Expire_Date date , --- mặc định ngày  14 tháng sau 
+  ---- phí phạt sạc lâu có tính VAT
   Status NVARCHAR(50) DEFAULT 'unpaid',           -- unpaid / paid / overdue
   CONSTRAINT FK_Invoice_Session FOREIGN KEY (SessionId) REFERENCES ChargingSession(SessionId)
 );
+-- Tạo sequence
+CREATE SEQUENCE InvoiceSeq
+    START WITH 1
+    INCREMENT BY 1;
+-- Trigger sinh mã từ sequence
+DROP TRIGGER trg_GenInvoiceID;
+CREATE TRIGGER trg_GenInvoiceID
+ON Invoice
+INSTEAD OF INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO Invoice (
+        InvoiceId, SessionId, TotalEnergyKWh, UnitPrice, ExtraFee, IdleUnitPrice, 
+        OverDueMinutes, EmployeeId, Expire_Date, Status, PaymentLink
+    )
+    SELECT 
+        'HD' + RIGHT('000000' + CAST(NEXT VALUE FOR InvoiceSeq AS VARCHAR(6)), 6),
+        SessionId, TotalEnergyKWh, UnitPrice, ExtraFee, IdleUnitPrice, 
+        OverDueMinutes, EmployeeId, Expire_Date, Status, PaymentLink
+    FROM inserted;
+END;
 
--- Payment
-CREATE TABLE Payment (
-    PaymentID BIGINT IDENTITY PRIMARY KEY, -- Khóa chính
-    InvoiceId BIGINT NOT NULL, -- FK đến ChargingSession
-    UnitPrice DECIMAL(10,2) NOT NULL, -- Đơn giá sạc (VNĐ/kWh)
-    OverDueMinutes INT NULL, -- Số phút vượt
-    IdleFee DECIMAL(10,2) NULL as (IdleUnitPrice*OverDueMinutes)  , -- Phí sạc lâu
-    ExtraFee DECIMAL(10,2) NULL  , -- Phí phát sinh
-    IdleUnitPrice DECIMAL(10,2) default 1000 NULL, -- Đơn giá phí sạc lâu
-    TotalEnergyKWh DECIMAL(10,3) NULL, -- Tổng năng lượng đã sạc (MeterStopKWh - MeterStartKWh)
-    TotalCost AS ((TotalEnergyKWh * UnitPrice) + ISNULL(IdleFee,0) + ISNULL(ExtraFee,0)) PERSISTED, -- Tổng tiền
-    CONSTRAINT FK_Payment_Session FOREIGN KEY (InvoiceId) REFERENCES Invoice(InvoiceId)
+---- GHI NHẬN THANH TOÁN CHO HÓA ĐƠN NÀO, KẾT NỐI TRANSACTION VÀ INVOICE
+CREATE TABLE Payment(
+PaymentID BIGINT IDENTITY PRIMARY KEY, 
+TransID varchar(20),
+InvoiceID varchar(20),
+Update_Time datetime,
 );
+---- GIAO DỊCH THANH TOAN ONLINE 
+ CREATE TABLE Transactions(
+ TransID varchar(20),
+ Trans_Date datetime,
+ From_Bank_Code int ,
+ From_Bank_Name varchar(50),
+ From_Acc_Name varchar(50),
+ To_Bank_Code int ,
+ To_Bank_Name varchar(50),
+ To_Acc_Name varchar(50),
+ Transaction_Code int,
+ Trans_Type VARCHAR(50) CHECK (Trans_Type IN ('received', 'sent')), --- InvoiceId int ,
+ Amount float,
+ ReferenceID int ,
+ URL varchar(100),
+
+ );
+
 
 -- Activity Log (audit)
 CREATE TABLE LogChange (
@@ -196,4 +268,83 @@ CREATE TABLE LogChange (
   ChangedUser NVARCHAR(50),                       -- Người thay đổi
   ChangedDate DATETIME2(3) DEFAULT SYSUTCDATETIME() -- Thời gian thay đổi
 );
+
+---HỆ THỐNG TÀI KHOẢN KẾ TOÁN
+CREATE TABLE COA(
+Acc_Code2 int, -- tài khoản cấp 2
+Acc_Code1 int, -- tài khoản cấp 1
+Acc_Name nvarchar(100),
+Acc_Type nvarchar(100)
+);
+Insert into COA (Acc_Code2, Acc_Code1, Acc_Name) values (111,null, 'Tiền mặt')
+Insert into COA (Acc_Code2, Acc_Code1, Acc_Name) values (1111,111, 'Tiền Việt Nam')
+Insert into COA (Acc_Code2, Acc_Code1, Acc_Name) values (1112,111, 'Ngoại Tệ')
+Insert into COA (Acc_Code2, Acc_Code1, Acc_Name) values (1112,111, 'Vàng tiền tệ');
+/*
+--- GIAO DỊCH NHƯ NHẬN VÀ CHI TIỀN
+CREATE TABLE INLINE_ITEM ( --INLINE ITEM: BÚT TOÁN CHI TIẾT CHO TỪNG KHOẢN
+
+original_documents varchar(20), --- chứng từ gốc 
+id_trans int,
+Acc_Code2 int,
+Acc_Type nvarchar(20), --nợ debit, có credit
+Amount float
+---tài khoản nợ tài khoản 1111 100.000 VND 
+);*/
+-- NHẬT KÝ BÚT TOÁN
+CREATE TABLE Journal_Entries(
+entry_id BIGINT IDENTITY PRIMARY KEY, 
+entry_type varchar(50), --- để biết bút toán này ghi nhận bán hàng, mua hàng,....
+Entry_Date date,
+Debit_Acc int,		---Acc_Code2
+Credit_Acc int ,	---Acc_Code2
+Amount float,
+Descriptions nvarchar(200),
+document_type VARCHAR(50) ,  -- Loại chứng từ: 'Invoice', 'Transaction', 'Receipt', 'MaintenanceContract', v.v.
+document_id varchar(20)          -- ID của chứng từ gốc (từ bảng tương ứng)
+
+-- Constraint để giới hạn loại
+CONSTRAINT CK_Journal_DocumentType 
+CHECK (document_type IN ('Invoice', 'Transaction', 'Receipt', 'MaintenanceContract'))  -- Thêm loại mới khi cần
+);
+CREATE TRIGGER trg_ValidateJournalDocument
+ON Journal_Entries
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @document_type NVARCHAR(50), @document_id  varchar(20);
+    SELECT @document_type = document_type, @document_id = document_id FROM inserted;
+
+    IF @document_type = 'Invoice'
+    BEGIN
+        IF NOT EXISTS (SELECT 1 FROM Invoice WHERE InvoiceId = @document_id )  -- Chuyển BIGINT sang VARCHAR nếu cần
+            THROW 50001, 'Invalid Invoice ID for Journal Entry.', 1;
+    END
+    ELSE IF @document_type = 'Transaction'
+    BEGIN
+        IF NOT EXISTS (SELECT 1 FROM Transactions WHERE TransID = @document_id)
+            THROW 50002, 'Invalid Transaction ID for Journal Entry.', 1;
+    END
+    -- Thêm cho loại khác: ELSE IF @document_type = 'Receipt' ... 
+END;
+
+--- số dư đầu kỳ
+CREATE TABLE Opening_Balance(
+Period int, -- kỳ
+Year int,
+Opening_Date date,
+Acc_Code2 int ,
+Type nvarchar(20),--- nợ, có
+Balance float,
+);
+--- số dư cuối kỳ
+CREATE TABLE Ending_Balance(
+Period int, -- kỳ
+Year int,
+Ending_Date date,
+Acc_Code2 int ,
+Type nvarchar(20), ---nợ, có
+Balance float,
+);
+
 
