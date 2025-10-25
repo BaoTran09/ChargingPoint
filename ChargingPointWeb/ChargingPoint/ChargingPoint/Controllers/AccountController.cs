@@ -80,6 +80,39 @@ namespace ChargingPoint.Controllers
             }
             return View(model);
         }
+      /*  public async Task<IActionResult> VerifyAccount(string email, string token)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("VerifyEmail", "Account");
+            }
+
+            var user = await UserManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = "User not found.";
+                return View("VerifyEmail");
+            }
+
+            // Kiểm tra token xác minh email
+            var isValid = await UserManager.VerifyUserTokenAsync(user, UserManager.Options.Tokens.EmailConfirmationTokenProvider, "EmailConfirmation", token);
+            if (isValid)
+            {
+                if (!user.EmailConfirmed) // Chỉ cập nhật nếu chưa xác minh
+                {
+                    user.EmailConfirmed = true;
+                    await UserManager.UpdateAsync(user);
+                }
+                ViewBag.SuccessMessage = "Your email has been verified successfully. You can now log in.";
+                return View("VerifyEmail");
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Invalid or expired verification link. Please request a new one.";
+                return RedirectToAction("VerifyEmail", "Account"); // Chuyển hướng thay vì view trực tiếp
+            }
+        }
+      */
         public IActionResult VerifyEmail()
         {
             return View();
@@ -91,22 +124,30 @@ namespace ChargingPoint.Controllers
             if (!ModelState.IsValid)
             {
                 return View(model);
-
             }
+
             var user = await UserManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 ModelState.AddModelError("", "Email is not found!");
                 return View(model);
             }
-            var resetToken = await  UserManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = Url.Action("ChangePassword", "Account", new { username = model.Email, token = resetToken }, Request.Scheme);
-            var subject = "Reset Password";
-            var body = $"<p>Click the link below to reset your password:</p><a href='{resetLink}'>Reset Password</a>";
-            await emailService.SendEmailAsync(model.Email, subject, body);
-            return RedirectToAction("EmailSent", "Account");
-        }
 
+            try
+            {
+                var resetToken = await UserManager.GeneratePasswordResetTokenAsync(user);
+                var resetLink = Url.Action("ChangePassword", "Account", new { email = model.Email, token = resetToken }, Request.Scheme);
+                var subject = "Reset Your Password";
+                var body = $"<p>Please click the link below to reset your password:</p><a href='{resetLink}'>Reset Password</a>";
+                await emailService.SendEmailAsync(model.Email, subject, body);
+                return RedirectToAction("EmailSent", "Account");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Failed to send reset email: {ex.Message}");
+                return View(model);
+            }
+        }
         public IActionResult ChangePassword(string email, string token)
         {
             if (string.IsNullOrEmpty(email)||string.IsNullOrEmpty(token))

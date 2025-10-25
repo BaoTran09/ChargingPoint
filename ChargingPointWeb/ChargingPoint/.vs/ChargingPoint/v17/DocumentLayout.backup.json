@@ -3,128 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\station\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\station\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\wwwroot\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\wwwroot\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\controllers\\stationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\controllers\\stationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\station\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\station\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\station\\search.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\station\\search.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\station\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\station\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\db\\storedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\db\\storedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\db\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\db\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\db\\store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\db\\store.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\station\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\station\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\station\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\station\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\models\\emailsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\models\\emailsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\migrations\\20250819180707_addaccountidentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\migrations\\20250819180707_addaccountidentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\migrations\\20250819065808_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\migrations\\20250819065808_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\account\\changepassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\account\\changepassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\viewmodels\\changepasswordview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\viewmodels\\changepasswordview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\account\\verifyemail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\account\\verifyemail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\viewmodels\\verifyemailview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\viewmodels\\verifyemailview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\services\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\services\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\shared\\_loginpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\shared\\_loginpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\account\\emailsent.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\account\\emailsent.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\chargingpoint.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\chargingpoint.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\wwwroot\\css\\account.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\wwwroot\\css\\account.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\viewmodels\\loginview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\viewmodels\\loginview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Migrations\\20250818152817_UpdateStation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ChargingPoint\\Migrations\\20250818152817_UpdateStation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\migrations\\20250820084436_nullable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\migrations\\20250820084436_nullable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|c:\\users\\trann\\downloads\\chargingpointweb\\chargingpoint\\chargingpoint\\wwwroot\\js\\script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{28CEE8FF-CA8B-4930-AB20-CD57145F4F58}|ChargingPoint\\ChargingPoint.csproj|solutionrelative:chargingpoint\\wwwroot\\js\\script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -134,44 +22,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "StationController.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Controllers\\StationController.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Controllers\\StationController.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Controllers\\StationController.cs",
-              "RelativeToolTip": "ChargingPoint\\Controllers\\StationController.cs",
-              "ViewState": "AgIAAM8AAAAAAAAAAAAIwNYAAABaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T13:27:32.969Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Index.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Station\\Index.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Index.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Station\\Index.cshtml",
-              "ViewState": "AgIAACwBAAAAAAAAAAAQwDgBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-19T08:11:30.687Z",
+              "Title": "Style.css",
+              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\css\\Style.css",
+              "RelativeDocumentMoniker": "ChargingPoint\\wwwroot\\css\\Style.css",
+              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\css\\Style.css",
+              "RelativeToolTip": "ChargingPoint\\wwwroot\\css\\Style.css",
+              "ViewState": "AgIAAPwBAAAAAAAAAAAiwCICAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-10-22T03:42:30.605Z",
+              "IsPinned": true,
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "StoreDBContext.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\DB\\StoreDBContext.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\DB\\StoreDBContext.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\DB\\StoreDBContext.cs",
-              "RelativeToolTip": "ChargingPoint\\DB\\StoreDBContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T12:35:52.598Z"
             },
             {
               "$type": "Document",
@@ -181,332 +46,23 @@
               "RelativeDocumentMoniker": "ChargingPoint\\Views\\Shared\\_Layout.cshtml",
               "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "ChargingPoint\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAADAAAAAAAAAAAADwvz0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAqwIgAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-18T16:18:57.262Z"
+              "WhenOpened": "2025-10-24T10:08:44.922Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Users.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\DB\\Users.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\DB\\Users.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\DB\\Users.cs",
-              "RelativeToolTip": "ChargingPoint\\DB\\Users.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-20T07:46:08.997Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Edit.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Station\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Edit.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Station\\Edit.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-19T13:29:43.865Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Delete.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Delete.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Station\\Delete.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Delete.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Station\\Delete.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-19T13:31:51.452Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Create.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Station\\Create.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Create.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Station\\Create.cshtml",
-              "ViewState": "AgIAACkAAAAAAAAAAAAIwEEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-19T13:31:27.145Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Search.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Search.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Station\\Search.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Search.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Station\\Search.cshtml",
-              "ViewState": "AgIAAAIAAAAAAAAAAADwvwoAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-16T09:18:20.162Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Store.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\DB\\Store.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\DB\\Store.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\DB\\Store.cs",
-              "RelativeToolTip": "ChargingPoint\\DB\\Store.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-18T14:28:59.511Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Details.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Details.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Station\\Details.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Station\\Details.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Station\\Details.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAIBZwAkAAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-19T13:32:05.825Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "EmailSettings.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Models\\EmailSettings.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Models\\EmailSettings.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Models\\EmailSettings.cs",
-              "RelativeToolTip": "ChargingPoint\\Models\\EmailSettings.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-21T16:40:54.48Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "ChargingPoint\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAQwAQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-21T15:13:29.007Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "20250819180707_AddAccountIdentity.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Migrations\\20250819180707_AddAccountIdentity.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Migrations\\20250819180707_AddAccountIdentity.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Migrations\\20250819180707_AddAccountIdentity.cs",
-              "RelativeToolTip": "ChargingPoint\\Migrations\\20250819180707_AddAccountIdentity.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T18:07:07.667Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "20250819065808_Init.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Migrations\\20250819065808_Init.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Migrations\\20250819065808_Init.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Migrations\\20250819065808_Init.cs",
-              "RelativeToolTip": "ChargingPoint\\Migrations\\20250819065808_Init.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T06:58:09.139Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Register.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\Register.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Account\\Register.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\Register.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Account\\Register.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-21T17:49:36.668Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "VerifyEmail.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\VerifyEmail.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Account\\VerifyEmail.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\VerifyEmail.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Account\\VerifyEmail.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-21T17:09:24.165Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "EmailService.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Services\\EmailService.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Services\\EmailService.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Services\\EmailService.cs",
-              "RelativeToolTip": "ChargingPoint\\Services\\EmailService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-21T16:50:09.884Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "IEmailService.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Services\\IEmailService.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Services\\IEmailService.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Services\\IEmailService.cs",
-              "RelativeToolTip": "ChargingPoint\\Services\\IEmailService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-21T16:48:34.738Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "ChargingPoint\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAowBcAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-20T04:46:04.209Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "ChangePassword.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\ChangePassword.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Account\\ChangePassword.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\ChangePassword.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Account\\ChangePassword.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAABZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-20T07:07:09.627Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "_LoginPartial.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Shared\\_LoginPartial.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Shared\\_LoginPartial.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Shared\\_LoginPartial.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Shared\\_LoginPartial.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAIBJwAoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-20T03:43:55.493Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "ChangePasswordView.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ViewModels\\ChangePasswordView.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\ViewModels\\ChangePasswordView.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ViewModels\\ChangePasswordView.cs",
-              "RelativeToolTip": "ChargingPoint\\ViewModels\\ChangePasswordView.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T18:24:03.906Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "VerifyEmailView.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ViewModels\\VerifyEmailView.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\ViewModels\\VerifyEmailView.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ViewModels\\VerifyEmailView.cs",
-              "RelativeToolTip": "ChargingPoint\\ViewModels\\VerifyEmailView.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T18:22:50.139Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "Login.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\Login.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Account\\Login.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\Login.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Account\\Login.cshtml",
-              "ViewState": "AgIAACAAAAAAAAAAAAAowD4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-20T04:48:18.105Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "EmailSent.cshtml",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\EmailSent.cshtml",
-              "RelativeDocumentMoniker": "ChargingPoint\\Views\\Account\\EmailSent.cshtml",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Views\\Account\\EmailSent.cshtml",
-              "RelativeToolTip": "ChargingPoint\\Views\\Account\\EmailSent.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvw8AAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-21T17:09:13.928Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
-              "Title": "ChargingPoint.csproj",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj",
-              "RelativeDocumentMoniker": "ChargingPoint\\ChargingPoint.csproj",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj",
-              "RelativeToolTip": "ChargingPoint\\ChargingPoint.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAA7AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-08-18T15:02:48.428Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
-              "Title": "Account.css",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\css\\Account.css",
-              "RelativeDocumentMoniker": "ChargingPoint\\wwwroot\\css\\Account.css",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\css\\Account.css",
-              "RelativeToolTip": "ChargingPoint\\wwwroot\\css\\Account.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-08-20T05:25:15.076Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 28,
-              "Title": "LoginView.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ViewModels\\LoginView.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\ViewModels\\LoginView.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ViewModels\\LoginView.cs",
-              "RelativeToolTip": "ChargingPoint\\ViewModels\\LoginView.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T18:08:26.172Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 30,
-              "Title": "20250820084436_Nullable.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Migrations\\20250820084436_Nullable.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Migrations\\20250820084436_Nullable.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Migrations\\20250820084436_Nullable.cs",
-              "RelativeToolTip": "ChargingPoint\\Migrations\\20250820084436_Nullable.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-20T08:44:36.904Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 29,
-              "Title": "20250818152817_UpdateStation.cs",
-              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Migrations\\20250818152817_UpdateStation.cs",
-              "RelativeDocumentMoniker": "ChargingPoint\\Migrations\\20250818152817_UpdateStation.cs",
-              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\Migrations\\20250818152817_UpdateStation.cs",
-              "RelativeToolTip": "ChargingPoint\\Migrations\\20250818152817_UpdateStation.cs",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-18T15:28:18.388Z"
+              "DocumentIndex": 2,
+              "Title": "script.js",
+              "DocumentMoniker": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\js\\script.js",
+              "RelativeDocumentMoniker": "ChargingPoint\\wwwroot\\js\\script.js",
+              "ToolTip": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\js\\script.js",
+              "RelativeToolTip": "ChargingPoint\\wwwroot\\js\\script.js",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAgwLwAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-10-22T05:53:55.872Z",
+              "EditorCaption": ""
             }
           ]
         }

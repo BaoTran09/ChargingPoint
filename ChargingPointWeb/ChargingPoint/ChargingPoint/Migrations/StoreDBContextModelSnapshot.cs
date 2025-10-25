@@ -22,6 +22,44 @@ namespace ChargingPoint.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ChargingPoint.DB.Customer", b =>
+                {
+                    b.Property<long>("CustomerID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CustomerID"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Birthday")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("CustomerID");
+
+                    b.ToTable("Customer");
+                });
+
             modelBuilder.Entity("ChargingPoint.DB.Station", b =>
                 {
                     b.Property<long>("StationId")
@@ -131,6 +169,231 @@ namespace ChargingPoint.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("ChargingPoint.Models.Charger", b =>
+                {
+                    b.Property<long>("ChargerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ChargerId"));
+
+                    b.Property<string>("ChargerType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Design")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirmwareVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("InstalledAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Manufacturer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("MaxPowerKW")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("OutputVoltageMax")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("OutputVoltageMin")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("Phases")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PicturePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PortCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Protections")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SerialNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("StationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UseFor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ChargerId");
+
+                    b.HasIndex("StationId");
+
+                    b.ToTable("Charger");
+                });
+
+            modelBuilder.Entity("ChargingPoint.Models.ChargingSession", b =>
+                {
+                    b.Property<long>("SessionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SessionId"));
+
+                    b.Property<long>("ConnectorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal?>("EndSOC")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FullTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("MeterStartKWh")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MeterStopKWh")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("StartSOC")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("TargetSOC")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long?>("VehicleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("SessionId");
+
+                    b.HasIndex("ConnectorId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("ChargingSession");
+                });
+
+            modelBuilder.Entity("ChargingPoint.Models.Connector", b =>
+                {
+                    b.Property<long>("ConnectorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ConnectorId"));
+
+                    b.Property<long>("ChargerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ConnectorIndex")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConnectorType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ConnectorId");
+
+                    b.HasIndex("ChargerId");
+
+                    b.ToTable("Connector");
+                });
+
+            modelBuilder.Entity("ChargingPoint.Models.Vehicle", b =>
+                {
+                    b.Property<long>("VehicleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("VehicleId"));
+
+                    b.Property<bool>("AcChargingSupport")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("BatteryGrossKWh")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("BatteryType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("BatteryUsableKWh")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("DcChargingSupport")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LicensePlate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("MaxAcChargeKW")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MaxDcChargeKW")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ProductionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VIN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VehicleType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VehicleId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Vehicle");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -266,6 +529,54 @@ namespace ChargingPoint.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ChargingPoint.Models.Charger", b =>
+                {
+                    b.HasOne("ChargingPoint.DB.Station", "Station")
+                        .WithMany()
+                        .HasForeignKey("StationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Station");
+                });
+
+            modelBuilder.Entity("ChargingPoint.Models.ChargingSession", b =>
+                {
+                    b.HasOne("ChargingPoint.Models.Connector", "Connector")
+                        .WithMany()
+                        .HasForeignKey("ConnectorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChargingPoint.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId");
+
+                    b.Navigation("Connector");
+
+                    b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("ChargingPoint.Models.Connector", b =>
+                {
+                    b.HasOne("ChargingPoint.Models.Charger", "Charger")
+                        .WithMany()
+                        .HasForeignKey("ChargerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Charger");
+                });
+
+            modelBuilder.Entity("ChargingPoint.Models.Vehicle", b =>
+                {
+                    b.HasOne("ChargingPoint.DB.Customer", null)
+                        .WithMany("Vehicles")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -315,6 +626,11 @@ namespace ChargingPoint.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ChargingPoint.DB.Customer", b =>
+                {
+                    b.Navigation("Vehicles");
                 });
 #pragma warning restore 612, 618
         }

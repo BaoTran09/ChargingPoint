@@ -1,29 +1,23 @@
-create database ChargingPoint
-go
-use   ChargingPoint;
-go
--- Bảng tài khoản (nên tạo trước)
+-- Tạo DB
+-- drop DATABASE ChargingPoint_Draft1;
+CREATE DATABASE ChargingPoint_Draft;
+GO
+USE ChargingPoint;
+GO
+
+-- Bảng tài khoản
 CREATE TABLE Account (
   Account_id  BIGINT IDENTITY PRIMARY KEY,
   Email VARCHAR(100) UNIQUE NOT NULL,
-  PasswordHash VARCHAR(200) NOT NULL,           -- lưu hash
-  AccountType VARCHAR(50) NOT NULL,             -- guest, admin, customer, chỉ có thể làm acc admin khi có đuôi của tổ chức là "ufm.edu.vn"
+  PasswordHash VARCHAR(200) NOT NULL,           
+  AccountType VARCHAR(50) NOT NULL,             
   CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),
   UpdatedAt DATETIME2(3) NULL,
   Status VARCHAR(50), 
   CONSTRAINT CK_Account_Type CHECK (AccountType IN ('guest','admin','customer'))
 );
-select * from [dbo].[AspNetUsers];
-select * from [dbo].[station];
-delete from [dbo].[AspNetUsers];
-rollback;
--- Bảng phòng ban / chi nhánh
 
-CREATE TABLE Department (
-  DepartmentId BIGINT IDENTITY PRIMARY KEY,
-  Name NVARCHAR(200) NOT NULL, 
-  BranchId BIGINT,
-);
+
 -- Bảng nhân viên
 CREATE TABLE Employee (
   EmployeeId BIGINT IDENTITY PRIMARY KEY,
@@ -32,13 +26,16 @@ CREATE TABLE Employee (
   Birthday Date NULL,
   Address NVARCHAR(255) NULL,
   JobTitle NVARCHAR(200),
-  Department_id BIGINT NOT NULL,
   Account_id BIGINT NOT NULL,
   CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),
   UpdatedAt DATETIME2(3) NULL,
-  CONSTRAINT FK_Employee_Department FOREIGN KEY (Department_id) REFERENCES Department(DepartmentId),
   CONSTRAINT FK_Employee_Account FOREIGN KEY (Account_id) REFERENCES Account(Account_id)
 );
+ALTER TABLE Charger
+ADD CONSTRAINT DF_Charger_CreatedAt
+DEFAULT (SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time') FOR CreatedAt;
+
+
 -- Bảng khách hàng
 CREATE TABLE Customer (
   CustomerID BIGINT IDENTITY PRIMARY KEY,
@@ -46,173 +43,223 @@ CREATE TABLE Customer (
   PhoneNumber VARCHAR(20) NULL,
   Birthday Date NULL,
   Address NVARCHAR(255) NULL,
-  NationalID VARCHAR(50) UNIQUE NULL,           -- CCCD/Hộ chiếu
+  NationalID VARCHAR(50) UNIQUE NULL,           
   CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),
   UpdatedAt DATETIME2(3) NULL,
-  Account_id BIGINT NOT NULL,
-  CONSTRAINT FK_Customer_Account FOREIGN KEY (Account_id) REFERENCES Account(Account_id)
+  --Account_id BIGINT NOT NULL,
+  --CONSTRAINT FK_Customer_Account FOREIGN KEY (Account_id) REFERENCES Account(Account_id)
 );
+ALTER TABLE Customer
+ADD CONSTRAINT DF_Customer_CreatedAt
+DEFAULT (SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time') FOR CreatedAt;
 
-
-
-select * from Station;
-delete from Station where StationId <=2;
- INSERT INTO Station (Tag, Name, StationType, Address, Latitude, Longitude, Notes, CreatedAt, BuiltDate)
-VALUES 
-    (N'TTTM', N'Trạm Sạc Vincom Mega Mall', N'Public', N'72A Nguyễn Trãi, Thanh Xuân, Hà Nội', 21.0045, 105.8132, N'Gần trung tâm thương mại Vincom', SYSUTCDATETIME(), '2023-06-15'),
-    (N'Khách sạn', N'Trạm Sạc Sofitel Legend', N'Public', N'15 Ngô Quyền, Hoàn Kiếm, Hà Nội', 21.0314, 105.8557, N'Dành cho khách sạn và khách vãng lai', SYSUTCDATETIME(), '2022-11-20'),
-    (N'Bãi đỗ xe', N'Trạm Sạc Cầu Giấy', N'Depot', N'176 Cầu Giấy, Cầu Giấy, Hà Nội', 21.0338, 105.7991, N'Bãi đỗ xe công cộng', SYSUTCDATETIME(), '2024-01-10'),
-    (N'Siêu thị', N'Trạm Sạc Big C Thăng Long', N'Public', N'222 Trần Duy Hưng, Cầu Giấy, Hà Nội', 21.0132, 105.7905, N'Gần siêu thị Big C', SYSUTCDATETIME(), '2023-09-05'),
-    (N'TTTM', N'Trạm Sạc AEON Mall Long Biên', N'Public', N'27 Cổ Linh, Long Biên, Hà Nội', 21.0537, 105.8936, N'Trong khu vực TTTM AEON', SYSUTCDATETIME(), '2023-12-01'),
-    (N'Công viên', N'Trạm Sạc Công viên Thống Nhất', N'Public', N'354A Lê Duẩn, Đống Đa, Hà Nội', 21.0179, 105.8412, N'Gần cổng công viên', SYSUTCDATETIME(), '2022-08-30'),
-    (N'Bãi đỗ xe', N'Trạm Sạc Royal City', N'Depot', N'72 Nguyễn Trãi, Thanh Xuân, Hà Nội', 21.0028, 105.8139, N'Bãi đỗ xe tầng hầm', SYSUTCDATETIME(), '2023-03-22'),
-    (N'Trường học', N'Trạm Sạc ĐH Bách Khoa', N'Public', N'1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội', 21.0051, 105.8465, N'Dành cho sinh viên và giảng viên', SYSUTCDATETIME(), '2024-02-15'),
-    (N'Bệnh viện', N'Trạm Sạc BV Bạch Mai', N'Public', N'78 Giải Phóng, Đống Đa, Hà Nội', 21.0009, 105.8401, N'Gần cổng bệnh viện', SYSUTCDATETIME(), '2023-07-10'),
-    (N'TTTM', N'Trạm Sạc Lotte Center', N'Public', N'54 Liễu Giai, Ba Đình, Hà Nội', 21.0325, 105.8135, N'Tầng hầm Lotte Center', SYSUTCDATETIME(), '2022-12-05'),
-    (N'TTTM', N'Trạm Sạc Vincom Bà Triệu', N'Public', N'191 Bà Triệu, Hai Bà Trưng, Hà Nội', 21.0136, 105.8498, N'Gần khu vực gửi xe', SYSUTCDATETIME(), '2023-04-20'),
-    (N'Siêu thị', N'Trạm Sạc Co.opmart Hà Đông', N'Public', N'Khu đô thị mới Hà Đông, Hà Đông, Hà Nội', 20.9745, 105.7702, N'Khu vực siêu thị', SYSUTCDATETIME(), '2024-03-01'),
-    (N'Khách sạn', N'Trạm Sạc InterContinental', N'Public', N'5 Từ Hoa, Tây Hồ, Hà Nội', 21.0578, 105.8291, N'Dành cho khách sạn và khách vãng lai', SYSUTCDATETIME(), '2023-10-15'),
-    (N'TTTM', N'Trạm Sạc Vincom Thủ Đức', N'Public', N'216 Võ Văn Ngân, Thủ Đức, TP.HCM', 10.8501, 106.7718, N'Gần khu TTTM Vincom', SYSUTCDATETIME(), '2023-05-12'),
-    (N'Bãi đỗ xe', N'Trạm Sạc Quận 7', N'Depot', N'15 Nguyễn Lương Bằng, Quận 7, TP.HCM', 10.7298, 106.7205, N'Bãi đỗ xe công cộng', SYSUTCDATETIME(), '2024-01-25'),
-    (N'Siêu thị', N'Trạm Sạc Big C Trường Chinh', N'Public', N'1 Trường Chinh, Tân Bình, TP.HCM', 10.7992, 106.6567, N'Gần siêu thị Big C', SYSUTCDATETIME(), '2023-08-10'),
-    (N'Công viên', N'Trạm Sạc Công viên Tao Đàn', N'Public', N'55C Trương Định, Quận 3, TP.HCM', 10.7745, 106.6912, N'Gần lối vào công viên', SYSUTCDATETIME(), '2022-09-15'),
-    (N'Bệnh viện', N'Trạm Sạc BV Chợ Rẫy', N'Public', N'201B Nguyễn Chí Thanh, Quận 5, TP.HCM', 10.7563, 106.6689, N'Khu vực gửi xe bệnh viện', SYSUTCDATETIME(), '2023-11-20'),
-    (N'TTTM', N'Trạm Sạc Takashimaya', N'Public', N'92 Nam Kỳ Khởi Nghĩa, Quận 1, TP.HCM', 10.7739, 106.7008, N'Tầng hầm TTTM', SYSUTCDATETIME(), '2023-06-30'),
-    (N'Bãi đỗ xe', N'Trạm Sạc Đà Nẵng', N'Depot', N'38 Nguyễn Văn Linh, Hải Châu, Đà Nẵng', 16.0598, 108.2097, N'Bãi đỗ xe công cộng', SYSUTCDATETIME(), '2024-02-20');
-
-
-drop TABLE Station;
+select * from Customer;
+update Customer set fullname = N'Nguyễn Hảo My' where CustomerID=2;
+-- Bảng trạm sạc
 CREATE TABLE Station (
-StationId BIGINT IDENTITY PRIMARY KEY, 
-  Tag  NVARCHAR(200) ,							  ---Nhãn, mô tả nhanh (VD: "Trung tâm thương mại")
-  Name NVARCHAR(200),                             -- Tên trạm
-  StationType NVARCHAR(50),                       -- Loại trạm: "Public", "Depot"
-  Address NVARCHAR(500),						  -- địa chỉ
-  Latitude DECIMAL(10,6) NULL,                    -- Vĩ độ
-  Longitude DECIMAL(10,6) NULL,                   -- Kinh độ
-  Notes NVARCHAR(500),                            -- Ghi chú thêm
-  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),-- Ngày tạo
-  BuiltDate DATE,                                 -- Ngày xây dựng
-  BranchId BIGINT,
-  CONSTRAINT FK_Station_BranchId FOREIGN KEY (BranchId) REFERENCES Branch(BranchId)
-);
+  StationId BIGINT IDENTITY PRIMARY KEY, 
+  Tag  NVARCHAR(200),							  
+  Name NVARCHAR(200),                             
+  StationType NVARCHAR(50),      --- trạm sạc ô tô, xe điện, cả 2                 
+  Address NVARCHAR(500),						  
+  Latitude DECIMAL(10,6) NULL,                    
+  Longitude DECIMAL(10,6) NULL,                   
+  Notes NVARCHAR(500),                            
+  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),
+  BuiltDate DATE,                                 
+ );
+ ALTER TABLE Station
+ADD CONSTRAINT DF_Station_CreatedAt
+DEFAULT (SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time') FOR CreatedAt;
+ ALTER TABLE Charger
+ADD CONSTRAINT DF_Charger_CreatedAt
+DEFAULT (SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time') FOR CreatedAt;
 
+ select * from Station;
+ -- Charger
 CREATE TABLE Charger (
-  ChargerId BIGINT IDENTITY PRIMARY KEY,          -- Khóa chính, định danh duy nhất trụ sạc
-  StationId BIGINT NOT NULL,                      -- FK tới bảng Station, trụ thuộc trạm nào
-  SerialNumber NVARCHAR(100) UNIQUE,              -- Số serial duy nhất của trụ sạc
-  Model NVARCHAR(100),                             -- Mẫu/kiểu trụ sạc
-  Manufacturer NVARCHAR(100),                      -- Nhà sản xuất
-  ChargerType NVARCHAR(50),                        -- Loại trụ: "AC" hoặc "DC"
-  MaxPowerKW DECIMAL(8,2),                        -- Công suất tối đa (kW)
-  Phases INT NULL,                                 -- Số pha điện (1 pha hoặc 3 pha)
-  OutputVoltageMin DECIMAL(6,2),                  -- Điện áp đầu ra tối thiểu (V)
-  OutputVoltageMax DECIMAL(6,2),                  -- Điện áp đầu ra tối đa (V)
-  PortCount INT,                                  -- Số cổng sạc trên trụ
-  Design NVARCHAR(200),                            -- Kiểu dáng/trang trí trụ sạc
-  Protections NVARCHAR(500),                       -- Các tính năng bảo vệ (quá dòng, quá nhiệt, sét,...)
-  FirmwareVersion NVARCHAR(50),                   -- Phiên bản firmware
-  InstalledAt DATETIME2(3),                       -- Ngày lắp đặt trụ
-  Status NVARCHAR(50) DEFAULT 'Online',           -- Trạng thái hiện tại: Online/Offline
-  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),-- Ngày tạo bản ghi
-  CONSTRAINT FK_Charger_Station FOREIGN KEY (StationId) REFERENCES Station(StationId)
+  ChargerId BIGINT IDENTITY PRIMARY KEY,          -- Mã định danh tự tăng duy nhất cho mỗi bộ sạc (charger)
+  StationId BIGINT NOT NULL,                      -- Khóa ngoại liên kết đến trạm sạc (Station) mà charger này thuộc về
+  SerialNumber NVARCHAR(100) UNIQUE,              -- Số sê-ri của thiết bị (độc nhất, dùng để nhận diện vật lý)
+  Model NVARCHAR(100),                            -- Tên hoặc mã model của bộ sạc (ví dụ: ABB Terra 54)
+  Manufacturer NVARCHAR(100),                     -- Hãng sản xuất (ví dụ: ABB, Siemens, VinFast)
+  ChargerType NVARCHAR(50),                       -- Loại sạc: 'AC' (xoay chiều) hoặc 'DC' (một chiều)
+  MaxPowerKW DECIMAL(8,2),                        -- Công suất tối đa (kW) mà bộ sạc có thể cung cấp
+  Phases INT NULL,                                -- Số pha điện (1 pha hoặc 3 pha, thường chỉ áp dụng cho AC)
+  OutputVoltageMin DECIMAL(6,2),                  -- Điện áp đầu ra nhỏ nhất (V)
+  OutputVoltageMax DECIMAL(6,2),                  -- Điện áp đầu ra lớn nhất (V)
+  PortCount INT,                                  -- Số cổng sạc (số lượng đầu nối vật lý trên charger)
+  Design NVARCHAR(200),                           -- Kiểu thiết kế hoặc form factor (ví dụ: wall-mounted, pedestal)
+  Protections NVARCHAR(500),                      -- Danh sách các tính năng bảo vệ (ví dụ: overcurrent, overheat)
+  FirmwareVersion NVARCHAR(50),                   -- Phiên bản phần mềm điều khiển của thiết bị
+  InstalledAt DATETIME2(3),                       -- Ngày/giờ thiết bị được lắp đặt tại trạm
+  Status NVARCHAR(50) DEFAULT 'Online',           -- Trạng thái hiện tại: 'Online', 'Offline', 'Maintenance'...
+  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),-- Ngày/giờ bản ghi được tạo (theo UTC)
+  PicturePath varchar(500),
+  UseFor nvarchar(50),							  -- Trụ sạc xe ô tô hay xe máy
+  CONSTRAINT FK_Charger_Station 
+    FOREIGN KEY (StationId) REFERENCES Station(StationId)  -- Ràng buộc khóa ngoại tới bảng Station
 );
 
--- Connector (cổng trên trụ)
+-- Connector
 CREATE TABLE Connector (
-  ConnectorId BIGINT IDENTITY PRIMARY KEY,        -- Khóa chính
-  ChargerId BIGINT NOT NULL,                      -- FK tới bảng Charger
-  ConnectorIndex INT NOT NULL,                    -- Thứ tự cổng (1,2,...)
-  ConnectorType NVARCHAR(50) NOT NULL,            -- Loại cổng: "Type2", "CCS2", "CHAdeMO"
-  MaxPowerKW DECIMAL(8,2) NULL,                   -- Công suất tối đa của cổng
-  Status NVARCHAR(50) DEFAULT 'Available',        -- Trạng thái: Available/Occupied/Error
---  CurrentTransactionId BIGINT NULL,               -- ID phiên giao dịch đang chạy (nếu có)
-  CONSTRAINT FK_Connector_Charger FOREIGN KEY (ChargerId) REFERENCES Charger(ChargerId)
+  ConnectorId BIGINT IDENTITY PRIMARY KEY,        -- Mã định danh duy nhất cho từng đầu nối (connector)
+  ChargerId BIGINT NOT NULL,                      -- Khóa ngoại liên kết đến thiết bị sạc (Charger)
+  ConnectorIndex INT NOT NULL,                    -- Số thứ tự của đầu nối trên cùng một charger (ví dụ: 1, 2, 3)
+  ConnectorType NVARCHAR(50) NOT NULL,            -- Loại đầu nối (ví dụ: CCS2, Type2, CHAdeMO, Tesla)
+--  MaxPowerKW DECIMAL(8,2) NULL,                   -- Công suất tối đa của riêng đầu nối này (nếu khác với charger)
+  Status NVARCHAR(50) DEFAULT 'Available',        -- Tình trạng hiện tại: 'Available', 'InUse', 'Faulted'...
+  CONSTRAINT FK_Connector_Charger 
+    FOREIGN KEY (ChargerId) REFERENCES Charger(ChargerId) -- Liên kết đến thiết bị sạc chứa đầu nối này
 );
+
 
 -- Vehicle
+-- =========================
+-- Bảng Vehicle (Phương tiện)
+-- Lưu thông tin xe của khách hàng, chỉ chấp nhận xe thuộc thương hiệu VinFast
+-- =========================
 CREATE TABLE Vehicle (
-  VehicleId BIGINT IDENTITY PRIMARY KEY,          -- Khóa chính
-  CustomerID BIGINT NOT NULL,                        -- FK tới bảng Owner
-  VehicleType NVARCHAR(20) NOT NULL,              -- Loại xe: 'Ô tô' / 'Xe máy'
-  Model NVARCHAR(100) NOT NULL,                   -- Tên xe (VD: VF e34, Feliz S)
-  ProductionDate DATE NULL,                       -- Ngày sản xuất
-  BatteryType NVARCHAR(50) NULL,                  -- Loại pin (LFP, NMC,...)
-  BatteryUsableKWh DECIMAL(9,3) NULL,             -- Dung lượng pin khả dụng (kWh)
-  MaxAcChargeKW DECIMAL(6,2) NULL,                -- Công suất sạc AC tối đa
-  AcChargingSupport BIT DEFAULT 1,                -- Hỗ trợ sạc AC (0/1)
-  DcChargingSupport BIT DEFAULT 1,                -- Hỗ trợ sạc DC (0/1)
-  MaxDcChargeKW DECIMAL(6,2) NULL,                -- Công suất sạc DC tối đa
-  LicensePlate VARCHAR(30) UNIQUE NULL,           -- Biển số xe
-  VIN NVARCHAR(50) UNIQUE NULL,                   -- Số khung xe (VIN)
-  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),-- Ngày tạo
-  CONSTRAINT FK_Vehicle_Customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
-  CONSTRAINT CK_Vehicle_VinFast CHECK (Model LIKE 'VF%' OR Model LIKE 'Feliz%' OR Model LIKE 'Klara%' OR Model LIKE 'Theon%')
+  VehicleId BIGINT IDENTITY PRIMARY KEY,             -- Mã định danh tự tăng của xe
+  CustomerID BIGINT NOT NULL,                        -- Khóa ngoại tham chiếu khách hàng sở hữu xe
+  VehicleType NVARCHAR(20) NOT NULL,                 -- Loại xe (xe máy điện, xe ô tô điện)
+  Model NVARCHAR(100) NOT NULL,                      -- Tên/mẫu xe (VD: VF8, Klara S)
+  ProductionDate DATE NULL,                          -- Ngày sản xuất xe
+  BatteryType NVARCHAR(50) NULL,                     -- Loại pin (SDI, CATL,...)
+  Version varchar(8) ,                               -- phiên bản như ECO, PLUS, 
+  BatteryGrossKWh DECIMAL(9,3) NULL,                -- Dung lượng pin tổng (kWh)
+  BatteryUsableKWh DECIMAL(9,3) NULL,                -- Dung lượng pin khả dụng (kWh)
+  AcChargingSupport BIT DEFAULT 1,                   -- Hỗ trợ sạc AC (1: có, 0: không)
+  DcChargingSupport BIT DEFAULT 1,                   -- Hỗ trợ sạc DC (1: có, 0: không)
+  MaxAcChargeKW DECIMAL(6,2) NULL,                   -- Công suất sạc tối đa qua AC (kW)
+  MaxDcChargeKW DECIMAL(6,2) NULL,                   -- Công suất sạc tối đa qua DC (kW)
+  LicensePlate VARCHAR(30) UNIQUE NULL,              -- Biển số xe (duy nhất)
+  VIN NVARCHAR(50) UNIQUE NULL,                      -- Số khung xe (Vehicle Identification Number)
+ -- CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),   -- Thời điểm tạo bản ghi
+  CONSTRAINT FK_Vehicle_Customer 
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+ /* 
+  -- Ràng buộc: chỉ cho phép xe VinFast
+  CONSTRAINT CK_Vehicle_VinFast 
+    CHECK (
+      Model LIKE 'VF%' 
+      OR Model LIKE 'Feliz%' 
+      OR Model LIKE 'Klara%' 
+      OR Model LIKE 'Theon%'
+    )*/
 );
+ALTER TABLE Vehicle
+ADD Manufacturer NVARCHAR(100)  NULL DEFAULT N'VinFast';
 
-
-
-
--- Charging Session: chỉ thông tin và chỉ số liên quan đến phiên sạc
+-- =========================
+-- Bảng ChargingSession (Phiên sạc)
+-- Ghi nhận thông tin chi tiết của mỗi lần sạc giữa xe và trạm
+-- =========================
 CREATE TABLE ChargingSession (
-  SessionId BIGINT IDENTITY PRIMARY KEY,          -- Khóa chính
-  ConnectorId BIGINT NOT NULL,                    -- FK tới Connector
-  VehicleId BIGINT NULL,                          -- FK tới Vehicle
-  StartTime DATETIME2(3) NULL,                    -- Thời gian bắt đầu
-  EndTime DATETIME2(3) NULL,                      -- Thời gian kết thúc
-  OverDueTime AS (DATEDIFF(MINUTE, EndTime, LastUpdated)), -- Phút quá hạn sau khi pin đầy
-  MeterStartKWh DECIMAL(10,4) NULL,               -- Số điện (kWh) lúc bắt đầu
-  MeterStopKWh DECIMAL(10,4) NULL,                -- Số điện (kWh) lúc kết thúc
-  EnergyDeliveredKWh AS (MeterStopKWh - MeterStartKWh) PERSISTED, -- Năng lượng đã nạp
-  StartSOC DECIMAL(5,2) NULL,                     -- % pin lúc bắt đầu
-  EndSOC DECIMAL(5,2) NULL,                       -- % pin lúc kết thúc (thường nếu không có trục trặc thì pin kết thúc sẽ = pin mục tiêu)
-  TargetSOC DECIMAL(5,2) NULL,                    -- % pin mục tiêu
-  Status NVARCHAR(50) DEFAULT 'Charging',         -- Trạng thái phiên sạc: Charging/charged/
-  FullTime DATETIME2(3)  ,							-- thời gian sạc đầy đến TargetSOC 
-  LastUpdated DATETIME2(3) DEFAULT SYSUTCDATETIME(), -- Cập nhật cuối
-  CONSTRAINT FK_Session_Connector FOREIGN KEY (ConnectorId) REFERENCES Connector(ConnectorId),
-  CONSTRAINT FK_Session_Vehicle FOREIGN KEY (VehicleId) REFERENCES Vehicle(VehicleId)
-);
-/*
--- Tariff / Pricing rule
-CREATE TABLE PriceHistory (
-  Id BIGINT IDENTITY PRIMARY KEY,                 -- Khóa chính
-  StartDate DATE,                                 -- Ngày áp dụng
-  EndDate DATE,                                   -- Ngày hết hạn (NULL = hiện hành)
-  Price DECIMAL(9,3)                              -- Giá (VNĐ/kWh)
-); */
+  SessionId BIGINT IDENTITY PRIMARY KEY,             -- Mã định danh tự tăng cho phiên sạc
+  ConnectorId BIGINT NOT NULL,                       -- Khóa ngoại tham chiếu đầu sạc (connector)
+  VehicleId BIGINT NULL,                             -- Xe được sạc (tham chiếu bảng Vehicle)
+  StartTime DATETIME2(3) NULL,                       -- Thời gian bắt đầu sạc
 
+  ExpectTime DATETIME2(3) NULL,
+  PowerOffTime DATETIME2(3) NULL,
+  EndTime DATETIME2(3) NULL,                         -- Thời gian kết thúc sạc
+  MeterStartKWh DECIMAL(10,4) NULL,                  -- Chỉ số điện năng trước khi sạc (kWh)
+  MeterStopKWh DECIMAL(10,4) NULL,                   -- Chỉ số điện năng sau khi sạc (kWh)
+  EnergyDeliveredKWh AS (MeterStopKWh - MeterStartKWh) PERSISTED, -- Điện năng tiêu thụ (kWh)
+  StartSOC DECIMAL(5,2) NULL,                        -- SOC (State of Charge) khi bắt đầu (%)
+  EndSOC DECIMAL(5,2) NULL,                          -- SOC khi kết thúc (%)
+  TargetSOC DECIMAL(5,2) NULL default 80,            -- SOC mục tiêu mong muốn (%)/ mặc định là 80% nếu không điền 
+  Status NVARCHAR(50) DEFAULT 'Charging',            -- Trạng thái phiên sạc (Charging, Completed, Error, Rejected.v.)
+  LastUpdated DATETIME2(3) DEFAULT SYSUTCDATETIME(), -- Lần cập nhật cuối của bản ghi
+  OverDueTime AS (DATEDIFF(MINUTE, PowerOffTime,EndTime )), -- Số phút trễ từ lúc kết thúc sạc đến khi cập nhật
+  
+  
+  
+  CONSTRAINT FK_Session_Connector 
+    FOREIGN KEY (ConnectorId) REFERENCES Connector(ConnectorId),
+  CONSTRAINT FK_Session_Vehicle 
+    FOREIGN KEY (VehicleId) REFERENCES Vehicle(VehicleId)
+);
+ALTER TABLE Vehicle
+ADD TargetSOC DECIMAL(5,2) NULL;                     -- SOC mục tiêu mong muốn (%)
+ALTER TABLE ChargingSession
+ADD ExpectTime DATETIME2(3) NULL;						-- Thời gian dự kiến xong
+ALTER TABLE ChargingSession
+ADD PowerOffTime DATETIME2(3) NULL;						-- Thời gian ngắt điện 
+ALTER TABLE ChargingSession
+ADD OverDueTime AS (DATEDIFF(MINUTE, PowerOffTime,EndTime )); -- Số phút trễ từ lúc kết thúc sạc đến khi cập nhật
+ ALTER TABLE ChargingSession
+ADD CONSTRAINT DF_ChargingSession_LastUpdated
+DEFAULT (SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time') FOR LastUpdated;
+ ALTER TABLE ChargingSession
+ADD CONSTRAINT DF_ChargingSession_StartTime
+DEFAULT (SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time') FOR StartTime;
 
 -- Invoice
 CREATE TABLE Invoice (
-  InvoiceId varchar(20)  PRIMARY KEY,          -- Khóa chính
-  SessionId BIGINT NOT NULL,                      -- FK tới ChargingSession
-  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),-- Ngày tạo hóa đơn
-  TotalEnergyKWh DECIMAL(10,4),                        -- Số điện đã sạc
-  UnitPrice DECIMAL(10,2) NOT NULL,				  -- Đơn giá sạc (VNĐ/kWh)
-  ExtraFee DECIMAL(10,2) NULL  , -- Phí phát sinh
-  IdleUnitPrice DECIMAL(10,2) default 1000 NULL, -- Đơn giá phí sạc lâu
-  OverDueMinutes INT NULL, -- Số phút vượt
-  Total_IdleFee DECIMAL(10,2) NULL as (IdleUnitPrice*OverDueMinutes)  , -- Tổng phí sạc lâu
-  EnergyCost DECIMAL(12,2),                       -- Tiền điện = UnitPrice* TotalEnergyKWh
-  IdleFee DECIMAL(12,2),                          -- Phí phạt chờ quá lâu
-  ExtraFees DECIMAL(12,2),                        -- Phí bổ sung khác
-  Tax DECIMAL(5,2) DEFAULT 10.00,			-- VAT 10%
-  TotalCost AS ((TotalEnergyKWh * UnitPrice) + ISNULL(IdleFee,0) + ISNULL(ExtraFee,0) ) PERSISTED, -- Tổng tiền
-  FinalCost AS (TotalCost + (TotalCost * ISNULL(Tax, 0)/100)) PERSISTED,
-  PaymentLink VARCHAR(500),  -- Thêm để lưu link thanh toán
-  EmployeeId int ,
-  Expire_Date date , --- mặc định ngày  14 tháng sau 
-  ---- phí phạt sạc lâu có tính VAT
-  Status NVARCHAR(50) DEFAULT 'unpaid',           -- unpaid / paid / overdue
+  InvoiceId varchar(20) PRIMARY KEY,          
+  SessionId BIGINT NOT NULL,                      
+  CreatedAt DATETIME2(3) DEFAULT SYSUTCDATETIME(),
+  
+  TotalEnergyKWh DECIMAL(10,4),                        
+  UnitPrice DECIMAL(10,2) NOT NULL,				  
+  ExtraFee DECIMAL(10,2) NULL, 
+  IdleUnitPrice DECIMAL(10,2) DEFAULT 1000 NULL, 
+  OverDueMinutes INT NULL, 
+  
+  -- Tính phí idle dựa trên phút trễ
+  Total_IdleFee AS (IdleUnitPrice * ISNULL(OverDueMinutes,0)), 
+  
+  -- Tính chi phí điện
+  EnergyCost AS (TotalEnergyKWh * UnitPrice) PERSISTED,  
+  
+  -- Các phí bổ sung
+  IdleFee DECIMAL(12,2),                          
+  ExtraFees DECIMAL(12,2),                        
+  
+  Tax DECIMAL(5,2) DEFAULT 10.00,			
+  
+  -- Tổng chi phí (điện + idle + extra)
+  TotalCost AS (
+      (TotalEnergyKWh * UnitPrice) 
+      + ISNULL(IdleFee,0) 
+      + ISNULL(ExtraFee,0)
+  ) PERSISTED, 
+  
+  -- FinalCost phải viết lại công thức gốc, không tham chiếu TotalCost (vi phạm đạt chuẩn csdl)
+  FinalCost AS (
+      ((TotalEnergyKWh * UnitPrice) + ISNULL(IdleFee,0) + ISNULL(ExtraFee,0))
+      + (((TotalEnergyKWh * UnitPrice) + ISNULL(IdleFee,0) + ISNULL(ExtraFee,0)) * ISNULL(Tax,0) / 100)
+  ) PERSISTED,
+  
+  PaymentLink VARCHAR(500),  
+  EmployeeId INT,
+  Expire_Date DATE, 
+  Status NVARCHAR(50) DEFAULT 'unpaid',           
+  
   CONSTRAINT FK_Invoice_Session FOREIGN KEY (SessionId) REFERENCES ChargingSession(SessionId)
 );
--- Tạo sequence
+
+CREATE TABLE SendEmail(
+send_id varchar(20) PRIMARY KEY, --- 
+InvoiceId varchar(20),
+CustomerID int,
+Send_time datetime,
+subjects nvarchar(200),
+contents nvarchar (max),
+
+);
+/*
+-- Sequence
 CREATE SEQUENCE InvoiceSeq
     START WITH 1
     INCREMENT BY 1;
--- Trigger sinh mã từ sequence
-DROP TRIGGER trg_GenInvoiceID;
+
+-- Trigger tạo InvoiceId
+IF OBJECT_ID('trg_GenInvoiceID', 'TR') IS NOT NULL
+    DROP TRIGGER trg_GenInvoiceID;
+GO
 CREATE TRIGGER trg_GenInvoiceID
 ON Invoice
 INSTEAD OF INSERT
@@ -229,95 +276,86 @@ BEGIN
         OverDueMinutes, EmployeeId, Expire_Date, Status, PaymentLink
     FROM inserted;
 END;
-
----- GHI NHẬN THANH TOÁN CHO HÓA ĐƠN NÀO, KẾT NỐI TRANSACTION VÀ INVOICE
+GO
+*/
+-- Payment
 CREATE TABLE Payment(
-PaymentID BIGINT IDENTITY PRIMARY KEY, 
-TransID varchar(20),
-InvoiceID varchar(20),
-Update_Time datetime,
+  PaymentID BIGINT IDENTITY PRIMARY KEY, 
+  TransID varchar(20),
+  InvoiceID varchar(20),
+  Update_Time datetime
 );
----- GIAO DỊCH THANH TOAN ONLINE 
- CREATE TABLE Transactions(
- TransID varchar(20),
- Trans_Date datetime,
- From_Bank_Code int ,
- From_Bank_Name varchar(50),
- From_Acc_Name varchar(50),
- To_Bank_Code int ,
- To_Bank_Name varchar(50),
- To_Acc_Name varchar(50),
- Transaction_Code int,
- Trans_Type VARCHAR(50) CHECK (Trans_Type IN ('received', 'sent')), --- InvoiceId int ,
- Amount float,
- ReferenceID int ,
- URL varchar(100),
 
- );
+-- Transactions
+CREATE TABLE Transactions(
+  TransID varchar(20) PRIMARY KEY,
+  Trans_Date datetime,
+  From_Bank_Code int,
+  From_Bank_Name varchar(50),
+  From_Acc_Name varchar(50),
+  To_Bank_Code int,
+  To_Bank_Name varchar(50),
+  To_Acc_Name varchar(50),
+  Transaction_Code int,
+  Trans_Type VARCHAR(50) CHECK (Trans_Type IN ('received', 'sent')), 
+  Amount float,
+  ReferenceID int,
+  URL varchar(100)
+);
 
-
--- Activity Log (audit)
+-- LogChange
 CREATE TABLE LogChange (
-  LogId BIGINT IDENTITY PRIMARY KEY,              -- Khóa chính
-  TableName NVARCHAR(50),                         -- Tên bảng bị thay đổi
-  ChangeType NVARCHAR(50),                        -- Loại thay đổi: thêm, xóa, sửa
-  RecordId BIGINT,                                -- ID bản ghi bị thay đổi
-  ColumnName NVARCHAR(50),                        -- Tên cột bị thay đổi
-  OldValue NVARCHAR(MAX),                         -- Giá trị cũ
-  NewValue NVARCHAR(MAX),                         -- Giá trị mới
-  ChangedUser NVARCHAR(50),                       -- Người thay đổi
-  ChangedDate DATETIME2(3) DEFAULT SYSUTCDATETIME() -- Thời gian thay đổi
+  LogId BIGINT IDENTITY PRIMARY KEY,              
+  TableName NVARCHAR(50),                         
+  ChangeType NVARCHAR(50),                        
+  RecordId BIGINT,                                
+  ColumnName NVARCHAR(50),                        
+  OldValue NVARCHAR(MAX),                         
+  NewValue NVARCHAR(MAX),                         
+  ChangedUser NVARCHAR(50),                       
+  ChangedDate DATETIME2(3) DEFAULT SYSUTCDATETIME()
 );
 
----HỆ THỐNG TÀI KHOẢN KẾ TOÁN
+-- Chart of Accounts (COA)
 CREATE TABLE COA(
-Acc_Code2 int, -- tài khoản cấp 2
-Acc_Code1 int, -- tài khoản cấp 1
-Acc_Name nvarchar(100),
-Acc_Type nvarchar(100)
+  Acc_Code2 int PRIMARY KEY, 
+  Acc_Code1 int NULL, 
+  Acc_Name nvarchar(100),
+  Acc_Type nvarchar(100)
 );
-Insert into COA (Acc_Code2, Acc_Code1, Acc_Name) values (111,null, 'Tiền mặt')
-Insert into COA (Acc_Code2, Acc_Code1, Acc_Name) values (1111,111, 'Tiền Việt Nam')
-Insert into COA (Acc_Code2, Acc_Code1, Acc_Name) values (1112,111, 'Ngoại Tệ')
-Insert into COA (Acc_Code2, Acc_Code1, Acc_Name) values (1112,111, 'Vàng tiền tệ');
-/*
---- GIAO DỊCH NHƯ NHẬN VÀ CHI TIỀN
-CREATE TABLE INLINE_ITEM ( --INLINE ITEM: BÚT TOÁN CHI TIẾT CHO TỪNG KHOẢN
 
-original_documents varchar(20), --- chứng từ gốc 
-id_trans int,
-Acc_Code2 int,
-Acc_Type nvarchar(20), --nợ debit, có credit
-Amount float
----tài khoản nợ tài khoản 1111 100.000 VND 
-);*/
--- NHẬT KÝ BÚT TOÁN
+INSERT INTO COA (Acc_Code2, Acc_Code1, Acc_Name) VALUES (111, NULL, N'Tiền mặt');
+INSERT INTO COA (Acc_Code2, Acc_Code1, Acc_Name) VALUES (1111,111, N'Tiền Việt Nam');
+INSERT INTO COA (Acc_Code2, Acc_Code1, Acc_Name) VALUES (1112,111, N'Ngoại Tệ');
+INSERT INTO COA (Acc_Code2, Acc_Code1, Acc_Name) VALUES (1113,111, N'Vàng tiền tệ');
+
+-- Journal Entries
 CREATE TABLE Journal_Entries(
-entry_id BIGINT IDENTITY PRIMARY KEY, 
-entry_type varchar(50), --- để biết bút toán này ghi nhận bán hàng, mua hàng,....
-Entry_Date date,
-Debit_Acc int,		---Acc_Code2
-Credit_Acc int ,	---Acc_Code2
-Amount float,
-Descriptions nvarchar(200),
-document_type VARCHAR(50) ,  -- Loại chứng từ: 'Invoice', 'Transaction', 'Receipt', 'MaintenanceContract', v.v.
-document_id varchar(20)          -- ID của chứng từ gốc (từ bảng tương ứng)
-
--- Constraint để giới hạn loại
-CONSTRAINT CK_Journal_DocumentType 
-CHECK (document_type IN ('Invoice', 'Transaction', 'Receipt', 'MaintenanceContract'))  -- Thêm loại mới khi cần
+  entry_id BIGINT IDENTITY PRIMARY KEY, 
+  entry_type varchar(50), 
+  Entry_Date date,
+  Debit_Acc int,
+  Credit_Acc int,
+  Amount float,
+  Descriptions nvarchar(200),
+  document_type VARCHAR(50),  
+  document_id varchar(20),
+  CONSTRAINT CK_Journal_DocumentType 
+  CHECK (document_type IN ('Invoice', 'Transaction', 'Receipt', 'MaintenanceContract'))
 );
+/*
+-- Trigger kiểm tra chứng từ hợp lệ
 CREATE TRIGGER trg_ValidateJournalDocument
 ON Journal_Entries
 AFTER INSERT, UPDATE
 AS
 BEGIN
-    DECLARE @document_type NVARCHAR(50), @document_id  varchar(20);
-    SELECT @document_type = document_type, @document_id = document_id FROM inserted;
+    DECLARE @document_type NVARCHAR(50), @document_id varchar(20);
+    SELECT TOP 1 @document_type = document_type, @document_id = document_id FROM inserted;
 
     IF @document_type = 'Invoice'
     BEGIN
-        IF NOT EXISTS (SELECT 1 FROM Invoice WHERE InvoiceId = @document_id )  -- Chuyển BIGINT sang VARCHAR nếu cần
+        IF NOT EXISTS (SELECT 1 FROM Invoice WHERE InvoiceId = @document_id)
             THROW 50001, 'Invalid Invoice ID for Journal Entry.', 1;
     END
     ELSE IF @document_type = 'Transaction'
@@ -325,26 +363,171 @@ BEGIN
         IF NOT EXISTS (SELECT 1 FROM Transactions WHERE TransID = @document_id)
             THROW 50002, 'Invalid Transaction ID for Journal Entry.', 1;
     END
-    -- Thêm cho loại khác: ELSE IF @document_type = 'Receipt' ... 
 END;
-
---- số dư đầu kỳ
+GO
+*/
+-- Opening Balance
 CREATE TABLE Opening_Balance(
-Period int, -- kỳ
-Year int,
-Opening_Date date,
-Acc_Code2 int ,
-Type nvarchar(20),--- nợ, có
-Balance float,
+  Period int,
+  Year int,
+  Opening_Date date,
+  Acc_Code2 int,
+  Type nvarchar(20),
+  Balance float
 );
---- số dư cuối kỳ
+
+-- Ending Balance
 CREATE TABLE Ending_Balance(
-Period int, -- kỳ
-Year int,
-Ending_Date date,
-Acc_Code2 int ,
-Type nvarchar(20), ---nợ, có
-Balance float,
+  Period int,
+  Year int,
+  Ending_Date date,
+  Acc_Code2 int,
+  Type nvarchar(20),
+  Balance float
 );
 
+---------------THÊM DỮ LIỆU
+---việc đầu tiên khi bắt đầu sạc là hệ thống sẽ lưu thông tin của xe và chủ xe trước, sau đó mới kiểm tra các điều kiện sạc khác
+use [ChargingPoint];
 
+select * from Vehicle;
+INSERT INTO Vehicle (
+  CustomerID, VehicleType, Model, ProductionDate, BatteryType, Version,
+  BatteryGrossKWh, BatteryUsableKWh, AcChargingSupport, DcChargingSupport,
+  MaxAcChargeKW, MaxDcChargeKW, LicensePlate, VIN,[Manufacturer]
+)
+VALUES
+(2, N'Ô tô điện', N'VF8', '2024-03-15', 'CATL', 'PLUS',
+  90.000, 82.000, 1, 1, 11.00, 150.00, '60A-99999', 'VF8PLUSCATL20240315', 'Toyota'),
+
+(2, N'Xe máy điện', N'Klara S', '2023-09-10', 'LFP', 'ECO',
+  3.500, 3.200, 1, 0, 1.20, NULL, '59X2-12345', 'KLARAS20230910LFP','Vinfast');
+  select * from Vehicle;
+  INSERT INTO Charger
+(StationId, SerialNumber, Model, Manufacturer, ChargerType, MaxPowerKW, Phases, 
+ OutputVoltageMin, OutputVoltageMax, PortCount, Design, Protections, 
+ FirmwareVersion, InstalledAt, Status, CreatedAt, PicturePath, UseFor)
+VALUES
+(24, 'SN-CHG001', 'Wallbox Pulsar Plus', 'Wallbox', 'AC', 7.4, 1, 220, 240, 1,
+ N'Tường treo', N'Quá áp, quá dòng, ngắn mạch', 'v1.2.0',
+ GETDATE(), 'Online', SYSUTCDATETIME(), 'https://vgreen.net/themes/custom/vgreen/images/charging-car-1.png', N'Xe máy'),
+
+(24, 'SN-CHG002', 'ABB Terra 54', 'ABB', 'DC', 50, 3, 200, 500, 2,
+ N'Đứng sàn', N'Quá nhiệt, chống sét', 'v3.1.5',
+ GETDATE(), 'Offline', SYSUTCDATETIME(), 'https://vgreen.net/themes/custom/vgreen/images/charging-car-1.png', N'Ô tô'),
+
+(24, 'SN-CHG003', 'Delta AC Mini Plus', 'Delta', 'AC', 22, 3, 220, 400, 1,
+ N'Tường treo', N'Quá dòng, bảo vệ chạm đất', 'v2.0.1',
+ GETDATE(), 'Online', SYSUTCDATETIME(), 'https://vgreen.net/themes/custom/vgreen/images/charging-car-1.png', N'Ô tô');
+ select * from Connector;
+
+  INSERT INTO Connector (ChargerId, ConnectorIndex, ConnectorType, Status)
+VALUES
+(5, 1, 'CCS2', 'InUsed'),
+(6, 2, 'CHAdeMO', 'Available'),
+(7, 1, 'Type2', 'InUsed');
+
+update connector set status ='InUsed' where ConnectorId=1,2;
+--- thêm các trigger cập nhật trạng thái như chargingsession của connector có status "Charging" => connector có status "InUsed"
+select * from ChargingSession;
+INSERT INTO ChargingSession (
+  ConnectorId, VehicleId, StartTime, EndTime,
+  MeterStartKWh, MeterStopKWh, StartSOC, EndSOC, TargetSOC, Status, FullTime
+)
+VALUES
+(4, 2, '2025-10-09 08:00:00', '2025-10-09 10:30:00',
+  12500.5000, 12570.7500, 20.00, 85.00, 90.00, 'Charging', '2025-10-09 10:20:00'),
+
+(5, 3, '2025-10-09 11:00:00', '2025-10-09 12:15:00',
+  532.2500, 535.8500, 35.00, 100.00, 100.00, 'Charging', '2025-10-09 12:10:00');
+  ALTER TABLE ChargingSession
+ADD CONSTRAINT DF_ChargingSession_LastUpdated DEFAULT SYSUTCDATETIME() FOR [LastUpdated];
+-- Customer (khách hàng)
+INSERT INTO Customer (FullName, PhoneNumber, Birthday, Address, NationalID)
+VALUES
+(N'Lê Bảo Trân', '0987654321', '2002-11-04', N'45 Trần Hưng Đạo, Biên Hòa, Đồng Nai', '079202110433')
+select * from customer;
+
+ALTER TABLE Customer
+ADD CONSTRAINT DF_Customer_CreatedAt DEFAULT SYSUTCDATETIME() FOR CreatedAt;
+-- Kiểm tra session nào không có connector
+SELECT * FROM ChargingSession WHERE ConnectorId NOT IN (SELECT ConnectorId FROM Connector);
+
+-- Kiểm tra connector nào không có charger
+SELECT * FROM Connector WHERE ChargerId NOT IN (SELECT ChargerId FROM Charger);
+
+-- Kiểm tra charger nào không có station
+SELECT * FROM Charger WHERE StationId NOT IN (SELECT StationId FROM Station);
+select * from station
+
+select n.name from connector r  join charger c on r.chargerid=c.ChargerId join station n on c.StationId=n.StationId where r.ConnectorId=4;
+DECLARE @VehicleId BIGINT = 4;      -- Xe đang sạc
+DECLARE @ConnectorId BIGINT = 5;    -- Đầu nối đang sử dụng
+DECLARE @BatteryGrossKWh DECIMAL(9,3);
+DECLARE @StartSOC DECIMAL(5,2) = 20.0;   -- Pin hiện tại (%)
+DECLARE @TargetSOC DECIMAL(5,2) = 80.0;  -- Pin mục tiêu (%)
+DECLARE @PowerKW DECIMAL(6,2) = 11.00;   -- Công suất sạc tối đa (kW)
+DECLARE @EnergyToCharge DECIMAL(9,3);
+DECLARE @ChargeTimeSeconds DECIMAL(12,2);
+DECLARE @StartTime DATETIME2(3) = SYSDATETIME();
+DECLARE @ExpectTime DATETIME2(3);
+
+-- 1️⃣ Lấy dung lượng pin tổng từ Vehicle
+SELECT @BatteryGrossKWh = BatteryGrossKWh
+FROM Vehicle
+WHERE VehicleId = @VehicleId;
+
+-- 2️⃣ Dung lượng pin cần sạc (U)
+SET @EnergyToCharge = ((@TargetSOC - @StartSOC) / 100) * @BatteryGrossKWh;
+
+-- 3️⃣ Thời gian sạc (giây)
+SET @ChargeTimeSeconds = (@EnergyToCharge / @PowerKW) * 3600;
+
+-- 4️⃣ Thời gian dự kiến hoàn thành
+SET @ExpectTime = DATEADD(SECOND, @ChargeTimeSeconds, @StartTime);
+
+-- 5️⃣ Thực hiện thêm bản ghi phiên sạc
+INSERT INTO ChargingSession
+(
+    ConnectorId,
+    VehicleId,
+    StartTime,
+    ExpectTime,
+    MeterStartKWh,
+    MeterStopKWh,
+    StartSOC,
+    TargetSOC,
+    Status,
+    LastUpdated
+)
+VALUES
+(
+    @ConnectorId,            -- Đầu nối đang sạc
+    @VehicleId,              -- Xe đang sạc
+    @StartTime,              -- Giờ bắt đầu (giờ VN)
+    @ExpectTime,             -- Dự kiến kết thúc
+    125.50,                  -- Chỉ số đầu công tơ
+    NULL,                    -- Chưa kết thúc
+    @StartSOC,               -- SOC ban đầu
+    @TargetSOC,              -- SOC mục tiêu
+    'Requiring',              -- Trạng thái
+    SYSDATETIME()            -- Cập nhật lần cuối
+);
+
+-- (Tuỳ chọn) Xem lại bản ghi vừa chèn
+SELECT * FROM ChargingSession ORDER BY SessionId DESC;
+
+
+-- 6️⃣ Xem kết quả
+SELECT TOP 1 
+    SessionId, ConnectorId, VehicleId, StartTime, ExpectTime, 
+    DATEDIFF(MINUTE, StartTime, ExpectTime) AS EstimatedMinutes,
+    Status
+FROM ChargingSession
+ORDER BY SessionId DESC;
+
+
+-- 6️⃣ Xem lại kết quả
+SELECT TOP 1 * 
+FROM ChargingSession
+ORDER BY SessionId DESC;

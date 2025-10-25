@@ -5,12 +5,20 @@
       "PackagePath": "staticwebassets\\ChargingPoint.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\Images\\charger1.jpg.webp",
+      "PackagePath": "staticwebassets\\Images\\charger1.jpg.webp"
+    },
+    {
       "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\Images\\logo_v-green.jpg",
       "PackagePath": "staticwebassets\\Images\\logo_v-green.jpg"
     },
     {
       "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\css\\Account.css",
       "PackagePath": "staticwebassets\\css\\Account.css"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\css\\Style.css",
+      "PackagePath": "staticwebassets\\css\\Style.css"
     },
     {
       "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\css\\site.css",
@@ -27,6 +35,10 @@
     {
       "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\icon\\location_icon_selected.png",
       "PackagePath": "staticwebassets\\icon\\location_icon_selected.png"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\js\\script.js",
+      "PackagePath": "staticwebassets\\js\\script.js"
     },
     {
       "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\js\\site.js",

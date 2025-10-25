@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ChargingPoint.Models.ChargingSession>
+
+@{
+    ViewData["Title"] = "Quản lý phiên sạc";
+}
+
+<h1>Quản lý phiên sạc</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã phiên sạc</th>
+            <th>Trạm</th>
+            <th>Xe</th>
+            <th>Bắt đầu</th>
+            <th>Dự kiến kết thúc</th>
+            <th>Tình trạng</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var session in Model)
+        {
+            <tr>
+                <td>@session.SessionId</td>
+                <td>@session.Connector?.Charger?.Station?.Name</td>
+                <td>@session.Vehicle?.Model</td>
+                <td>@session.StartTime</td>
+                <td>@session.ExpectTime</td>
+                <td>@session.Status</td>
+                <td>
+                    <form asp-action="StopCharging" asp-route-sessionId="@session.SessionId" method="post">
+                        <button type="submit" class="btn btn-danger">Ngắt nguồn</button>
+                    </form>
+                    @*
+                    <form asp-action="AllowCharging" asp-route-sessionId="@session.SessionId" method="post">
+                    <button type="submit" class="btn btn-success">Cho phép cấp điện</button>
+                    </form>
+                *@
+                    <a asp-action="Detail" asp-controller="ChargingSession" asp-route-id="@session.SessionId" class="btn btn-info">Theo dõi sạc</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

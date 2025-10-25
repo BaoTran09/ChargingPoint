@@ -28,6 +28,12 @@ builder.Services.AddDbContext<StoreDBContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     .Replace("[DataDirectory]",path)) );
 // ??ng ký Identity (dùng Users class)
+/*
+ builder.Services.AddIdentity<Users, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedEmail = true; // Bắt buộc xác minh email
+}).AddEntityFrameworkStores<StoreDBContext>().AddDefaultTokenProviders();
+ */
 builder.Services.AddIdentity<Users, IdentityRole>(options =>
 {
     options.Password.RequireNonAlphanumeric = false;
@@ -35,7 +41,7 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
     options.User.RequireUniqueEmail = true;
-    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedEmail = true;
     options.SignIn.RequireConfirmedAccount = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 }

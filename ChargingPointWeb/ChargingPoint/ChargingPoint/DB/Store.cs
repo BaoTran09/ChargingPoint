@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ChargingPoint.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace ChargingPoint.DB
 {
@@ -17,9 +18,10 @@ namespace ChargingPoint.DB
 
         public string? Notes { get; set; }   
 
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedAt { get; set; } 
         public DateTime? BuiltDate { get; set; }
 
+        public ICollection<Charger> Chargers { get; set; } = new List<Charger>();
 
     }
 

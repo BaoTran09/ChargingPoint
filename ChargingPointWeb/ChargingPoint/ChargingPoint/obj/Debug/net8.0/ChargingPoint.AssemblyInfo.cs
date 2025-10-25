@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ChargingPoint")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d8c63a1aa5274a26d58c0e438c28ae93ccdeccf4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b10579a021ee8c126248095371e3f4ec671b3b10")]
 [assembly: System.Reflection.AssemblyProductAttribute("ChargingPoint")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ChargingPoint")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
