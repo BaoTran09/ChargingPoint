@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ChargingPoint.DB;
 
 namespace ChargingPoint.Models
 {

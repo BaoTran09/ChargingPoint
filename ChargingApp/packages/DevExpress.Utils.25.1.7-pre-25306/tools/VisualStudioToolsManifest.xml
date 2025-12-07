@@ -1,0 +1,40 @@
+<FileList>
+  <File Reference="DevExpress.Utils.v25.1.dll">
+    <ToolboxItems UIFramework="WinForms" VSCategory="DX.25.1: Common Controls">
+      <Item Type="DevExpress.XtraEditors.SvgImageBox" />
+      <Item Type="DevExpress.XtraEditors.SeparatorControl" />
+      <Item Type="DevExpress.Utils.FlyoutPanel" />
+    </ToolboxItems>
+    <ToolboxItems UIFramework="WinForms" VSCategory="DX.25.1: Components">
+      <Item Type="DevExpress.LookAndFeel.DefaultLookAndFeel" />
+      <Item Type="DevExpress.Utils.DPIAwareImageCollection" />
+      <Item Type="DevExpress.Utils.ImageCollection" />
+      <Item Type="DevExpress.Utils.SharedImageCollection" />
+      <Item Type="DevExpress.Utils.SvgImageCollection" />
+      <Item Type="DevExpress.Utils.WorkspaceManager" />
+      <Item Type="DevExpress.Utils.DefaultToolTipController" />
+      <Item Type="DevExpress.Utils.ToolTipController" />
+      <Item Type="DevExpress.Utils.Taskbar.TaskbarAssistant" />
+      <Item Type="DevExpress.Utils.MVVM.MVVMContext" />
+      <Item Type="DevExpress.Utils.Html.HtmlTemplateCollection" />
+      <Item Type="DevExpress.Utils.Filtering.FilteringUIContext" />
+      <Item Type="DevExpress.Utils.Behaviors.BehaviorManager" />
+      <Item Type="DevExpress.Utils.Animation.TransitionManager" />
+      <Item Type="DevExpress.Utils.VisualEffects.AdornerUIManager" />
+    </ToolboxItems>
+    <ToolboxItems UIFramework="WinForms" VSCategory="DX.25.1: Navigation &amp; Layout">
+      <Item Type="DevExpress.XtraEditors.GroupControl" />
+      <Item Type="DevExpress.XtraEditors.PanelControl" />
+      <Item Type="DevExpress.XtraEditors.SplitContainerControl" />
+      <Item Type="DevExpress.XtraEditors.SplitterControl" />
+      <Item Type="DevExpress.XtraEditors.RoundedSkinPanel" />
+      <Item Type="DevExpress.XtraEditors.SidePanel" />
+      <Item Type="DevExpress.XtraEditors.XtraScrollableControl" />
+      <Item Type="DevExpress.XtraEditors.HScrollBar" />
+      <Item Type="DevExpress.XtraEditors.VScrollBar" />
+      <Item Type="DevExpress.XtraEditors.XtraUserControl" />
+      <Item Type="DevExpress.Utils.Layout.TablePanel" />
+      <Item Type="DevExpress.Utils.Layout.StackPanel" />
+    </ToolboxItems>
+  </File>
+</FileList>

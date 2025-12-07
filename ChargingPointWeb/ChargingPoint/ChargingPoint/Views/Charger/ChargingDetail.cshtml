@@ -1,0 +1,439 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using ChargingPoint.DB;
+using ChargingPoint.Models;
+using System.Security.Claims;
+
+namespace ChargingPoint.Controllers
+{
+    [Authorize]
+    public class ChargingSessionController : Controller
+    {
+        private readonly StoreDBContext _context;
+        private readonly ILogger<ChargingSessionController>
+    _logger;
+
+    public ChargingSessionController(StoreDBContext context, ILogger<ChargingSessionController>
+        logger)
+        {
+        _context = context;
+        _logger = logger;
+        }
+
+        // =========================================================
+        // LIST & DETAIL
+        // =========================================================
+
+        // GET: ChargingSession/Index
+        public async Task<IActionResult>
+            Index(string? status)
+            {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isAdmin = User.IsInRole("Admin") || User.IsInRole("Employee");
+
+            IQueryable<ChargingSession>
+                query;
+
+                if (isAdmin)
+                {
+                // Admin sees all sessions
+                query = _context.ChargingSession
+                .Include(s => s.Connector)
+                .ThenInclude(c => c.Charger)
+                .ThenInclude(ch => ch.Station)
+                .Include(s => s.Vehicle)
+                .ThenInclude(v => v.Customer);
+                }
+                else
+                {
+                // Customer sees only their sessions
+                var customer = await _context.Customer
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+                if (customer == null)
+                {
+                return View(new List<ChargingSession>
+                    ());
+                    }
+
+                    query = _context.ChargingSession
+                    .Include(s => s.Connector)
+                    .ThenInclude(c => c.Charger)
+                    .ThenInclude(ch => ch.Station)
+                    .Include(s => s.Vehicle)
+                    .ThenInclude(v => v.Customer)
+                    .Where(s => s.Vehicle.CustomerId == customer.CustomerId);
+                    }
+
+                    // Filter by status
+                    if (!string.IsNullOrEmpty(status))
+                    {
+                    query = query.Where(s => s.Status == status);
+                    }
+
+                    var sessions = await query
+                    .OrderByDescending(s => s.StartTime ?? s.LastUpdated)
+                    .ToListAsync();
+
+                    ViewBag.FilterStatus = status;
+                    return View(sessions);
+                    }
+
+                    // GET: ChargingSession/Detail/5
+                    public async Task<IActionResult>
+                        Detail(long id)
+                        {
+                        var session = await _context.ChargingSession
+                        .Include(s => s.Connector)
+                        .ThenInclude(c => c.Charger)
+                        .ThenInclude(ch => ch.Station)
+                        .Include(s => s.Vehicle)
+                        .ThenInclude(v => v.Customer)
+                        .ThenInclude(c => c.User)
+                        .FirstOrDefaultAsync(s => s.SessionId == id);
+
+                        if (session == null)
+                        {
+                        return NotFound();
+                        }
+
+                        // Check authorization
+                        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        var isAdmin = User.IsInRole("Admin") || User.IsInRole("Employee");
+
+                        if (!isAdmin)
+                        {
+                        var customer = await _context.Customer
+                        .FirstOrDefaultAsync(c => c.UserId == userId);
+
+                        if (customer == null || session.Vehicle?.CustomerId != customer.CustomerId)
+                        {
+                        return Forbid();
+                        }
+                        }
+
+                        // Load invoice if completed
+                        if (session.Status == "Completed")
+                        {
+                        var invoice = await _context.Invoice
+                        .FirstOrDefaultAsync(i => i.SessionId == id);
+                        ViewBag.Invoice = invoice;
+                        }
+
+                        return View(session);
+                        }
+
+                        // =========================================================
+                        // ADMIN CONTROL ACTIONS
+                        // =========================================================
+
+                        // POST: ChargingSession/AllowCharging
+                        [HttpPost]
+                        [Authorize(Roles = "Admin,Employee")]
+                        public async Task<IActionResult>
+                            AllowCharging(long sessionId)
+                            {
+                            try
+                            {
+                            var session = await _context.ChargingSession
+                            .Include(s => s.Connector)
+                            .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+
+                            if (session == null)
+                            {
+                            return Json(new { success = false, message = "Không tìm thấy phiên sạc" });
+                            }
+
+                            if (session.Status != "Requiring")
+                            {
+                            return Json(new { success = false, message = "Phiên sạc không ở trạng thái chờ phê duyệt" });
+                            }
+
+                            // Update session status
+                            session.Status = "Charging";
+                            session.StartTime = DateTime.UtcNow;
+                            session.LastUpdated = DateTime.UtcNow;
+
+                            // Update connector status
+                            if (session.Connector != null)
+                            {
+                            session.Connector.Status = "Occupied";
+                            }
+
+                            await _context.SaveChangesAsync();
+
+                            _logger.LogInformation("Session {SessionId} approved and started charging", sessionId);
+
+                            // TODO: Send OCPP command to start charging
+
+                            return Json(new { success = true, message = "Đã phê duyệt và bắt đầu sạc" });
+                            }
+                            catch (Exception ex)
+                            {
+                            _logger.LogError(ex, "Error approving session {SessionId}", sessionId);
+                            return Json(new { success = false, message = ex.Message });
+                            }
+                            }
+
+                            // POST: ChargingSession/RejectCharging
+                            [HttpPost]
+                            [Authorize(Roles = "Admin,Employee")]
+                            public async Task<IActionResult>
+                                RejectCharging(long sessionId)
+                                {
+                                try
+                                {
+                                var session = await _context.ChargingSession
+                                .Include(s => s.Connector)
+                                .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+
+                                if (session == null)
+                                {
+                                return Json(new { success = false, message = "Không tìm thấy phiên sạc" });
+                                }
+
+                                session.Status = "Rejected";
+                                session.EndTime = DateTime.UtcNow;
+                                session.LastUpdated = DateTime.UtcNow;
+
+                                // Release connector
+                                if (session.Connector != null)
+                                {
+                                session.Connector.Status = "Available";
+                                }
+
+                                await _context.SaveChangesAsync();
+
+                                _logger.LogInformation("Session {SessionId} rejected", sessionId);
+
+                                return Json(new { success = true, message = "Đã từ chối yêu cầu sạc" });
+                                }
+                                catch (Exception ex)
+                                {
+                                _logger.LogError(ex, "Error rejecting session {SessionId}", sessionId);
+                                return Json(new { success = false, message = ex.Message });
+                                }
+                                }
+
+                                // POST: ChargingSession/StopCharging
+                                [HttpPost]
+                                [Authorize(Roles = "Admin,Employee")]
+                                public async Task<IActionResult>
+                                    StopCharging(long sessionId)
+                                    {
+                                    try
+                                    {
+                                    var session = await _context.ChargingSession
+                                    .Include(s => s.Connector)
+                                    .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+
+                                    if (session == null)
+                                    {
+                                    return Json(new { success = false, message = "Không tìm thấy phiên sạc" });
+                                    }
+
+                                    if (session.Status != "Charging")
+                                    {
+                                    return Json(new { success = false, message = "Phiên sạc không ở trạng thái đang sạc" });
+                                    }
+
+                                    session.Status = "Stopped";
+                                    session.PowerOffTime = DateTime.UtcNow;
+                                    session.LastUpdated = DateTime.UtcNow;
+
+                                    // TODO: Send OCPP command to stop charging
+
+                                    await _context.SaveChangesAsync();
+
+                                    _logger.LogInformation("Session {SessionId} emergency stopped", sessionId);
+
+                                    return Json(new { success = true, message = "Đã ngắt điện khẩn cấp" });
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                    _logger.LogError(ex, "Error stopping session {SessionId}", sessionId);
+                                    return Json(new { success = false, message = ex.Message });
+                                    }
+                                    }
+
+                                    // POST: ChargingSession/CompleteSession
+                                    [HttpPost]
+                                    [Authorize(Roles = "Admin,Employee")]
+                                    public async Task<IActionResult>
+                                        CompleteSession(long sessionId)
+                                        {
+                                        try
+                                        {
+                                        var session = await _context.ChargingSession
+                                        .Include(s => s.Connector)
+                                        .Include(s => s.Vehicle)
+                                        .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+
+                                        if (session == null)
+                                        {
+                                        return Json(new { success = false, message = "Không tìm thấy phiên sạc" });
+                                        }
+
+                                        if (session.Status != "PoweredOff")
+                                        {
+                                        return Json(new { success = false, message = "Phiên sạc chưa ngắt điện" });
+                                        }
+
+                                        session.Status = "Completed";
+                                        session.EndTime = DateTime.UtcNow;
+                                        session.LastUpdated = DateTime.UtcNow;
+
+                                        // Calculate overstay time
+                                        if (session.PowerOffTime.HasValue && session.EndTime.HasValue)
+                                        {
+                                        var idleTime = (session.EndTime.Value - session.PowerOffTime.Value).TotalMinutes;
+                                        const int GRACE_PERIOD = 10; // 10 minutes grace period
+
+                                        if (idleTime > GRACE_PERIOD)
+                                        {
+                                        session.OverDueTime = (int)(idleTime - GRACE_PERIOD);
+                                        }
+                                        }
+
+                                        // Release connector
+                                        if (session.Connector != null)
+                                        {
+                                        session.Connector.Status = "Available";
+                                        }
+
+                                        await _context.SaveChangesAsync();
+
+                                        _logger.LogInformation("Session {SessionId} completed. OverDueTime: {OverDue} minutes",
+                                        sessionId, session.OverDueTime ?? 0);
+
+                                        return Json(new { success = true, message = "Đã hoàn tất phiên sạc" });
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                        _logger.LogError(ex, "Error completing session {SessionId}", sessionId);
+                                        return Json(new { success = false, message = ex.Message });
+                                        }
+                                        }
+
+                                        // =========================================================
+                                        // REAL-TIME PROGRESS (AJAX)
+                                        // =========================================================
+
+                                        // GET: ChargingSession/GetChargingProgress
+                                        [HttpGet]
+                                        public async Task<IActionResult>
+                                            GetChargingProgress(long sessionId)
+                                            {
+                                            try
+                                            {
+                                            var session = await _context.ChargingSession
+                                            .Include(s => s.Vehicle)
+                                            .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+
+                                            if (session == null)
+                                            {
+                                            return Json(new { success = false, message = "Không tìm thấy phiên sạc" });
+                                            }
+
+                                            // Check authorization
+                                            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                                            var isAdmin = User.IsInRole("Admin") || User.IsInRole("Employee");
+
+                                            if (!isAdmin)
+                                            {
+                                            var customer = await _context.Customer
+                                            .FirstOrDefaultAsync(c => c.UserId == userId);
+
+                                            if (customer == null || session.Vehicle?.CustomerId != customer.CustomerId)
+                                            {
+                                            return Json(new { success = false, message = "Không có quyền truy cập" });
+                                            }
+                                            }
+
+                                            // Simulate real-time data (in production, get from OCPP/hardware)
+                                            var currentSOC = session.EndSOC ?? session.StartSOC ?? 0;
+                                            var targetSOC = session.TargetSOC ?? 80;
+                                            var isCompleted = false;
+                                            TimeSpan? remainingTime = null;
+                                            string message = "";
+
+                                            if (session.Status == "Charging" && session.StartTime.HasValue)
+                                            {
+                                            // Simulate SOC increase (in production, read from charger)
+                                            var elapsedMinutes = (DateTime.UtcNow - session.StartTime.Value).TotalMinutes;
+                                            var chargeRate = 1.0; // 1% SOC per minute (depends on power)
+
+                                            currentSOC = Math.Min(targetSOC, (session.StartSOC ?? 0) + (decimal)(elapsedMinutes * chargeRate));
+
+                                            // Update in DB
+                                            session.EndSOC = currentSOC;
+                                            session.LastUpdated = DateTime.UtcNow;
+
+                                            // Check if target reached
+                                            if (currentSOC >= targetSOC)
+                                            {
+                                            session.Status = "PoweredOff";
+                                            session.PowerOffTime = DateTime.UtcNow;
+
+                                            // Calculate energy delivered
+                                            if (session.Vehicle != null)
+                                            {
+                                            var batteryCapacity = session.Vehicle.BatteryUsableKWh ?? 60m;
+                                            var socDifference = (currentSOC - (session.StartSOC ?? 0)) / 100m;
+                                            session.EnergyDeliveredKWh = batteryCapacity * socDifference;
+                                            }
+
+                                            isCompleted = true;
+                                            message = "Đã sạc đầy! Vui lòng tháo cáp trong vòng 10 phút.";
+                                            }
+                                            else
+                                            {
+                                            // Calculate remaining time
+                                            var socRemaining = targetSOC - currentSOC;
+                                            var minutesRemaining = (double)socRemaining / chargeRate;
+                                            remainingTime = TimeSpan.FromMinutes(minutesRemaining);
+
+                                            message = $"Đang sạc... ({currentSOC:F1}% / {targetSOC}%)";
+                                            }
+
+                                            await _context.SaveChangesAsync();
+                                            }
+                                            else if (session.Status == "PoweredOff")
+                                            {
+                                            currentSOC = session.EndSOC ?? currentSOC;
+                                            message = "Đã ngắt điện. Vui lòng tháo cáp.";
+                                            }
+
+                                            // Calculate progress percentage
+                                            var progressPercent = 0m;
+                                            if (targetSOC > (session.StartSOC ?? 0))
+                                            {
+                                            progressPercent = ((currentSOC - (session.StartSOC ?? 0)) / (targetSOC - (session.StartSOC ?? 0))) * 100;
+                                            progressPercent = Math.Min(100, Math.Max(0, progressPercent));
+                                            }
+
+                                            return Json(new
+                                            {
+                                            success = true,
+                                            currentSOC,
+                                            targetSOC,
+                                            progressPercent,
+                                            isCompleted,
+                                            message,
+                                            remainingTime = remainingTime != null ? new
+                                            {
+                                            totalMinutes = remainingTime.Value.TotalMinutes,
+                                            hours = remainingTime.Value.Hours,
+                                            minutes = remainingTime.Value.Minutes
+                                            } : null
+                                            });
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                            _logger.LogError(ex, "Error getting progress for session {SessionId}", sessionId);
+                                            return Json(new { success = false, message = ex.Message });
+                                            }
+                                            }
+                                            }
+                                            }

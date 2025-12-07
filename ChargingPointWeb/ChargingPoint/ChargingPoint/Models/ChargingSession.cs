@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using ChargingPoint.DB;
 
 namespace ChargingPoint.Models
 {
@@ -14,17 +16,26 @@ namespace ChargingPoint.Models
         public DateTime? EndTime { get; set; }
         public decimal? MeterStartKWh { get; set; }
         public decimal? MeterStopKWh { get; set; }
-        public decimal? EnergyDeliveredKWh => MeterStopKWh - MeterStartKWh; // Computed property
+        [NotMapped]
+        public decimal? EnergyDeliveredKWh
+            => MeterStopKWh.HasValue && MeterStartKWh.HasValue
+                ? MeterStopKWh.Value - MeterStartKWh.Value
+                : null;
         public decimal? StartSOC { get; set; }
         public decimal? EndSOC { get; set; }
         public decimal? TargetSOC { get; set; } = 80.00m; // Default 80%
-        public string Status { get; set; } = "Charging";
+        public string Status { get; set; } = "Charging"; //        // Requiring, Charging, PoweredOff, Stopped, Completed, Rejected
+        public string? Notes { get; set; }
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
         public int? OverDueTime => PowerOffTime.HasValue && EndTime.HasValue
             ? (int?)DateTime.UtcNow.Subtract(PowerOffTime.Value).TotalMinutes
             : null;
+        [ForeignKey("ConnectorId")]
+        public virtual Connector Connector { get; set; }
 
-        public Connector Connector { get; set; }
-        public Vehicle Vehicle { get; set; }
+        [ForeignKey("VehicleId")]
+        public virtual Vehicle Vehicle { get; set; }
+
+     
     }
 }

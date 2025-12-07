@@ -1,0 +1,174 @@
+﻿@model ChargingPoint.Models.Vehicle
+
+@{
+    var isCar = Model.VehicleType == "Car";
+    var editAction = isCar ? "EditCarModal" : "EditMotorbikeModal";
+    var deleteAction = isCar ? "DeleteCar" : "DeleteMotorbike";
+    var iconClass = isCar ? "fa-car" : "fa-motorcycle";
+    var colorClass = isCar ? "primary" : "success";
+}
+
+<div class="col-md-6 col-lg-4">
+    <div class="card h-100 shadow-sm vehicle-card">
+        <div class="card-header bg-@colorClass text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="fas @iconClass me-2"></i>
+                    @Model.LicensePlate
+                </h6>
+                @if (Model.Manufacturer == "VinFast")
+                {
+                    <span class="badge bg-warning text-dark">
+                        <i class="fas fa-star"></i> VinFast
+                    </span>
+                }
+            </div>
+            <small class="d-block mt-1 opacity-90">
+                @Model.Manufacturer @Model.Model
+                @if (!string.IsNullOrEmpty(Model.Version))
+                {
+                    <span>(@Model.Version)</span>
+                }
+            </small>
+        </div>
+
+        <div class="card-body">
+            <div class="vehicle-info">
+                @if (!string.IsNullOrEmpty(Model.VIN))
+                {
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-barcode"></i> VIN:
+                        </span>
+                        <span class="info-value">@Model.VIN</span>
+                    </div>
+                }
+
+                @if (Model.ProductionDate.HasValue)
+                {
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-calendar"></i> Năm SX:
+                        </span>
+                        <span class="info-value">@Model.ProductionDate.Value.ToString("yyyy")</span>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.BatteryType))
+                {
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-battery-full"></i> Pin:
+                        </span>
+                        <span class="info-value">@Model.BatteryType</span>
+                    </div>
+                }
+
+                @if (Model.BatteryGrossKWh.HasValue)
+                {
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-bolt"></i> Dung lượng:
+                        </span>
+                        <span class="info-value">@Model.BatteryGrossKWh.Value kWh</span>
+                    </div>
+                }
+
+                <div class="info-row">
+                    <span class="info-label">
+                        <i class="fas fa-plug"></i> Hỗ trợ sạc:
+                    </span>
+                    <span class="info-value">
+                        @if (Model.AcChargingSupport)
+                        {
+                            <span class="badge bg-info me-1">
+                                AC @(Model.MaxAcChargeKW.HasValue ? $"({Model.MaxAcChargeKW}kW)" : "")
+                            </span>
+                        }
+                        @if (Model.DcChargingSupport)
+                        {
+                            <span class="badge bg-warning text-dark">
+                                DC @(Model.MaxDcChargeKW.HasValue ? $"({Model.MaxDcChargeKW}kW)" : "")
+                            </span>
+                        }
+                        @if (!Model.AcChargingSupport && !Model.DcChargingSupport)
+                        {
+                            <span class="text-muted">Chưa cập nhật</span>
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-light d-flex justify-content-between">
+            <button class="btn btn-sm btn-warning"
+                    hx-get="@Url.Action(editAction, "Customer", new { id = Model.VehicleId })"
+                    hx-target="#modalContainer"
+                    hx-swap="innerHTML">
+                <i class="fas fa-edit"></i> Sửa
+            </button>
+
+            <form asp-action="@deleteAction"
+                  asp-route-id="@Model.VehicleId"
+                  method="post"
+                  hx-post="@Url.Action(deleteAction, "Customer", new { id = Model.VehicleId })"
+                  hx-target="#vehicleList"
+                  hx-swap="outerHTML"
+                  hx-confirm="Bạn có chắc muốn xóa xe @Model.LicensePlate không?"
+                  class="m-0">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fas fa-trash"></i> Xóa
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .vehicle-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .vehicle-card .card-header {
+        border-bottom: none;
+        padding: 1rem;
+    }
+
+    .vehicle-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .info-label i {
+        width: 20px;
+        text-align: center;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: #212529;
+        text-align: right;
+    }
+</style>

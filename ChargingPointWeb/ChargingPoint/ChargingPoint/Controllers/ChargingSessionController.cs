@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/* 
+ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChargingPoint.DB;
 using ChargingPoint.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChargingPoint.Controllers
 {
+    //[Authorize(Roles = "Admin,Employee")]
+
     public class ChargingSessionController : Controller
     {
         private readonly StoreDBContext _context;
@@ -437,5 +441,230 @@ namespace ChargingPoint.Controllers
         }
 
     
+    }
+}
+
+using ChargingPoint.DB;
+using ChargingPoint.Services;
+using Microsoft.AspNetCore.Authorization;
+
+using Microsoft.AspNetCore.Mvc;
+*/
+// Controllers/ChargingSessionController.cs
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using ChargingPoint.DB;
+using ChargingPoint.Models;
+using ChargingPoint.Services;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ChargingPoint.Controllers
+{
+ //   [Authorize(Roles = "Admin,Employee")]
+    public class ChargingSessionController : Controller
+    {
+        private readonly StoreDBContext _context;
+        private readonly IChargingSessionService _chargingService;
+        private readonly ILogger<ChargingSessionController> _logger;
+
+        public ChargingSessionController(
+            StoreDBContext context,
+            IChargingSessionService chargingService,
+            ILogger<ChargingSessionController> logger)
+        {
+            _context = context;
+            _chargingService = chargingService;
+            _logger = logger;
+        }
+
+        // GET: ChargingSession/Index - Danh sách tất cả phiên sạc
+        public async Task<IActionResult> Index()
+        {
+            var sessions = await _context.ChargingSession
+                .Include(s => s.Connector)
+                    .ThenInclude(c => c.Charger)
+                        .ThenInclude(ch => ch.Station)
+                .Include(s => s.Vehicle)
+                    .ThenInclude(v => v.Customer)
+                .OrderByDescending(s => s.StartTime)
+                .ToListAsync();
+
+            return View(sessions);
+        }
+
+        // GET: ChargingSession/Detail - Chi tiết phiên sạc hoặc theo station
+        public async Task<IActionResult> Detail(long? id, long? stationId)
+        {
+            if (id.HasValue)
+            {
+                // Xem chi tiết 1 phiên sạc cụ thể
+                var session = await _context.ChargingSession
+                    .Include(s => s.Connector)
+                        .ThenInclude(c => c.Charger)
+                            .ThenInclude(ch => ch.Station)
+                    .Include(s => s.Vehicle)
+                        .ThenInclude(v => v.Customer)
+                    .FirstOrDefaultAsync(s => s.SessionId == id);
+
+                if (session == null) return NotFound();
+
+                return View(session);
+            }
+            else if (stationId.HasValue)
+            {
+                // Hiển thị danh sách phiên sạc của station
+                var connectorIds = await _context.Connector
+                    .Where(c => c.Charger.StationId == stationId)
+                    .Select(c => c.ConnectorId)
+                    .ToListAsync();
+
+                var sessions = await _context.ChargingSession
+                    .Include(s => s.Connector)
+                        .ThenInclude(c => c.Charger)
+                            .ThenInclude(ch => ch.Station)
+                    .Include(s => s.Vehicle)
+                        .ThenInclude(v => v.Customer)
+                    .Where(s => connectorIds.Contains(s.ConnectorId))
+                    .OrderByDescending(s => s.StartTime)
+                    .ToListAsync();
+
+                ViewBag.StationId = stationId;
+                return View("Index", sessions);
+            }
+
+            return NotFound();
+        }
+
+        // API: Cập nhật progress realtime (Admin xem tất cả)
+        [HttpGet]
+        public async Task<IActionResult> UpdateProgress(long sessionId)
+        {
+            try
+            {
+                var progress = await _chargingService.GetChargingProgress(sessionId);
+                return Json(progress);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting progress for session {SessionId}", sessionId);
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // POST: Phê duyệt session "Requiring"
+        [HttpPost]
+        public async Task<IActionResult> AllowCharging(long sessionId)
+        {
+            try
+            {
+                var result = await _chargingService.ApproveChargingSession(sessionId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error approving session {SessionId}", sessionId);
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // POST: Từ chối session
+        [HttpPost]
+        public async Task<IActionResult> RejectCharging(long sessionId)
+        {
+            try
+            {
+                var result = await _chargingService.RejectChargingSession(sessionId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error rejecting session {SessionId}", sessionId);
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // POST: Ngắt điện khẩn cấp
+        [HttpPost]
+        public async Task<IActionResult> StopCharging(long sessionId)
+        {
+            try
+            {
+                var result = await _chargingService.StopChargingSession(sessionId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error stopping session {SessionId}", sessionId);
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+        // POST: Hoàn tất session (khách đã tháo cáp)
+        [HttpPost]
+        public async Task<IActionResult> CompleteSession(long sessionId)
+        {
+            try
+            {
+                var result = await _chargingService.CompleteChargingSession(sessionId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error completing session {SessionId}", sessionId);
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // GET: ChargingSession/RequiringSessions - Danh sách sessions chờ duyệt
+        public async Task<IActionResult> RequiringSessions()
+        {
+            var sessions = await _context.ChargingSession
+                .Include(s => s.Connector)
+                    .ThenInclude(c => c.Charger)
+                        .ThenInclude(ch => ch.Station)
+                .Include(s => s.Vehicle)
+                    .ThenInclude(v => v.Customer)
+                .Where(s => s.Status == "Requiring")
+                .OrderBy(s => s.StartTime)
+                .ToListAsync();
+
+            return View(sessions);
+        }
+
+        // GET: ChargingSession/ActiveSessions - Danh sách sessions đang sạc
+        public async Task<IActionResult> ActiveSessions()
+        {
+            var sessions = await _context.ChargingSession
+                .Include(s => s.Connector)
+                    .ThenInclude(c => c.Charger)
+                        .ThenInclude(ch => ch.Station)
+                .Include(s => s.Vehicle)
+                    .ThenInclude(v => v.Customer)
+                .Where(s => s.Status == "Charging")
+                .OrderBy(s => s.ExpectTime)
+                .ToListAsync();
+
+            return View(sessions);
+        }
+
+        // GET: ChargingSession/StationMonitor/{stationId}
+        public async Task<IActionResult> StationMonitor(long stationId)
+        {
+            var station = await _context.Station
+                .Include(s => s.Charger)
+                    .ThenInclude(c => c.Connectors)
+                        .ThenInclude(cn => cn.ChargingSessions
+                            .Where(cs => cs.Status == "Charging" || cs.Status == "PoweredOff" || cs.Status == "Requiring"))
+                            .ThenInclude(cs => cs.Vehicle)
+                .FirstOrDefaultAsync(s => s.StationId == stationId);
+
+            if (station == null) return NotFound();
+
+            return View(station);
+        }
     }
 }

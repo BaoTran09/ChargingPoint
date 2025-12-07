@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChargingPoint.DB;
+using Microsoft.AspNetCore.Authorization;
+using ChargingPoint.Models;
 
 namespace ChargingPoint.Controllers
 {
+    [Authorize(Roles = "Admin,Employee")]
+
     public class StationController : Controller
     {
+
         private readonly StoreDBContext _context;
 
         // Định nghĩa range tọa độ cho 3 miền của Việt Nam

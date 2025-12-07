@@ -1,62 +1,208 @@
 ﻿@using ChargingPoint.ViewModels;
 @model LoginView;
-
 @{
-        ViewData["Title"] = "Login";
+    ViewData["Title"] = "Login";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
 <div class="Account-contrainer">
     <div class="Account-box">
-        <h2 class="text-center mb-4"> Login  </h2>
-        <form asp-action="Login"method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h2 class="text-center mb-4">Login</h2>
+        
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             @Html.AntiForgeryToken()
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div> 
 
+            <!-- Phân loại người dùng - Đặt lên đầu -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Đăng nhập với tư cách:</label>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="UserType" id="customerRadio" value="Customer" checked autocomplete="off">
+                    <label class="btn btn-outline-primary" for="customerRadio">
+                        <i class="fas fa-user"></i> Khách hàng
+                    </label>
+
+                    <input type="radio" class="btn-check" name="UserType" id="employeeRadio" value="Employee" autocomplete="off">
+                    <label class="btn btn-outline-success" for="employeeRadio">
+                        <i class="fas fa-user-tie"></i> Nhân viên
+                    </label>
+                </div>
+            </div>
+
+            <!-- Email Input -->
             <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password"  class="form-control"/>
+                <label asp-for="Email" class="form-label">
+                    <i class="fas fa-envelope"></i> Email
+                </label>
+                <input asp-for="Email" class="form-control" placeholder="example@email.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- Username Input - Chỉ hiện cho Employee -->
+            <div class="mb-3" id="usernameGroup" style="display: none;">
+                <label class="form-label">
+                    <i class="fas fa-id-badge"></i> Username <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Username" class="form-control" placeholder="Username" />
+                <small class="text-muted">Only Employee</small>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <!-- Password Input -->
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <div class="input-group">
+                    <input asp-for="Password" type="password" class="form-control" id="passwordInput" placeholder="••••••••" />
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="fas fa-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="float-end">
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label class="form-check-label" asp-for="RememberMe">
+                        Remember me
+                    </label>
+                </div>
                 <a asp-controller="Account" asp-action="VerifyEmail" class="text-decoration-none">
                     Forgot Password?
-                    </a>
-
-
+                </a>
             </div>
 
-            <div class="form-check mb-3">
-                <label class="form-check-label" >  
-                <input asp-for="RememberMe" class="form-check-input"/>
-                @Html.DisplayNameFor(a=>a.RememberMe)
-                </label>
-                </div>
+            <!-- Login Button -->
+            <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
 
-                <input type="submit" value="Login" class="btn btn-success w-100 p-2"/>
-                <p class="text-center mt-2" >
-                    Don't have an account? <a asp-controller="Account" asp-action="Register" class="text-decoration-none">Register</a>
+            <!-- Register Link - Chỉ hiện cho Customer -->
+            <p class="text-center mb-3" id="registerLink">
+                Don't have an account? 
+                <a asp-controller="Account" asp-action="Register" class="text-decoration-none fw-bold">
+                    Register
+                </a>
+            </p>
 
-                </p>
-
-                <div class="text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Back</a>   
-                
-                </div>
-
+            <!-- Back Link -->
+            <div class="text-center">
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
         </form>
     </div>
-
 </div>
+
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+    
+    <script>
+        $(document).ready(function() {
+            // Toggle hiển thị Username field dựa trên UserType
+            function toggleUsernameField() {
+                const isEmployee = $('#employeeRadio').is(':checked');
+                const usernameGroup = $('#usernameGroup');
+                const registerLink = $('#registerLink');
+                
+                if (isEmployee) {
+                    // Nhân viên: Hiện username, ẩn register link
+                    usernameGroup.slideDown(300);
+                    registerLink.slideUp(300);
+                    
+                    // Thêm required cho Username
+                    $('#Username').attr('required', 'required');
+                } else {
+                    // Khách hàng: Ẩn username, hiện register link
+                    usernameGroup.slideUp(300);
+                    registerLink.slideDown(300);
+                    
+                    // Remove required khỏi Username
+                    $('#Username').removeAttr('required');
+                    $('#Username').val(''); // Clear value
+                }
+            }
 
-@{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
-}
+            // Event listener cho radio buttons
+            $('input[name="UserType"]').on('change', toggleUsernameField);
 
+            // Initialize state khi page load
+            toggleUsernameField();
+
+            // Toggle show/hide password
+            $('#togglePassword').on('click', function() {
+                const passwordInput = $('#passwordInput');
+                const toggleIcon = $('#toggleIcon');
+                
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    toggleIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    toggleIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
+            // Validation: Kiểm tra Username khi submit form
+            $('form').on('submit', function(e) {
+                const isEmployee = $('#employeeRadio').is(':checked');
+                const username = $('#Username').val().trim();
+                
+                if (isEmployee && !username) {
+                    e.preventDefault();
+                    alert('Vui lòng nhập Username cho nhân viên!');
+                    $('#Username').focus();
+                    return false;
+                }
+            });
+
+            console.log('Login page initialized');
+        });
+    </script>
+
+    <style>
+        .Account-box {
+            max-width: 450px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        .btn-check:checked + .btn-outline-primary {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .btn-check:checked + .btn-outline-success {
+            background-color: #198754;
+            color: white;
+        }
+
+        #usernameGroup {
+            border-left: 3px solid #198754;
+            padding-left: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .input-group-text {
+            cursor: pointer;
+        }
+
+        @@media (max-width: 576px) {
+            .Account-box {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
 }

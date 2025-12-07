@@ -1,0 +1,272 @@
+﻿@model IEnumerable<ChargingPoint.Models.Employee>
+
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">👥 User Management</h1>
+            <p class="text-muted">Quản lý tài khoản nhân viên</p>
+        </div>
+        <div>
+            <a asp-action="CreateEmployee" class="btn btn-success">
+                <i class="fas fa-user-plus"></i> Tạo nhân viên mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">@Model.Count()</h3>
+                    <small>Tổng nhân viên</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">@Model.Count(e => e.Status == "Active")</h3>
+                    <small>Đang hoạt động</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">@Model.Count(e => e.Status == "Inactive")</h3>
+                    <small>Không hoạt động</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">@Model.Count(e => e.CreatedAt.Date == DateTime.Today)</h3>
+                    <small>Tạo hôm nay</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h5 class="mb-0">📋 Danh sách nhân viên</h5>
+                </div>
+                <div class="col-auto">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="employeeTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Tên đầy đủ</th>
+                            <th>Email</th>
+                            <th>Chức vụ</th>
+                            <th>Số điện thoại</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var employee in Model.OrderByDescending(e => e.CreatedAt))
+                            {
+                                <tr>
+                                    <td><strong>#@employee.EmployeeId</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle me-2">
+                                                @employee.User?.EmployeeUsername?.Substring(0, 1).ToUpper()
+                                            </div>
+                                            <span class="fw-bold">@employee.User?.EmployeeUsername</span>
+                                        </div>
+                                    </td>
+                                    <td>@employee.FullName</td>
+                                    <td>
+                                        <a href="mailto:@employee.User?.Email">
+                                            @employee.User?.Email
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">@employee.JobTitle</span>
+                                    </td>
+                                    <td>@employee.PhoneNumber</td>
+                                    <td>
+                                        @if (employee.Status == "Active")
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle"></i> Active
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-times-circle"></i> @employee.Status
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small>@employee.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-info"
+                                                    onclick="viewEmployee(@employee.EmployeeId)"
+                                                    title="Xem chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-warning"
+                                                    onclick="editEmployee(@employee.EmployeeId)"
+                                                    title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                    onclick="deleteEmployee(@employee.EmployeeId, '@employee.FullName')"
+                                                    title="Xóa">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center py-5">
+                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Chưa có nhân viên nào</p>
+                                    <a asp-action="CreateEmployee" class="btn btn-primary">
+                                        Tạo nhân viên đầu tiên
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Search functionality
+        $('#searchInput').on('keyup', function() {
+            const searchText = $(this).val().toLowerCase();
+
+            $('#employeeTable tbody tr').each(function() {
+                const rowText = $(this).text().toLowerCase();
+                $(this).toggle(rowText.includes(searchText));
+            });
+        });
+
+        // View employee details
+        function viewEmployee(id) {
+            // TODO: Implement view details
+            alert('View employee #' + id);
+        }
+
+        // Edit employee
+        function editEmployee(id) {
+            // TODO: Implement edit
+            window.location.href = `/Account/EditEmployee/${id}`;
+        }
+
+        // Delete employee
+        function deleteEmployee(id, name) {
+            if (confirm(`Bạn có chắc muốn xóa nhân viên "${name}"?\n\nLưu ý: Tài khoản User liên kết cũng sẽ bị xóa.`)) {
+                // TODO: Implement delete with AJAX
+                $.ajax({
+                    url: `/Account/DeleteEmployee/${id}`,
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Lỗi: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi xóa nhân viên');
+                    }
+                });
+            }
+        }
+    </script>
+
+    <style>
+        .avatar-circle {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-group .btn {
+            padding: 0.25rem 0.5rem;
+        }
+
+        @@media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+}

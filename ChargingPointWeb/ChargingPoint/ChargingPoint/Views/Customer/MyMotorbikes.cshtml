@@ -1,0 +1,95 @@
+﻿@model IEnumerable<ChargingPoint.Models.Vehicle>
+@{
+    ViewData["Title"] = "Xe máy điện của tôi";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>
+            <i class="fas fa-motorcycle"></i> @ViewData["Title"]
+        </h3>
+        <button class="btn btn-success"
+                hx-get="@Url.Action("CreateMotorbikeModal", "Customer")"
+                hx-target="#modalContainer"
+                hx-swap="innerHTML">
+            <i class="fas fa-plus"></i> Thêm xe máy điện
+        </button>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modalContainer"></div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-motorcycle fa-5x text-muted"></i>
+            </div>
+            <h5 class="text-muted mb-3">Bạn chưa có xe máy điện nào</h5>
+            <p class="text-muted">Thêm xe đầu tiên để có thể sử dụng dịch vụ sạc</p>
+            <button class="btn btn-primary btn-lg"
+                    hx-get="@Url.Action("CreateMotorbikeModal", "Customer")"
+                    hx-target="#modalContainer"
+                    hx-swap="innerHTML">
+                <i class="fas fa-plus"></i> Thêm xe đầu tiên
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4" id="vehicleList">
+            @foreach (var vehicle in Model)
+            {
+                <partial name="_VehicleCard" model="vehicle" />
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <!-- HTMX Library -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <script>
+        document.body.addEventListener('htmx:afterSwap', function(event) {
+            if (event.detail.target.id === 'vehicleList') {
+                console.log('Vehicle list updated');
+
+                const modalElement = document.getElementById('vehicleModal');
+                if (modalElement) {
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                            if (modal) {
+                                modal.hide();
+                            }
+                        }
+                    }
+                });
+
+                document.body.addEventListener('htmx:beforeSwap', function(event) {
+                    document.querySelectorAll('.modal-backdrop').forEach(function(backdrop) {
+                        if (!document.querySelector('.modal.show')) {
+                            backdrop.remove();
+                        }
+                    });
+                });
+    </script>
+}
+
+<style>
+    #vehicleList {
+        min-height: 200px;
+    }
+
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+    .text-center.py-5 i {
+        opacity: 0.3;
+    }
+</style>

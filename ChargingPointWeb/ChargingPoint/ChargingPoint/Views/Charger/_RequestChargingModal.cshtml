@@ -1,0 +1,500 @@
+﻿@model ChargingPoint.ViewModels.RequestChargingViewModel
+
+<div class="modal fade" id="requestChargingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-bolt"></i> Yêu cầu Sạc Xe
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="chargingRequestForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ConnectorId" value="@Model.ConnectorId" />
+
+                <div class="modal-body">
+                    <!-- Connector Info -->
+                    <div class="alert alert-info mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="mb-2">
+                                    <i class="fas fa-charging-station"></i>
+                                    <strong>@(Model.Connector.Charger.Name ?? Model.Connector.Charger.Model ?? "Trụ sạc")</strong>
+                                </h6>
+                                <div class="small">
+                                    <i class="fas fa-plug"></i> @($"Cổng {Model.Connector.ConnectorIndex}") - @Model.Connector.ConnectorType
+                                </div>
+                                <div class="small">
+                                    <i class="fas fa-map-marker-alt"></i> @Model.Connector.Charger.Station.Name
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="charger-type-badge">
+                                    <span class="badge bg-warning text-dark">@Model.Connector.Charger.ChargerType</span>
+                                    <div class="text-success fw-bold mt-1">@Model.Connector.Charger.MaxPowerKW kW</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Select Vehicle -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-car"></i> Chọn Xe
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        @if (Model.Vehicles.Any())
+                        {
+                            <div class="vehicle-selection">
+                                @foreach (var vehicle in Model.Vehicles)
+                                {
+                                    var chargerType = Model.Connector.Charger.ChargerType;
+                                    var isCompatible = (chargerType == "AC" && vehicle.AcChargingSupport) ||
+                                    (chargerType == "DC" && vehicle.DcChargingSupport);
+                                    var isVinFast = vehicle.Manufacturer?.Equals("VinFast", StringComparison.OrdinalIgnoreCase) == true;
+
+                                    <div class="vehicle-card @(!isCompatible ? "incompatible" : "")"
+                                         data-vehicle-id="@vehicle.VehicleId"
+                                         data-compatible="@isCompatible.ToString().ToLower()"
+                                         data-vinfast="@isVinFast.ToString().ToLower()"
+                                         data-battery="@vehicle.BatteryGrossKWh"
+                                         data-max-ac="@vehicle.MaxAcChargeKW"
+                                         data-max-dc="@vehicle.MaxDcChargeKW">
+
+                                        <div class="form-check">
+                                            <input class="form-check-input vehicle-radio"
+                                                   type="radio"
+                                                   name="VehicleId"
+                                                   value="@vehicle.VehicleId"
+                                                   id="vehicle_@vehicle.VehicleId"
+                                            @(!isCompatible ? "disabled" : "")
+                                                   required>
+                                            <label class="form-check-label w-100" for="vehicle_@vehicle.VehicleId">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <div class="vehicle-name">
+                                                            @vehicle.LicensePlate
+                                                            @if (isVinFast)
+                                                            {
+                                                                <span class="badge bg-success ms-2">
+                                                                    <i class="fas fa-zap"></i> VinFast
+                                                                </span>
+                                                            }
+                                                        </div>
+                                                        <div class="vehicle-model">
+                                                            @vehicle.Manufacturer @vehicle.Model
+                                                        </div>
+                                                        <div class="vehicle-specs">
+                                                            <span class="spec-item">
+                                                                <i class="fas fa-battery-full"></i>
+                                                                @vehicle.BatteryGrossKWh kWh
+                                                            </span>
+                                                            @if (chargerType == "AC")
+                                                            {
+                                                                <span class="spec-item">
+                                                                    <i class="fas fa-plug"></i>
+                                                                    AC: @(vehicle.AcChargingSupport ? vehicle.MaxAcChargeKW + " kW" : "Không hỗ trợ")
+                                                                </span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="spec-item">
+                                                                    <i class="fas fa-bolt"></i>
+                                                                    DC: @(vehicle.DcChargingSupport ? vehicle.MaxDcChargeKW + " kW" : "Không hỗ trợ")
+                                                                </span>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        @if (isCompatible)
+                                                        {
+                                                            <i class="fas fa-check-circle text-success fa-2x"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle text-danger fa-2x"></i>
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                                @if (!isCompatible)
+                                                {
+                                                    <div class="alert alert-danger mt-2 mb-0 small">
+                                                        <i class="fas fa-exclamation-triangle"></i>
+                                                        Xe không hỗ trợ loại sạc @chargerType
+                                                    </div>
+                                                }
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Bạn chưa có xe nào. Vui lòng thêm xe trong phần <a href="/Customer/MyCars">Quản lý xe</a>.
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Battery Info -->
+                    <div id="batteryInfoSection" style="display: none;">
+                        <div class="row">
+                            <!-- Start SOC -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-battery-quarter"></i> Pin Hiện Tại (%)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="number"
+                                       class="form-control form-control-lg"
+                                       name="StartSOC"
+                                       id="startSOC"
+                                       min="0"
+                                       max="100"
+                                       step="1"
+                                       placeholder="VD: 20"
+                                       required>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> Mức pin hiện tại của xe
+                                </div>
+                            </div>
+
+                            <!-- Target SOC -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-battery-full"></i> Sạc Đến (%)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="number"
+                                       class="form-control form-control-lg"
+                                       name="TargetSOC"
+                                       id="targetSOC"
+                                       min="0"
+                                       max="100"
+                                       step="1"
+                                       value="80"
+                                       placeholder="VD: 80"
+                                       required>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> Mức pin mong muốn (khuyến nghị 80%)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charging Estimate -->
+                        <div id="chargingEstimate" class="alert alert-success" style="display: none;">
+                            <h6 class="mb-2">
+                                <i class="fas fa-calculator"></i> Ước Tính Sạc
+                            </h6>
+                            <div id="estimateDetails"></div>
+                        </div>
+                    </div>
+
+                    <!-- Important Notes -->
+                    <div class="alert alert-warning mb-0">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-exclamation-circle"></i> Lưu Ý Quan Trọng
+                        </h6>
+                        <ul class="mb-0 small">
+                            <li><strong>Xe VinFast:</strong> Sẽ tự động bắt đầu sạc ngay lập tức</li>
+                            <li><strong>Xe khác:</strong> Cần chờ nhân viên xác nhận yêu cầu</li>
+                            <li>Công suất sạc thực tế = MIN(Công suất xe, Công suất trụ)</li>
+                            <li>Vui lòng đảm bảo xe đã kết nối với đầu sạc</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                        <i class="fas fa-bolt"></i> Xác Nhận Sạc
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const modalElement = document.getElementById('requestChargingModal');
+        if (!modalElement) return;
+
+        // Show modal
+        const modal = new bootstrap.Modal(modalElement, {
+            backdrop: 'static',
+            keyboard: false
+        });
+        modal.show();
+
+        let selectedVehicle = null;
+        const chargerMaxPower = @Model.Connector.Charger.MaxPowerKW;
+        const chargerType = '@Model.Connector.Charger.ChargerType';
+        const pricePerKWh = 3500; // Giá cố định 3500đ/kWh
+
+        // Vehicle Selection
+        document.querySelectorAll('.vehicle-card').forEach(card => {
+            card.addEventListener('click', function () {
+                if (this.dataset.compatible === 'true') {
+                    const vehicleId = this.dataset.vehicleId;
+                    document.getElementById(`vehicle_${vehicleId}`).checked = true;
+                    document.getElementById(`vehicle_${vehicleId}`).dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        document.querySelectorAll('.vehicle-radio').forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (this.checked) {
+                    const card = this.closest('.vehicle-card');
+
+                    selectedVehicle = {
+                        id: card.dataset.vehicleId,
+                        isVinFast: card.dataset.vinfast === 'true',
+                        battery: parseFloat(card.dataset.battery),
+                        maxAC: parseFloat(card.dataset.maxAc),
+                        maxDC: parseFloat(card.dataset.maxDc)
+                    };
+
+                    // Remove active class from all cards
+                    document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+
+                    // Show battery section
+                    document.getElementById('batteryInfoSection').style.display = 'block';
+                    document.getElementById('submitBtn').disabled = false;
+
+                    calculateEstimate();
+                }
+            });
+        });
+
+        // SOC Change
+        document.getElementById('startSOC')?.addEventListener('input', calculateEstimate);
+        document.getElementById('targetSOC')?.addEventListener('input', calculateEstimate);
+
+        // Calculate Estimate
+        function calculateEstimate() {
+            if (!selectedVehicle) return;
+
+            const startSOC = parseFloat(document.getElementById('startSOC').value) || 0;
+            const targetSOC = parseFloat(document.getElementById('targetSOC').value) || 0;
+
+            if (startSOC >= targetSOC) {
+                document.getElementById('chargingEstimate').style.display = 'none';
+                return;
+            }
+
+            const vehicleMaxPower = chargerType === 'AC' ? selectedVehicle.maxAC : selectedVehicle.maxDC;
+            const powerX = Math.min(vehicleMaxPower, chargerMaxPower);
+            const requiredCapacity = ((targetSOC - startSOC) / 100) * selectedVehicle.battery;
+            const timeHours = requiredCapacity / powerX;
+            const hours = Math.floor(timeHours);
+            const minutes = Math.round((timeHours - hours) * 60);
+            const estimatedCost = (requiredCapacity * pricePerKWh).toFixed(0);
+            const now = new Date();
+            const expectedTime = new Date(now.getTime() + (timeHours * 60 * 60 * 1000));
+
+            document.getElementById('estimateDetails').innerHTML = `
+                <div class="row g-2">
+                    <div class="col-6">
+                        <small class="text-muted">Công suất sạc:</small>
+                        <div class="fw-bold text-primary">${powerX.toFixed(1)} kW</div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Điện năng:</small>
+                        <div class="fw-bold text-success">${requiredCapacity.toFixed(2)} kWh</div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Thời gian:</small>
+                        <div class="fw-bold text-info">${hours}h ${minutes}ph</div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Chi phí dự kiến:</small>
+                        <div class="fw-bold text-warning">${parseInt(estimatedCost).toLocaleString()}₫</div>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted">Hoàn tất lúc:</small>
+                        <div class="fw-bold">${expectedTime.toLocaleString('vi-VN')}</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('chargingEstimate').style.display = 'block';
+        }
+
+        // Form Submit
+        document.getElementById('chargingRequestForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const startSOC = parseFloat(document.getElementById('startSOC').value);
+            const targetSOC = parseFloat(document.getElementById('targetSOC').value);
+
+            if (startSOC >= targetSOC) {
+                alert('Mức pin mong muốn phải lớn hơn mức pin hiện tại');
+                return;
+            }
+
+            const formData = new FormData(this);
+            const submitBtn = document.getElementById('submitBtn');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+            fetch('@Url.Action("SubmitChargingRequest", "Charger")', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        modal.hide();
+
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: selectedVehicle.isVinFast ? 'Đã Bắt Đầu Sạc!' : 'Yêu Cầu Đã Gửi!',
+                                html: `
+                                <div class="text-start">
+                                    <p>${data.message}</p>
+                                    ${data.expectTime ? `<p><strong>Dự kiến hoàn tất:</strong> ${data.expectTime}</p>` : ''}
+                                </div>
+                            `,
+                                confirmButtonText: 'Xem Chi Tiết'
+                            }).then((result) => {
+                                if (result.isConfirmed && data.redirectUrl) {
+                                    window.location.href = data.redirectUrl;
+                                } else {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            alert(data.message);
+                            if (data.redirectUrl) {
+                                window.location.href = data.redirectUrl;
+                            } else {
+                                location.reload();
+                            }
+                        }
+                    } else {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: data.message
+                            });
+                        } else {
+                            alert(data.message);
+                        }
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-bolt"></i> Xác Nhận Sạc';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: 'Có lỗi xảy ra. Vui lòng thử lại.'
+                        });
+                    } else {
+                        alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                    }
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-bolt"></i> Xác Nhận Sạc';
+                });
+        });
+
+        // Cleanup
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            modalElement.remove();
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+        });
+    })();
+</script>
+
+<style>
+    .vehicle-selection {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 5px;
+    }
+
+    .vehicle-card {
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 15px;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: white;
+    }
+
+        .vehicle-card:hover:not(.incompatible) {
+            border-color: #0d6efd;
+            box-shadow: 0 4px 12px rgba(13,110,253,0.2);
+            transform: translateY(-2px);
+        }
+
+        .vehicle-card.active {
+            border-color: #0d6efd;
+            background: #f0f7ff;
+            box-shadow: 0 4px 12px rgba(13,110,253,0.3);
+        }
+
+        .vehicle-card.incompatible {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #f8f9fa;
+        }
+
+    .vehicle-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 4px;
+    }
+
+    .vehicle-model {
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .vehicle-specs {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .spec-item {
+        font-size: 0.85rem;
+        color: #495057;
+        background: #e9ecef;
+        padding: 4px 10px;
+        border-radius: 5px;
+    }
+
+        .spec-item i {
+            color: #0d6efd;
+            margin-right: 4px;
+        }
+
+    #chargingEstimate {
+        border-left: 4px solid #198754;
+    }
+</style>

@@ -24,9 +24,6 @@ namespace ChargingPoint.ViewModels
 
         public string ConfirmPassword { get; set; } // Xác nhận mật khẩu
 
-        // public string FirstName { get; set; } // Tên người dùng
-        // public string LastName { get; set; }  // Họ người dùng
-
-        //public bool IsAdmin { get; set; } = false; // Quyền quản trị viên, mặc định là false
+       
     }
 }

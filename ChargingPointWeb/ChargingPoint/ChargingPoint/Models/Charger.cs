@@ -1,5 +1,6 @@
 ﻿using ChargingPoint.DB;
 using System.ComponentModel.DataAnnotations;
+using static System.Collections.Specialized.BitVector32;
 
 namespace ChargingPoint.Models
 {
@@ -8,9 +9,9 @@ namespace ChargingPoint.Models
         [Key]
         public long ChargerId { get; set; } // Mã duy nhất cho bộ sạc
         public long StationId { get; set; } // Liên kết với trạm sạc
+        public string? Name { get; set; }// Tên trụ sạc
         public string? SerialNumber { get; set; } // Số sê-ri
         public string? Model { get; set; } // Model bộ sạc
-        public string? Manufacturer { get; set; } // Hãng sản xuất
         public string? ChargerType { get; set; } // 'AC' hoặc 'DC'
         public decimal? MaxPowerKW { get; set; } // Công suất tối đa
         public int? Phases { get; set; } // Số pha (cho AC)
@@ -27,6 +28,7 @@ namespace ChargingPoint.Models
 
         public string? PicturePath { get; set; } //đường dẫn hình ảnh
         public string? UseFor { get; set; }      //Trụ sạc xe ô tô hay xe máy
+        public string?Note { get; set; }      //Trụ sạc xe ô tô hay xe máy
 
 
         public Station Station { get; set; } // Liên kết với Station

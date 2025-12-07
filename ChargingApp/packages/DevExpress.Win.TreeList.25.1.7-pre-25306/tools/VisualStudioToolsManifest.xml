@@ -1,0 +1,8 @@
+<FileList>
+  <File Reference="DevExpress.XtraTreeList.v25.1.dll">
+    <ToolboxItems UIFramework="WinForms" VSCategory="DX.25.1: Data &amp; Analytics">
+      <Item Type="DevExpress.XtraEditors.TreeListLookUpEdit" />
+      <Item Type="DevExpress.XtraTreeList.TreeList" />
+    </ToolboxItems>
+  </File>
+</FileList>

@@ -18,8 +18,11 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ChargingPoint.styles.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+
     <!-- Sidebar -->
     <aside class="sidebar">
         <header class="sidebar-header">
@@ -50,7 +53,12 @@
                         <span class="menu-text">Stations</span>
                     </a>
                 </li>
-
+                <li class="menu-item" data-tooltip="Invoices">
+                    <a asp-area="" asp-controller="Invoice" asp-action="MyInvoices" class="menu-link">
+                        <span class="material-symbols-outlined">Invoice</span>
+                        <span class="menu-text">Invoices</span>
+                    </a>
+                </li>
                 <!-- Charging Sessions with submenu -->
                 <li class="menu-item has-submenu" data-tooltip="Charging Sessions">
                     <a href="javascript:void(0)" class="menu-link">
@@ -66,14 +74,14 @@
                             </a>
                         </li>
                         <li class="submenu-item">
-                            <a asp-controller="ChargingSession" asp-action="History" class="submenu-link">
+                            <a asp-controller="ChargingSession" asp-action="ChargingHistory" class="submenu-link">
                                 <span class="material-symbols-outlined">history</span>
-                                <span>History</span>
+                                <span>Charging History</span>
                             </a>
                         </li>
                         <li class="submenu-item">
-                            <a asp-controller="ChargingSession" asp-action="Requiring" class="submenu-link">
-                                <span class="material-symbols-outlined">pending</span>
+                            <a asp-controller="ChargingSession" asp-action="ChargingRequire" class="submenu-link">
+                                <span class="material-symbols-outlined">assignment</span>
                                 <span>Requiring</span>
                             </a>
                         </li>
@@ -86,11 +94,45 @@
                         <span class="menu-text">Reports</span>
                     </a>
                 </li>
-                <li class="menu-item" data-tooltip="Settings">
-                    <a asp-area="" asp-controller="Settings" asp-action="Index" class="menu-link">
-                        <span class="material-symbols-outlined">settings</span>
-                        <span class="menu-text">Settings</span>
+                <li class="menu-item" data-tooltip="User">
+                    <a asp-area="" asp-controller="Account" asp-action="CreateEmployee" class="menu-link">
+                        <span class="material-symbols-outlined">bar_chart</span>
+                        <span class="menu-text">CreateEmployee</span>
                     </a>
+                </li>
+                <li class="menu-item" data-tooltip="User">
+                <a asp-area="" asp-controller="Account" asp-action="Usermanagement" class="menu-link">
+                        <span class="material-symbols-outlined">bar_chart</span>
+                        <span class="menu-text">Usermanagement</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu" data-tooltip="Settings">
+                    <a href="javascript:void(0)" class="menu-link">
+                        <span class="material-symbols-outlined">flash_on</span>
+                        <span class="menu-text">Settings</span>
+                        <span class="submenu-arrow material-symbols-outlined">chevron_right</span>
+                    </a>
+
+                <ul class="submenu">
+                    <li class="submenu-item">
+                        <a asp-controller="Customer" asp-action="MyAccount" class="submenu-link">
+                            <span class="material-symbols-outlined">Account</span>
+                            <span>My Account</span>
+                        </a>
+                    </li>
+                    <li class="submenu-item">
+                        <a asp-controller="Customer" asp-action="MyCars" class="submenu-link">
+                            <span class="material-symbols-outlined">Car</span>
+                            <span>My Cars</span>
+                        </a>
+                    </li>
+                    <li class="submenu-item">
+                        <a asp-controller="Customer" asp-action="MyMotorbikes" class="submenu-link">
+                            <span class="material-symbols-outlined">Motorbike</span>
+                            <span>My Motorbikes</span>
+                        </a>
+                    </li>
+                </ul>
                 </li>
                 <partial name="_LoginPartial" />
             </ul>
@@ -120,9 +162,9 @@
         <div class="container-fluid">
             &copy; 2025 - V-Green - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
 
-    <!-- Scripts -->
+        <!-- Scripts -->
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="~/lib/jquery-ui/dist/jquery-ui.css" />
     <script src="~/lib/jquery-ui/dist/jquery-ui.min.js"></script>

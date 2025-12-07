@@ -1,0 +1,9 @@
+<FileList>
+  <File Reference="DevExpress.XtraPrinting.v25.1.dll">
+    <ToolboxItems UIFramework="WinForms" VSCategory="DX.25.1: Reporting">
+      <Item Type="DevExpress.XtraReports.UserDesigner.Native.StandardReportDesigner" />
+      <Item Type="DevExpress.XtraReports.UserDesigner.Native.RibbonReportDesigner" />
+      <Item Type="DevExpress.XtraPrinting.Preview.DocumentViewer" />
+    </ToolboxItems>
+  </File>
+</FileList>

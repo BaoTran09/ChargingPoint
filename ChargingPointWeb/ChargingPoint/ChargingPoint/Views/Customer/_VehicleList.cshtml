@@ -1,0 +1,25 @@
+﻿@model IEnumerable<ChargingPoint.Models.Vehicle>
+
+@*
+    Partial view này được return từ các action Create/Edit/Delete
+    để update danh sách xe sau khi thao tác thành công
+*@
+
+<div class="row g-4" id="vehicleList">
+    @if (!Model.Any())
+    {
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i>
+                Danh sách xe trống. Hãy thêm xe mới!
+            </div>
+        </div>
+    }
+    else
+    {
+        @foreach (var vehicle in Model)
+        {
+            <partial name="_VehicleCard" model="vehicle" />
+        }
+    }
+</div>

@@ -1,6 +1,5 @@
 ﻿@using ChargingPoint.ViewModels;
 @model RegisterView;
-
 @{
     ViewData["Title"] = "Register";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
@@ -8,49 +7,59 @@
 
 <div class="Account-contrainer">
     <div class="Account-box">
-        <h2 class="text-center mb-4"> Register  </h2>
-        <form asp-action="Register" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h2 class="text-center mb-4">Register</h2>
+        <p class="text-center text-muted mb-4">Đăng ký tài khoản khách hàng</p>
 
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
             @Html.AntiForgeryToken()
 
+            <!-- Account Info -->
             <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
+                <label asp-for="Email" class="form-label">
+                    <i class="fas fa-envelope"></i> Email
+                </label>
+                <input asp-for="Email" class="form-control" placeholder="example@email.com" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
+                <label asp-for="Password" class="form-label">
+                    <i class="fas fa-lock"></i> Password
+                </label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <label asp-for="ConfirmPassword" class="form-label">
+                    <i class="fas fa-lock"></i> Confirm Password
+                </label>
                 <input asp-for="ConfirmPassword" class="form-control" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
-           
-            <input type="submit" value="Register" class="btn btn-success w-100 p-2" />
-            <p class="text-center mt-2">
-               Already have an account? <a asp-controller="Account" asp-action="Login" class="text-decoration-none">Login</a>
 
+ 
+            <button type="submit" class="btn btn-success w-100 py-2 mb-3">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+
+            <p class="text-center">
+                Already have an account?
+                <a asp-controller="Account" asp-action="Login" class="text-decoration-none fw-bold">Login</a>
             </p>
 
             <div class="text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Back</a>
-
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
             </div>
-
         </form>
     </div>
-
 </div>
-@section Scripts {
 
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
     }
-
 }

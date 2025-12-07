@@ -1,0 +1,515 @@
+﻿@model ChargingPoint.Models.Invoice
+@{
+    ViewData["Title"] = "Chi Tiết Hóa Đơn";
+    var isOverdue = Model.Status == "Unpaid" && Model.ExpireDate.HasValue && Model.ExpireDate < DateTime.Now;
+
+    var session = Model.ChargingSession;
+    var connector = session?.Connector;
+    var charger = connector?.Charger;
+    var station = charger?.Station;
+    var vehicle = session?.Vehicle;
+    var customer = Model.Customer ?? vehicle?.Customer;
+    var user = customer?.User;
+}
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3>Hóa Đơn Sạc Điện</h3>
+            <p class="text-muted mb-0">Mã: <strong>@Model.InvoiceId</strong></p>
+        </div>
+        <div>
+            @if (Model.Status == "Paid")
+            {
+                <span class="badge bg-success badge-lg">ĐÃ THANH TOÁN</span>
+            }
+            else if (isOverdue)
+            {
+                <span class="badge bg-danger badge-lg">QUÁ HẠN</span>
+            }
+            else
+            {
+                <span class="badge bg-warning badge-lg">CHƯA THANH TOÁN</span>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column - Invoice Details -->
+        <div class="col-lg-8">
+            <div class="card invoice-card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="mb-0">HÓA ĐƠN GIÁ TRỊ GIA TĂNG</h5>
+                            <small>V-GREEN CHARGING STATION</small>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="invoice-number">
+                                <div class="small">Mẫu số: @Model.InvoiceTemplate</div>
+                                <div class="small">Ký hiệu: @Model.InvoiceSymbol</div>
+                                <div><strong>Số: @Model.InvoiceNumber</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <!-- Company Info -->
+                    <div class="section mb-4">
+                        <h6 class="section-title">ĐƠN VỊ CUNG CẤP DỊCH VỤ</h6>
+                        <table class="info-table">
+                            <tr>
+                                <td width="30%"><strong>Đơn vị:</strong></td>
+                                <td>CÔNG TY CỔ PHẦN PHÁT TRIỂN TRẠM SẠC TOÀN CẦU V-GREEN</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cơ sở:</strong></td>
+                                <td>@(station?.Name ?? "N/A")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Địa chỉ:</strong></td>
+                                <td>@(station?.Address ?? "N/A")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số điện thoại:</strong></td>
+                                <td>1900 1234</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số tài khoản:</strong></td>
+                                <td><strong class="text-primary">LE BAO TRAN - 1030946681 - VIETCOMBANK</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Customer Info -->
+                    <div class="section mb-4">
+                        <h6 class="section-title">THÔNG TIN KHÁCH HÀNG</h6>
+                        <table class="info-table">
+                            <tr>
+                                <td width="30%"><strong>Họ tên:</strong></td>
+                                <td>@(Model.Snashot_CustomerName ?? customer?.FullName ?? "N/A")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số điện thoại:</strong></td>
+                                <td>@(Model.Snashot_CustomerPhone ?? customer?.PhoneNumber ?? "N/A")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email:</strong></td>
+                                <td>@(Model.Snashot_CustomerEmail ?? user?.Email ?? "N/A")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Xe:</strong></td>
+                                <td>@(vehicle != null ? $"{vehicle.Manufacturer} {vehicle.Model} {vehicle.Version}".Trim() : "N/A")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Biển số xe:</strong></td>
+                                <td><strong class="text-danger">@(vehicle?.LicensePlate ?? "N/A")</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Invoice Date Info -->
+                    <div class="section mb-4">
+                        <h6 class="section-title">THÔNG TIN HÓA ĐƠN</h6>
+                        <table class="info-table">
+                            <tr>
+                                <td width="30%"><strong>Ngày tạo:</strong></td>
+                                <td>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hạn thanh toán:</strong></td>
+                                <td class="text-danger"><strong>@(Model.ExpireDate?.ToString("dd/MM/yyyy") ?? "N/A")</strong></td>
+                            </tr>
+                            @if (Model.Status == "Paid")
+                            {
+                                <tr>
+                                    <td><strong>Ngày thanh toán:</strong></td>
+                                    <td class="text-success">@(Model.PaidAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phương thức:</strong></td>
+                                    <td>@(Model.PaymentMethod ?? "N/A")</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+
+                    <!-- Service Table from InvoiceDetail -->
+                    <div class="section mb-4">
+                        <h6 class="section-title">CHI TIẾT DỊCH VỤ</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered service-table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="5%">STT</th>
+                                        <th width="35%">Dịch vụ</th>
+                                        <th width="12%">Số lượng</th>
+                                        <th width="10%">Đơn vị</th>
+                                        <th width="18%">Đơn giá</th>
+                                        <th width="20%">Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.InvoiceDetails != null && Model.InvoiceDetails.Any())
+                                    {
+                                        foreach (var detail in Model.InvoiceDetails.OrderBy(d => d.STT))
+                                        {
+                                            <tr>
+                                                <td class="text-center">@detail.STT</td>
+                                                <td>@(detail.RevenueItem?.ItemName ?? "Dịch vụ")</td>
+                                                <td class="text-end">@(detail.Quantities?.ToString() ?? "0")</td>
+                                                <td class="text-center">@(detail.Unit ?? "")</td>
+                                                <td class="text-end">@((detail.UnitPrice ?? 0).ToString("N0"))</td>
+                                                <td class="text-end"><strong>@((detail.Amount ?? 0).ToString("N0"))</strong></td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">Không có dữ liệu chi tiết</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="section">
+                        <div class="row">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <table class="table summary-table">
+                                    <tr>
+                                        <td>Tổng tiền hàng:</td>
+                                        <td class="text-end">@((Model.TotalAmountService ?? 0).ToString("N0")) VND</td>
+                                    </tr>
+                                    @if ((Model.TotalAmountDiscount ?? 0) > 0)
+                                    {
+                                        <tr>
+                                            <td>Chiết khấu:</td>
+                                            <td class="text-end text-danger">-@((Model.TotalAmountDiscount ?? 0).ToString("N0")) VND</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td>Thuế GTGT (10%):</td>
+                                        <td class="text-end">@((Model.TotalAmountTax ?? 0).ToString("N0")) VND</td>
+                                    </tr>
+                                    <tr class="total-row">
+                                        <td><strong>TỔNG CỘNG:</strong></td>
+                                        <td class="text-end"><strong class="text-success">@((Model.Total ?? 0).ToString("N0")) VND</strong></td>
+                                    </tr>
+                                </table>
+                                <p class="text-muted small mb-0">
+                                    <em>Bằng chữ: @NumberToWords((long)(Model.Total ?? 0)) đồng</em>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer text-center text-muted">
+                    <small>Cảm ơn quý khách đã sử dụng dịch vụ V-Green!</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Actions -->
+        <div class="col-lg-4">
+            @if (Model.Status == "Unpaid")
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Thanh Toán</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (!string.IsNullOrEmpty(Model.QRCodeData))
+                        {
+                            <div class="payment-qr text-center mb-3">
+                                <img src="@Model.PaymentLink" alt="QR Code" class="img-fluid" style="max-width: 200px;" />
+                                <p class="small text-muted mt-2">Quét mã để thanh toán</p>
+                            </div>
+                        }
+                        <div class="alert alert-info small">
+                            <strong>Chuyển khoản đến:</strong>
+                        </div>
+                        <table class="table table-sm small">
+                            <tr>
+                                <td><strong>Chủ TK:</strong></td>
+                                <td>LE BAO TRAN</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số TK:</strong></td>
+                                <td><strong class="text-primary">1030946681</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ngân hàng:</strong></td>
+                                <td>VIETCOMBANK</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số tiền:</strong></td>
+                                <td><strong class="text-success">@((Model.Total ?? 0).ToString("N0"))₫</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nội dung:</strong></td>
+                                <td><code class="text-danger">VGREEN @Model.InvoiceNumber.ToString("D7")</code></td>
+                            </tr>
+                        </table>
+                        <button class="btn btn-success w-100 mb-2" onclick="copyPaymentInfo()">
+                            <i class="fas fa-copy"></i> Copy Nội Dung CK
+                        </button>
+                        @if (!string.IsNullOrEmpty(Model.PaymentLink))
+                        {
+                            <a href="@Model.PaymentLink" class="btn btn-outline-success w-100 mb-2" target="_blank">
+                                <i class="fas fa-mobile-alt"></i> Mở VCB Mobile App
+                            </a>
+                        }
+                        <button class="btn btn-primary w-100 mt-3" onclick="showUploadProof()">
+                            <i class="fas fa-upload"></i> Upload Chứng Từ
+                        </button>
+                    </div>
+                </div>
+                @if (isOverdue)
+                {
+                    <div class="alert alert-danger">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Hóa đơn đã quá hạn!</strong><br>
+                        <small>Vui lòng thanh toán sớm để tránh phí phạt.</small>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                        <h5 class="text-success mt-3">Đã Thanh Toán</h5>
+                        <p class="text-muted">@(Model.PaidAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</p>
+                        <p class="mb-0"><strong>Phương thức:</strong> @(Model.PaymentMethod ?? "N/A")</p>
+                    </div>
+                </div>
+            }
+
+            <!-- Actions -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-cog"></i> Thao Tác</h6>
+                </div>
+                <div class="card-body">
+                    <a href="@Url.Action("DownloadPdf", new { id = Model.InvoiceId })"
+                       class="btn btn-outline-primary w-100 mb-2">
+                        <i class="fas fa-download"></i> Tải Hóa Đơn PDF
+                    </a>
+                    <a href="@Url.Action("MyInvoices")" class="btn btn-outline-secondary w-100 mb-2">
+                        <i class="fas fa-arrow-left"></i> Quay Lại Danh Sách
+                    </a>
+                    @if (Model.SessionId.HasValue)
+                    {
+                        <a href="@Url.Action("Detail", "ChargingSession", new { id = Model.SessionId })"
+                           class="btn btn-outline-info w-100">
+                            <i class="fas fa-bolt"></i> Xem Phiên Sạc
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Proof Modal -->
+<div class="modal fade" id="uploadProofModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-upload"></i> Upload Chứng Từ Thanh Toán</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="uploadProofForm" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Ảnh chứng từ:</label>
+                        <input type="file" class="form-control" name="proof" accept="image/*" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mã giao dịch:</label>
+                        <input type="text" class="form-control" name="transactionId" placeholder="VD: FT24014XXXXX">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Gửi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function copyPaymentInfo() {
+            const text = 'VGREEN @Model.InvoiceNumber.ToString("D7")';
+            navigator.clipboard.writeText(text).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đã copy!',
+                    text: 'Nội dung chuyển khoản đã được copy',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            });
+        }
+
+        function showUploadProof() {
+            const modal = new bootstrap.Modal(document.getElementById('uploadProofModal'));
+            modal.show();
+        }
+
+        $('#uploadProofForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('invoiceId', '@Model.InvoiceId');
+
+            $.ajax({
+                url: '@Url.Action("UploadPaymentProof")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('uploadProofModal'));
+                    modal.hide();
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: response.message
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Lỗi', response.message, 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Lỗi', 'Không thể upload. Vui lòng thử lại!', 'error');
+                }
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .badge-lg {
+            padding: 10px 20px;
+            font-size: 1.1rem;
+        }
+
+        .invoice-card {
+            border: none;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            color: #0066cc;
+            font-weight: 600;
+        }
+
+        .info-table {
+            width: 100%;
+        }
+
+            .info-table td {
+                padding: 8px 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .info-table tr:last-child td {
+                border-bottom: none;
+            }
+
+        .service-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .service-table td {
+            vertical-align: middle;
+        }
+
+        .summary-table {
+            border: 2px solid #dee2e6;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            .summary-table .total-row td {
+                background-color: #f8f9fa;
+                font-size: 1.2rem;
+                border-top: 3px solid #0066cc;
+            }
+    </style>
+}
+
+@functions {
+    string NumberToWords(long number)
+    {
+        if (number == 0) return "Không";
+        if (number < 0) return "Âm " + NumberToWords(-number);
+
+        string[] ones = { "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
+        string[] tens = { "", "mười", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi" };
+        string[] hundreds = { "", "một trăm", "hai trăm", "ba trăm", "bốn trăm", "năm trăm", "sáu trăm", "bảy trăm", "tám trăm", "chín trăm" };
+
+        string ReadThreeDigits(int n)
+        {
+            if (n == 0) return "";
+            int h = n / 100;
+            int t = (n % 100) / 10;
+            int o = n % 100 % 10;
+
+            string result = hundreds[h];
+
+            if (t > 0 || o > 0)
+            {
+                if (t == 0) result += " linh " + ones[o];
+                else if (t == 1) result += (o == 0 ? " mười" : " mười " + ones[o]);
+                else
+                {
+                    result += " " + tens[t];
+                    if (o == 1) result += " mốt";
+                    else if (o > 1) result += " " + ones[o];
+                }
+            }
+
+            return result.Trim();
+        }
+
+        string result = "";
+
+        if (number >= 1_000_000)
+        {
+            result += ReadThreeDigits((int)(number / 1_000_000)) + " triệu ";
+            number %= 1_000_000;
+        }
+        if (number >= 1000)
+        {
+            result += ReadThreeDigits((int)(number / 1000)) + " nghìn ";
+            number %= 1000;
+        }
+        if (number > 0) result += ReadThreeDigits((int)number);
+
+        result = result.Trim();
+        return result.Length > 0 ? char.ToUpper(result[0]) + result.Substring(1) : "Không";
+    }
+}

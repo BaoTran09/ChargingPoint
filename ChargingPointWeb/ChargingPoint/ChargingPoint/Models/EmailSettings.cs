@@ -1,4 +1,6 @@
-﻿namespace ChargingPoint.Models
+﻿using ChargingPoint.DB;
+
+namespace ChargingPoint.Models
 {
     public class EmailSettings
     {

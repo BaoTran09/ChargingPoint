@@ -37,6 +37,62 @@
       "PackagePath": "staticwebassets\\icon\\location_icon_selected.png"
     },
     {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-16384.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-16384.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-25025.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-25025.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-38679.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-38679.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-41348.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-41348.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-42293.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-42293.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-55236.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-55236.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-63186.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-63186.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-65509.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-65509.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-66301.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-66301.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-70535.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-70535.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-97637.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-97637.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-98555.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-98555.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-98968.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-98968.pdf"
+    },
+    {
+      "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\invoices\\Invoice_INV-20251117-99608.pdf",
+      "PackagePath": "staticwebassets\\invoices\\Invoice_INV-20251117-99608.pdf"
+    },
+    {
       "Id": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\wwwroot\\js\\script.js",
       "PackagePath": "staticwebassets\\js\\script.js"
     },

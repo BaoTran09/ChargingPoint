@@ -1,0 +1,282 @@
+﻿@model ChargingPoint.Models.Vehicle
+@{
+    var title = Model.VehicleId == 0 ? "Thêm xe mới" : "Chỉnh sửa xe";
+    var type = ViewBag.Type as string ?? "Car";
+    var action = Model.VehicleId == 0
+        ? (type == "Car" ? "CreateCar" : "CreateMotorbike")
+        : (type == "Car" ? "EditCar" : "EditMotorbike");
+}
+
+<!-- Modal sẽ tự động show khi load -->
+<div class="modal fade" id="vehicleModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-@(type == "Car" ? "primary" : "success") text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-@(type == "Car" ? "car" : "motorcycle") me-2"></i>
+                    @title - @(type == "Car" ? "Ô tô" : "Xe máy điện")
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form asp-action="@action" method="post" id="vehicleForm"
+                  hx-post="@Url.Action(action, "Customer")"
+                  hx-target="#vehicleList"
+                  hx-swap="outerHTML">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="VehicleId" />
+                <input type="hidden" asp-for="CustomerId" />
+                <input type="hidden" asp-for="VehicleType" value="@type" />
+
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <!-- Basic Info -->
+                        <div class="col-12">
+                            <h6 class="border-bottom pb-2">
+                                <i class="fas fa-info-circle"></i> Thông tin cơ bản
+                            </h6>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="LicensePlate" class="form-label">
+                                <i class="fas fa-id-card"></i> Biển số xe <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="LicensePlate" class="form-control" placeholder="29A-12345" required />
+                            <span asp-validation-for="LicensePlate" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="VIN" class="form-label">
+                                <i class="fas fa-barcode"></i> Số khung (VIN)
+                            </label>
+                            <input asp-for="VIN" class="form-control" placeholder="VF8XXXXX..." />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Manufacturer" class="form-label">
+                                <i class="fas fa-industry"></i> Hãng xe
+                            </label>
+                            <select asp-for="Manufacturer" class="form-select">
+                                <option value="">-- Chọn hãng --</option>
+                                <option value="VinFast">VinFast</option>
+                                <option value="Tesla">Tesla</option>
+                                <option value="BYD">BYD</option>
+                                <option value="Hyundai">Hyundai</option>
+                                <option value="Kia">Kia</option>
+                                <option value="Mercedes-Benz">Mercedes-Benz</option>
+                                <option value="BMW">BMW</option>
+                                <option value="Audi">Audi</option>
+                                <option value="Other">Khác</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Model" class="form-label">
+                                <i class="fas fa-car-side"></i> Dòng xe
+                            </label>
+                            <input asp-for="Model" class="form-control" placeholder="VF8, Model 3..." />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Version" class="form-label">
+                                <i class="fas fa-tag"></i> Phiên bản
+                            </label>
+                            <input asp-for="Version" class="form-control" placeholder="ECO, PLUS, Premium..." maxlength="50" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ProductionDate" class="form-label">
+                                <i class="fas fa-calendar"></i> Năm sản xuất
+                            </label>
+                            <input asp-for="ProductionDate" type="date" class="form-control" />
+                        </div>
+
+                        <!-- Battery Info -->
+                        <div class="col-12 mt-4">
+                            <h6 class="border-bottom pb-2">
+                                <i class="fas fa-battery-full"></i> Thông tin pin
+                            </h6>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="BatteryType" class="form-label">
+                                <i class="fas fa-bolt"></i> Loại pin
+                            </label>
+                            <select asp-for="BatteryType" class="form-select">
+                                <option value="">-- Chọn loại pin --</option>
+                                <option value="LFP">LFP</option>
+                                <option value="NMC">NMC</option>
+                                <option value="CATL">CATL</option>
+                                <option value="SDI">SDI</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="BatteryGrossKWh" class="form-label">
+                                Dung lượng tổng (kWh)
+                            </label>
+                            <input asp-for="BatteryGrossKWh" class="form-control" type="number" step="0.1" placeholder="87.7" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="BatteryUsableKWh" class="form-label">
+                                Dung lượng khả dụng (kWh)
+                            </label>
+                            <input asp-for="BatteryUsableKWh" class="form-control" type="number" step="0.1" placeholder="82.0" />
+                        </div>
+
+                        <!-- Charging Support -->
+                        <div class="col-12 mt-4">
+                            <h6 class="border-bottom pb-2">
+                                <i class="fas fa-charging-station"></i> Hỗ trợ sạc
+                            </h6>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <div class="form-check form-switch">
+                                        <input asp-for="AcChargingSupport" class="form-check-input" id="acSupport" />
+                                        <label class="form-check-label fw-bold" for="acSupport">
+                                            Hỗ trợ sạc AC (Xoay chiều)
+                                        </label>
+                                    </div>
+                                    <div class="mt-2" id="acPowerDiv">
+                                        <label asp-for="MaxAcChargeKW" class="form-label">Công suất AC tối đa (kW)</label>
+                                        <input asp-for="MaxAcChargeKW" class="form-control" type="number" step="0.1" placeholder="11.0" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <div class="form-check form-switch">
+                                        <input asp-for="DcChargingSupport" class="form-check-input" id="dcSupport" />
+                                        <label class="form-check-label fw-bold" for="dcSupport">
+                                            Hỗ trợ sạc DC (Một chiều)
+                                        </label>
+                                    </div>
+                                    <div class="mt-2" id="dcPowerDiv">
+                                        <label asp-for="MaxDcChargeKW" class="form-label">Công suất DC tối đa (kW)</label>
+                                        <input asp-for="MaxDcChargeKW" class="form-control" type="number" step="0.1" placeholder="150.0" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-@(type == "Car" ? "primary" : "success")">
+                        <i class="fas fa-save"></i> @(Model.VehicleId == 0 ? "Thêm xe" : "Cập nhật")
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // Đợi DOM load xong
+    const modalElement = document.getElementById('vehicleModal');
+    if (!modalElement) return;
+
+    // Khởi tạo và show modal ngay lập tức
+    const modal = new bootstrap.Modal(modalElement, {
+        backdrop: 'static',
+        keyboard: false
+    });
+    modal.show();
+
+    // Toggle AC/DC power inputs
+    function togglePowerInputs() {
+        const acChecked = document.getElementById('acSupport')?.checked || false;
+        const dcChecked = document.getElementById('dcSupport')?.checked || false;
+
+        const acDiv = document.getElementById('acPowerDiv');
+        const dcDiv = document.getElementById('dcPowerDiv');
+
+        if (acDiv) acDiv.style.display = acChecked ? 'block' : 'none';
+        if (dcDiv) dcDiv.style.display = dcChecked ? 'block' : 'none';
+    }
+
+    // Bind events
+    document.getElementById('acSupport')?.addEventListener('change', togglePowerInputs);
+    document.getElementById('dcSupport')?.addEventListener('change', togglePowerInputs);
+
+    // Initial toggle
+    togglePowerInputs();
+
+    // Cleanup khi modal đóng
+    modalElement.addEventListener('hidden.bs.modal', function() {
+        // Xóa modal khỏi DOM
+        modalElement.remove();
+        // Xóa backdrop nếu còn
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        // Reset body
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+    });
+
+    // Xử lý khi form submit thành công
+    const form = document.getElementById('vehicleForm');
+    if (form) {
+        form.addEventListener('htmx:afterSwap', function(event) {
+            // Nếu target là vehicleList, có nghĩa là submit thành công
+            if (event.detail.target.id === 'vehicleList') {
+                modal.hide();
+                
+                // Show toast notification
+                showToast('Thành công!', 'Đã @(Model.VehicleId == 0 ? "thêm" : "cập nhật") xe thành công!', 'success');
+            }
+        });
+    }
+
+    // Toast helper function
+    function showToast(title, message, type = 'success') {
+        const toastHtml = `
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 99999;">
+                <div class="toast show" role="alert">
+                    <div class="toast-header bg-${type} text-white">
+                        <strong class="me-auto">${title}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const toastElement = document.createElement('div');
+        toastElement.innerHTML = toastHtml;
+        document.body.appendChild(toastElement);
+        
+        setTimeout(() => {
+            toastElement.remove();
+        }, 3000);
+    }
+})();
+</script>
+
+<style>
+    .modal-dialog-scrollable .modal-body {
+        max-height: calc(100vh - 200px);
+    }
+    
+    /* Đảm bảo modal hiển thị đúng */
+    .modal.show {
+        display: block !important;
+    }
+    
+    .modal-backdrop.show {
+        opacity: 0.5;
+    }
+</style>

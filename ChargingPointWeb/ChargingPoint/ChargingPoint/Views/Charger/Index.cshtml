@@ -1,0 +1,131 @@
+﻿@model List<ChargingPoint.Models.Charger>
+@{
+    var station = ViewBag.Station as ChargingPoint.DB.Station;
+    var filter = ViewBag.Filter as string ?? "Car"; // Dùng filter thay type
+    ViewData["Title"] = $"Trụ sạc tại: {station?.Name}";
+}
+@*//@(charger.Name ?? charger.Model ?? $"Trụ sạc {charger.ChargerId}")*@
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3>@ViewData["Title"]</h3>
+            <p class="text-muted mb-0">
+                <i class="bi bi-geo-alt"></i> @station?.Address
+            </p>
+        </div>
+        <a asp-controller="Station" asp-action="Index" class="btn btn-outline-secondary">
+            Quay lại
+        </a>
+    </div>
+
+    <!-- Tabs: Xe ô tô / Xe máy -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(string.IsNullOrEmpty(filter) || filter == "All" ? "active" : "")"
+               asp-action="Index" asp-route-stationId="@station.StationId">
+                Tất cả
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(filter == "Car" ? "active" : "")"
+               asp-action="Index" asp-route-stationId="@station.StationId" asp-route-filter="Car">
+                Xe ô tô
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(filter == "Motorbike" ? "active" : "")"
+               asp-action="Index" asp-route-stationId="@station.StationId" asp-route-filter="Motorbike">
+                Xe máy
+            </a>
+        </li>
+    </ul>
+
+    <!-- Danh sách trụ -->
+    <div class="row g-4" id="chargerList">
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">Không có trụ sạc nào phù hợp.</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var charger in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <!-- Header -->
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            
+                            @if (!string.IsNullOrEmpty(charger.PicturePath))
+                            {
+                                <img src="@charger.PicturePath" alt="@charger.Model" style="max-height:40px; border-radius:4px;" />
+                            }
+                        </div>
+
+                        <div class="card-body small">
+                            <div><strong>Loại:</strong> 
+                                <span class="badge @(charger.ChargerType == "DC" ? "bg-danger" : "bg-success")">
+                                    @charger.ChargerType
+                                </span>
+                            </div>
+                            <div><strong>Công suất:</strong> @charger.MaxPowerKW kW</div>
+                            <div><strong>Dùng cho:</strong> @(charger.UseFor == "Car" ? "Ô tô" : "Xe máy")</div>
+
+                            <!-- Trạm sạc -->
+                            @if (charger.Station != null)
+                            {
+                                <hr />
+                                <p class="mb-1"><strong>@charger.Station.Name</strong></p>
+                                <p class="mb-1 text-muted small">
+                                    <i class="bi bi-geo-alt"></i> @charger.Station.Address
+                                </p>
+                            }
+
+                            <!-- Cổng sạc -->
+                            <hr />
+                            <h6>Cổng sạc (@charger.Connectors.Count):</h6>
+                            <div class="row g-2">
+                                @foreach (var conn in charger.Connectors)
+                                {
+                                    <div class="col-12">
+                                        <button class="btn btn-sm w-100 @(conn.Status == "Available" ? "btn-outline-success" : "btn-outline-secondary")"
+                                                @(conn.Status != "Available" ? "disabled" : "")
+                                                hx-get="@Url.Action("RequestCharging", new { connectorId = conn.ConnectorId })"
+                                                hx-target="#modalContainer"
+                                                hx-swap="innerHTML">
+                                            <strong>@conn.ConnectorType</strong><br />
+                                            <small>Cổng @conn.ConnectorIndex - @conn.Status</small>
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="card-footer text-center">
+                            <small class="text-muted">SN: @charger.SerialNumber</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Modal Container -->
+<div id="modalContainer"></div>
+
+@section Scripts {
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script>
+        // Đóng modal sau khi submit thành công
+        document.body.addEventListener('htmx:afterRequest', (e) => {
+            if (e.detail.xhr.status === 200 && e.detail.target.id === 'chargerList') {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('requestModal'));
+                if (modal) modal.hide();
+            }
+        });
+    </script>
+}

@@ -318,7 +318,7 @@ body.sidebar-collapsed footer {
 }
 
 .submenu-item {
-    padding-left: 15px;
+    padding-left: 8px;
 }
 
     .submenu-item .submenu-link {
@@ -326,7 +326,7 @@ body.sidebar-collapsed footer {
         display: flex;
         align-items: center;
         padding: 10px 15px;
-        padding-left: 48px;
+        padding-left: 25px;
         border-radius: 8px;
         color: var(--color-text-primary);
         font-size: 0.9rem;
