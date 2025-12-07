@@ -1,9 +1,0 @@
-<FileList>
-  <File Reference="DevExpress.XtraVerticalGrid.v25.1.dll">
-    <ToolboxItems UIFramework="WinForms" VSCategory="DX.25.1: Data &amp; Analytics">
-      <Item Type="DevExpress.XtraVerticalGrid.VGridControl" />
-      <Item Type="DevExpress.XtraVerticalGrid.PropertyGridControl" />
-      <Item Type="DevExpress.XtraVerticalGrid.PropertyDescriptionControl" />
-    </ToolboxItems>
-  </File>
-</FileList>
