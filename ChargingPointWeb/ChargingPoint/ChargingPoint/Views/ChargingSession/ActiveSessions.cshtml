@@ -1,0 +1,123 @@
+﻿@model IEnumerable<ChargingPoint.Models.ChargingSession>
+@{
+    ViewData["Title"] = "Phiên sạc đang hoạt động";
+}
+
+<div class="content-wrapper">
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <div>
+            <h2 class="fw-bold mb-1">Đang sạc (@Model.Count())</h2>
+            <p class="text-secondary">Theo dõi realtime các phiên sạc đang diễn ra</p>
+        </div>
+        <button class="btn btn-outline-secondary" onclick="location.reload()">
+            <i class="bi bi-arrow-clockwise"></i> Làm mới
+        </button>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var s in Model)
+        {
+            <div class="col-lg-6 col-xl-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="mb-0">#@s.SessionId</h5>
+                            <span class="badge bg-success bg-opacity-10 text-success">LIVE</span>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar bg-success text-white rounded-circle" style="width:48px;height:48px;">
+                                        @(s.Vehicle?.LicensePlate?.FirstOrDefault() ?? 'V')
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">@s.Vehicle?.Model</div>
+                                        <small class="text-secondary">@s.Vehicle?.Customer?.FullName</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <hr>
+                                <div class="text-center" id="session-@s.SessionId">
+                                    <h3 class="mb-2" id="soc-@s.SessionId">--%</h3>
+                                    <div class="progress" style="height: 12px;">
+                                        <div class="progress-bar bg-success" id="progress-@s.SessionId" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-secondary d-block mt-2" id="energy-@s.SessionId">0 kWh</small>
+                                    <small class="text-success" id="time-left-@s.SessionId">Đang tải...</small>
+                                </div>
+                            </div>
+                            <div class="col-12 text-center">
+                                <form asp-action="StopCharging" asp-route-sessionId="@s.SessionId" method="post" class="d-inline"
+                                      onsubmit="return confirm('Ngắt nguồn sạc ngay lập tức?')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-plug"></i> Ngắt nguồn
+                                    </button>
+                                </form>
+                                <a asp-action="Detail" asp-route-id="@s.SessionId" class="btn btn-primary btn-sm ms-2">
+                                    <i class="bi bi-graph-up-arrow"></i> Chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        setInterval(() => {
+        @foreach (var s in Model)
+        {
+            @:updateSession(@s.SessionId);
+        }
+                }, 5000);
+
+        const sessions = [
+        @foreach (var s in Model)
+        {
+            <text>{
+                    id: @s.SessionId,
+                    startSOC: @s.StartSOC,
+                    battery: @(s.Vehicle?.BatteryGrossKWh ?? 80)
+                    }, </text>
+        }
+            ];
+
+        function updateSession(id) {
+            const session = sessions.find(x => x.id === id);
+
+            fetch(`/ChargingSession/UpdateProgress?sessionId=${id}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+
+                        // SOC
+                        $(`#soc-${id}`).text(data.currentSOC.toFixed(1) + '%');
+
+                        // Progress bar
+                        $(`#progress-${id}`).css('width', data.progressPercent + '%');
+
+                        // Energy
+                        const energy = ((data.currentSOC - session.startSOC) / 100 * session.battery).toFixed(1);
+                        $(`#energy-${id}`).text(energy + ' kWh');
+
+                        // Completed
+                        if (data.isCompleted) {
+                            $(`#time-left-${id}`).text('Sạc hoàn tất!');
+                        }
+                    }
+                });
+        }
+
+
+        // Load lần đầu
+        @foreach (var s in Model)
+        {
+            @:updateSession(@s.SessionId);
+        }
+    </script>
+}

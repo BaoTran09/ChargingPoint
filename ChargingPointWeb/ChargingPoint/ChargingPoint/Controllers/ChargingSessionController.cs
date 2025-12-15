@@ -655,7 +655,7 @@ namespace ChargingPoint.Controllers
         public async Task<IActionResult> StationMonitor(long stationId)
         {
             var station = await _context.Station
-                .Include(s => s.Charger)
+                .Include(s => s.Chargers)
                     .ThenInclude(c => c.Connectors)
                         .ThenInclude(cn => cn.ChargingSessions
                             .Where(cs => cs.Status == "Charging" || cs.Status == "PoweredOff" || cs.Status == "Requiring"))

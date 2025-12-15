@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ChargingPoint.Models.ChargingSession>
+@{
+    ViewData["Title"] = "Phiên sạc chờ duyệt";
+}
+
+<div class="content-wrapper">
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <div>
+            <h2 class="fw-bold mb-1">Chờ duyệt (@Model.Count())</h2>
+            <p class="text-secondary">Các phiên sạc cần phê duyệt (không phải VinFast hoặc không tương thích)</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var s in Model)
+        {
+            <div class="col-lg-6">
+                <div class="card border-warning border-opacity-25 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5>#@s.SessionId</h5>
+                            <span class="badge bg-warning text-white">Chờ duyệt</span>
+                        </div>
+                        <p><strong>Xe:</strong> @s.Vehicle?.Model (@s.Vehicle?.Manufacturer)</p>
+                        <p><strong>Trạm:</strong> @s.Connector?.Charger?.Station?.Name</p>
+                        <p>
+                            <strong>Lý do:</strong>
+                            @(s.Vehicle?.Manufacturer?.IndexOf("vinfast", StringComparison.OrdinalIgnoreCase) >= 0
+                                ? "Không hỗ trợ loại sạc này"
+                                : "Không phải xe VinFast")
+                        </p>
+                        <div class="d-flex gap-2">
+                            <form asp-action="AllowCharging" asp-route-sessionId="@s.SessionId" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success btn-sm">Cho phép sạc</button>
+                            </form>
+                            <form asp-action="RejectCharging" asp-route-sessionId="@s.SessionId" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Từ chối phiên này?')">Từ chối</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

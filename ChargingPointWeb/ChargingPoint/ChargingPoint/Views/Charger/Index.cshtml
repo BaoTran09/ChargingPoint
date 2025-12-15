@@ -1,53 +1,58 @@
 ﻿@model List<ChargingPoint.Models.Charger>
 @{
     var station = ViewBag.Station as ChargingPoint.DB.Station;
-    var filter = ViewBag.Filter as string ?? "Car"; // Dùng filter thay type
+    var filter = ViewBag.Filter as string ?? "All";
     ViewData["Title"] = $"Trụ sạc tại: {station?.Name}";
 }
-@*//@(charger.Name ?? charger.Model ?? $"Trụ sạc {charger.ChargerId}")*@
 
-<div class="container mt-4">
+<div class="content-wrapper">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-5">
         <div>
-            <h3>@ViewData["Title"]</h3>
-            <p class="text-muted mb-0">
-                <i class="bi bi-geo-alt"></i> @station?.Address
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-ev-station-fill text-success me-2"></i>
+                @station?.Name
+            </h2>
+            <p class="text-secondary mb-0">
+                <i class="bi bi-geo-alt-fill me-1"></i>
+                @station?.Address
             </p>
         </div>
-        <a asp-controller="Station" asp-action="Index" class="btn btn-outline-secondary">
+        <a asp-controller="Station" asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i>
             Quay lại
         </a>
     </div>
 
-    <!-- Tabs: Xe ô tô / Xe máy -->
-    <ul class="nav nav-tabs mb-4">
+    <!-- Filter Tabs -->
+    <ul class="nav nav-pills mb-5">
         <li class="nav-item">
-            <a class="nav-link @(string.IsNullOrEmpty(filter) || filter == "All" ? "active" : "")"
+            <a class="nav-link rounded @(filter == "All" ? "active bg-primary text-white" : "")"
                asp-action="Index" asp-route-stationId="@station.StationId">
-                Tất cả
+                Tất cả (@Model.Count)
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link @(filter == "Car" ? "active" : "")"
+            <a class="nav-link rounded @(filter == "Car" ? "active bg-primary text-white" : "")"
                asp-action="Index" asp-route-stationId="@station.StationId" asp-route-filter="Car">
                 Xe ô tô
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link @(filter == "Motorbike" ? "active" : "")"
+            <a class="nav-link rounded @(filter == "Motorbike" ? "active bg-primary text-white" : "")"
                asp-action="Index" asp-route-stationId="@station.StationId" asp-route-filter="Motorbike">
                 Xe máy
             </a>
         </li>
     </ul>
 
-    <!-- Danh sách trụ -->
-    <div class="row g-4" id="chargerList">
+    <!-- Charger Grid -->
+    <div class="row g-4">
         @if (!Model.Any())
         {
-            <div class="col-12 text-center py-5">
-                <p class="text-muted">Không có trụ sạc nào phù hợp.</p>
+            <div class="col-12 text-center py-6">
+                <i class="bi bi-plug fs-1 text-muted opacity-50 mb-4"></i>
+                <p class="text-muted">Không có trụ sạc nào phù hợp với bộ lọc</p>
             </div>
         }
         else
@@ -55,56 +60,59 @@
             @foreach (var charger in Model)
             {
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm">
-                        <!-- Header -->
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                            
-                            @if (!string.IsNullOrEmpty(charger.PicturePath))
-                            {
-                                <img src="@charger.PicturePath" alt="@charger.Model" style="max-height:40px; border-radius:4px;" />
-                            }
+                    <div class="card border-0 shadow-sm h-100 hover-card">
+                        <div class="card-header bg-gradient text-white d-flex align-items-center justify-content-between"
+                             style="background: linear-gradient(135deg, #10b981, #059669); border-radius: var(--radius) var(--radius) 0 0;">
+                            <h6 class="mb-0 fw-bold">@(charger.Model ?? charger.Name ?? "Trụ sạc")</h6>
+                            <span class="badge bg-white text-success">
+                                @charger.MaxPowerKW kW
+                            </span>
                         </div>
-
-                        <div class="card-body small">
-                            <div><strong>Loại:</strong> 
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-3">
                                 <span class="badge @(charger.ChargerType == "DC" ? "bg-danger" : "bg-success")">
                                     @charger.ChargerType
                                 </span>
+                                <span class="text-secondary small">
+                                    @(charger.UseFor == "Car" ? "Xe ô tô" : "Xe máy")
+                                </span>
                             </div>
-                            <div><strong>Công suất:</strong> @charger.MaxPowerKW kW</div>
-                            <div><strong>Dùng cho:</strong> @(charger.UseFor == "Car" ? "Ô tô" : "Xe máy")</div>
 
-                            <!-- Trạm sạc -->
-                            @if (charger.Station != null)
-                            {
-                                <hr />
-                                <p class="mb-1"><strong>@charger.Station.Name</strong></p>
-                                <p class="mb-1 text-muted small">
-                                    <i class="bi bi-geo-alt"></i> @charger.Station.Address
-                                </p>
-                            }
+                            <hr class="my-4">
 
-                            <!-- Cổng sạc -->
-                            <hr />
-                            <h6>Cổng sạc (@charger.Connectors.Count):</h6>
-                            <div class="row g-2">
+                            <h6 class="fw-semibold mb-3">
+                                <i class="bi bi-plug-fill text-primary me-2"></i>
+                                Cổng sạc (@charger.Connectors.Count)
+                            </h6>
+
+                            <div class="row g-3">
                                 @foreach (var conn in charger.Connectors)
                                 {
+                                    var isAvailable = conn.Status == "Available";
                                     <div class="col-12">
-                                        <button class="btn btn-sm w-100 @(conn.Status == "Available" ? "btn-outline-success" : "btn-outline-secondary")"
-                                                @(conn.Status != "Available" ? "disabled" : "")
+                                        <button class="btn w-100 @(isAvailable ? "btn-success" : "btn-secondary") btn-lg shadow-sm"
+                                        @(isAvailable ? "" : "disabled")
                                                 hx-get="@Url.Action("RequestCharging", new { connectorId = conn.ConnectorId })"
-                                                hx-target="#modalContainer"
-                                                hx-swap="innerHTML">
-                                            <strong>@conn.ConnectorType</strong><br />
-                                            <small>Cổng @conn.ConnectorIndex - @conn.Status</small>
+                                                hx-target="body"
+                                                hx-swap="beforeend"
+                                                hx-swap="innerHTML"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#chargingModal">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="text-start">
+                                                    <strong>@conn.ConnectorType</strong><br>
+                                                    <small>Cổng @conn.ConnectorIndex</small>
+                                                </div>
+                                                <div class="text-end">
+                                                    <i class="bi @(isAvailable ? "bi-plug-fill" : "bi-slash-circle") fs-4"></i>
+                                                </div>
+                                            </div>
                                         </button>
                                     </div>
                                 }
                             </div>
                         </div>
-
-                        <div class="card-footer text-center">
+                        <div class="card-footer bg-light text-center">
                             <small class="text-muted">SN: @charger.SerialNumber</small>
                         </div>
                     </div>
@@ -117,15 +125,53 @@
 <!-- Modal Container -->
 <div id="modalContainer"></div>
 
+<!-- Modal Wrapper (để Bootstrap nhận diện) -->
+<div class="modal fade" id="chargingModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContent">
+            <!-- Nội dung sẽ được HTMX chèn vào đây -->
+        </div>
+    </div>
+</div>
+
 @section Scripts {
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <script>
-        // Đóng modal sau khi submit thành công
-        document.body.addEventListener('htmx:afterRequest', (e) => {
-            if (e.detail.xhr.status === 200 && e.detail.target.id === 'chargerList') {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('requestModal'));
-                if (modal) modal.hide();
+        // Khi HTMX chèn nội dung → tự động mở modal
+        document.body.addEventListener('htmx:afterSwap', (e) => {
+            if (e.detail.target.id === 'modalContainer') {
+                const modal = new bootstrap.Modal(document.getElementById('chargingModal'));
+                modal.show();
+            }
+        });
+
+        // Đóng modal khi bấm nút đóng trong modal con
+        document.body.addEventListener('click', (e) => {
+            if (e.target.matches('[data-bs-dismiss="modal"]')) {
+                bootstrap.Modal.getInstance(document.getElementById('chargingModal'))?.hide();
             }
         });
     </script>
+
+    <style>
+        .hover-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg) !important;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: var(--radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+        }
+
+            .nav-pills .nav-link.active {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+
+        #chargingModal .modal-content {
+            border-radius: var(--radius);
+            border: none;
+        }
+    </style>
 }

@@ -47,7 +47,7 @@ namespace ChargingPoint.DB
             base.OnModelCreating(modelBuilder);
             // Cấu hình mối quan hệ 1-1 giữa User và Employee
             modelBuilder.Entity<Users>()
-                .HasOne(u => u.Employee)
+                .HasOne<Employee>(u => u.Employee)
                 .WithOne(e => e.User)
                 .HasForeignKey<Employee>(e => e.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -88,7 +88,7 @@ namespace ChargingPoint.DB
             // === 5. CÁC FK KHÁC (đúng rồi, giữ nguyên) ===
             modelBuilder.Entity<Charger>()
                 .HasOne(c => c.Station)
-                .WithMany(s => s.Charger)
+                .WithMany(s => s.Chargers)
                 .HasForeignKey(c => c.StationId)
                 .OnDelete(DeleteBehavior.Cascade);
 

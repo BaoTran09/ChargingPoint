@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ChargingPoint.DB.Station>
+
+@foreach (var s in Model)
+{
+    <tr class="align-middle station-row" data-lat="@s.Latitude" data-lon="@s.Longitude" style="cursor: pointer; transition: var(--transition);">
+        <td class="ps-4"><span class="fw-bold text-primary" style="font-size: 13px;">#@s.Tag</span></td>
+        <td>
+            <div class="fw-semibold" style="font-size: 14px; color: var(--text-primary);">@s.Name</div>
+            <small class="text-secondary" style="font-size: 12px;">@s.Address</small>
+        </td>
+        <td>
+            <span class="badge bg-primary bg-opacity-10 text-primary" style="font-size: 11px; padding: 4px 10px;">
+                @(s.StationType == "Public" ? "Công cộng" : "Riêng tư")
+            </span>
+        </td>
+        <td class="text-end pe-4">
+            <div class="btn-group btn-group-sm" role="group">
+                <a href="/Charger/Index?stationId=@s.StationId" class="btn btn-outline-info" title="Xem trạm sạc">
+                    <i class="bi bi-ev-station"></i>
+                </a>
+                <a href="/Station/Edit/@s.StationId" class="btn btn-outline-warning" title="Chỉnh sửa">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+                <a href="/Station/Delete/@s.StationId" class="btn btn-outline-danger" title="Xóa">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>
+        </td>
+    </tr>
+}

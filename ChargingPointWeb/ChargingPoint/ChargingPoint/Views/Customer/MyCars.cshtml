@@ -1,103 +1,181 @@
 ﻿@model IEnumerable<ChargingPoint.Models.Vehicle>
 @{
     ViewData["Title"] = "Xe ô tô của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>
-            <i class="fas fa-car"></i> @ViewData["Title"]
-        </h3>
-        <button class="btn btn-success"
+<div class="content-wrapper">
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-car-front-fill text-success me-2"></i>
+                Xe ô tô của tôi
+            </h2>
+            <p class="text-secondary mb-0">Quản lý và thêm xe để sử dụng dịch vụ sạc nhanh V-Green</p>
+        </div>
+
+        <button class="btn btn-success d-flex align-items-center gap-2 px-4 py-3 shadow-sm"
                 hx-get="@Url.Action("CreateCarModal", "Customer")"
                 hx-target="#modalContainer"
-                hx-swap="innerHTML">
-            <i class="fas fa-plus"></i> Thêm xe ô tô
+                hx-swap="outerHTML">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span class="fw-medium">Thêm xe mới</span>
         </button>
     </div>
 
-    <!-- Modal Container - Để modal render vào đây -->
-    <div id="modalContainer"></div>
-
+    <!-- Empty State -->
     @if (!Model.Any())
     {
-        <div class="text-center py-5">
-            <div class="mb-4">
-                <i class="fas fa-car fa-5x text-muted"></i>
+        <div class="text-center py-6">
+            <div class="mb-5">
+                <i class="bi bi-car-front fs-1 text-muted opacity-50" style="font-size: 5rem;"></i>
             </div>
-            <h5 class="text-muted mb-3">Bạn chưa có xe ô tô nào</h5>
-            <p class="text-muted">Thêm xe đầu tiên để có thể sử dụng dịch vụ sạc</p>
-            <button class="btn btn-primary btn-lg"
+            <h4 class="text-muted mb-3">Bạn chưa đăng ký xe nào</h4>
+            <p class="text-secondary mb-4">Thêm xe đầu tiên để bắt đầu sử dụng dịch vụ sạc V-Green</p>
+            <button class="btn btn-success btn-lg d-flex align-items-center gap-2 mx-auto px-5 shadow-sm"
                     hx-get="@Url.Action("CreateCarModal", "Customer")"
                     hx-target="#modalContainer"
-                    hx-swap="innerHTML">
-                <i class="fas fa-plus"></i> Thêm xe đầu tiên
+                    hx-swap="outerHTML">
+                <i class="bi bi-plus-circle-fill"></i>
+                Thêm xe đầu tiên
             </button>
         </div>
     }
     else
     {
+        <!-- Vehicle Grid -->
         <div class="row g-4" id="vehicleList">
             @foreach (var vehicle in Model)
             {
-                <partial name="_VehicleCard" model="vehicle" />
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100 position-relative overflow-hidden"
+                         style="border-radius: var(--radius); transition: var(--transition);">
+
+
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <div class="flex-shrink-0">
+                                    <div class="avatar bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                                         style="width: 56px; height: 56px; font-size: 1.4rem;">
+                                        @(string.IsNullOrEmpty(vehicle.LicensePlate) ? "C" : vehicle.LicensePlate.First().ToString().ToUpper())
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 min-width-0">
+                                    <h5 class="mb-1 fw-bold text-truncate" title="@vehicle.Model">
+                                        @vehicle.Model
+                                    </h5>
+                                    <p class="mb-0 text-secondary small text-truncate">
+                                        @vehicle.Manufacturer
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 text-center small">
+                                <div class="col-6">
+                                    <div class="bg-light rounded-3 py-3 px-2">
+                                        <div class="text-secondary fw-medium">Biển số</div>
+                                        <div class="fw-bold text-primary mt-1">
+                                            @vehicle.LicensePlate
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="bg-light rounded-3 py-3 px-2">
+                                        <div class="text-secondary fw-medium">Dung lượng pin</div>
+                                        <div class="fw-bold text-success mt-1">
+                                            @(vehicle.BatteryGrossKWh?.ToString("F0") ?? "-") kWh
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-primary btn-sm flex-fill"
+                                        hx-get="@Url.Action("EditCarModal", "Customer", new { id = vehicle.VehicleId })"
+                                        hx-target="#modalContainer"
+                                        hx-swap="outerHTML"
+                                        title="Chỉnh sửa">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+
+                                    <button class="btn btn-success btn-sm flex-fill" disabled>
+                                        <i class="bi bi-check2-all"></i> Mặc định
+                                    </button>
+
+
+                                <form asp-action="DeleteCar" asp-route-id="@vehicle.VehicleId" method="post"
+                                      onsubmit="return confirm('Xóa xe @vehicle.Model (@vehicle.LicensePlate)?')" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Xóa xe">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
         </div>
     }
 </div>
 
+<!-- Modal Container -->
+<div id="modalContainer"></div>
+
 @section Scripts {
-    <!-- HTMX Library -->
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+
     <script>
-        // Global HTMX event handlers
-        document.body.addEventListener('htmx:afterSwap', function(event) {
-            // Khi vehicleList được update (sau khi thêm/sửa/xóa)
-            if (event.detail.target.id === 'vehicleList') {
-                console.log('Vehicle list updated');
-                
-                // Đóng modal nếu đang mở
-                const modalElement = document.getElementById('vehicleModal');
-                if (modalElement) {
-                    const modal = bootstrap.Modal.getInstance(modalElement);
-                    if (modal) {
-                        modal.hide();
-                    }
+        // Tự động đóng modal sau khi thêm/sửa thành công
+        document.body.addEventListener('htmx:afterSwap', (e) => {
+            if (e.detail.target.id === 'vehicleList' || e.detail.xhr.getResponseHeader('HX-Trigger') === 'closeModal') {
+                const modalEl = document.getElementById('vehicleModal');
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
                 }
+                // Xóa backdrop nếu còn sót
+                document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
             }
         });
 
-        // Cleanup modal backdrop khi cần
-        document.body.addEventListener('htmx:beforeSwap', function(event) {
-            // Remove stray backdrops
-            document.querySelectorAll('.modal-backdrop').forEach(function(backdrop) {
-                if (!document.querySelector('.modal.show')) {
-                    backdrop.remove();
-                }
-            });
+        // Cleanup backdrop khi modal bị đóng thủ công
+        document.addEventListener('hidden.bs.modal', () => {
+            document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
         });
     </script>
+
+    <style>
+        .avatar {
+            background: var(--vgreen);
+            font-size: 1.4rem;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg) !important;
+        }
+        .card.border-success {
+            box-shadow: 0 0 0 1px var(--vgreen) !important;
+        }
+        .bg-light {
+            background-color: var(--bg-secondary) !important;
+        }
+        .btn-sm {
+            padding: 0.35rem 0.6rem;
+        }
+        .text-truncate {
+            max-width: 100%;
+        }
+        /* Empty state icon */
+        .fs-1 {
+            font-size: 5rem !important;
+        }
+        .opacity-50 {
+            opacity: 0.5;
+        }
+    </style>
 }
-
-<style>
-    /* Vehicle List Styles */
-    #vehicleList {
-        min-height: 200px;
-    }
-
-    /* Smooth transitions */
-    .card {
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    }
-
-    /* Empty state */
-    .text-center.py-5 i {
-        opacity: 0.3;
-    }
-</style>

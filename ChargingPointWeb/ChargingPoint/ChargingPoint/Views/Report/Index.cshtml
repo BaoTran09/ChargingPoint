@@ -1,0 +1,360 @@
+﻿@{
+    ViewData["Title"] = "Báo Cáo - Charging Point System";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Header -->
+    <div class="mb-5">
+        <nav class="mb-3" style="font-size: 13px;">
+            <a asp-controller="Dashboard" asp-action="Index" class="text-decoration-none text-secondary">Dashboard</a>
+            <span class="mx-2 text-secondary">/</span>
+            <span style="color: var(--vgreen); font-weight: 500;">Báo cáo</span>
+        </nav>
+        <h2 class="fw-bold mb-2" style="font-size: 32px; color: var(--text-primary);">
+            <i class="bi bi-file-earmark-bar-graph text-success me-2"></i>Trung Tâm Báo Cáo
+        </h2>
+        <p class="text-secondary" style="font-size: 15px;">Chọn loại báo cáo bạn muốn xem và xuất file</p>
+    </div>
+
+    <!-- Report Categories -->
+    <div class="row g-4">
+        <!-- Revenue Reports -->
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm h-100 report-card" style="border-radius: var(--radius); border-top: 4px solid var(--vgreen);">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="report-icon me-3" style="background: rgba(16, 185, 129, 0.1);">
+                            <i class="bi bi-cash-stack text-success"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h4 class="fw-bold mb-2" style="color: var(--vgreen);">Báo Cáo Doanh Thu</h4>
+                            <p class="text-secondary mb-0" style="font-size: 14px;">
+                                Phân tích chi tiết doanh thu từ các hóa đơn, thanh toán và giao dịch
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="report-features mb-4">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span>Tổng hợp doanh thu theo thời gian</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span>Phân tích hóa đơn đã/chưa thanh toán</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span>So sánh doanh thu giữa các kỳ</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span>Xuất PDF, Excel với biểu đồ</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="RevenueReport" class="btn btn-success flex-grow-1">
+                            <i class="bi bi-bar-chart-line-fill me-2"></i>Xem báo cáo
+                        </a>
+                        <button class="btn btn-outline-success" data-bs-toggle="tooltip" title="Xuất nhanh">
+                            <i class="bi bi-download"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session Reports -->
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm h-100 report-card" style="border-radius: var(--radius); border-top: 4px solid #3b82f6;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="report-icon me-3" style="background: rgba(59, 130, 246, 0.1);">
+                            <i class="bi bi-battery-charging text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h4 class="fw-bold mb-2" style="color: #3b82f6;">Báo Cáo Phiên Sạc</h4>
+                            <p class="text-secondary mb-0" style="font-size: 14px;">
+                                Thống kê chi tiết các phiên sạc, thời gian và điện năng tiêu thụ
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="report-features mb-4">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <span>Lịch sử các phiên sạc chi tiết</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <span>Thống kê điện năng tiêu thụ (kWh)</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <span>Phân tích thời gian sạc trung bình</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <span>Lọc theo trạm, khách hàng, xe</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="SessionReport" class="btn btn-primary flex-grow-1">
+                            <i class="bi bi-activity me-2"></i>Xem báo cáo
+                        </a>
+                        <button class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Xuất nhanh">
+                            <i class="bi bi-download"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Station Performance -->
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm h-100 report-card" style="border-radius: var(--radius); border-top: 4px solid #f59e0b;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="report-icon me-3" style="background: rgba(245, 158, 11, 0.1);">
+                            <i class="bi bi-ev-station-fill text-warning"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h4 class="fw-bold mb-2" style="color: #f59e0b;">Hiệu Suất Trạm Sạc</h4>
+                            <p class="text-secondary mb-0" style="font-size: 14px;">
+                                Đánh giá hiệu suất hoạt động của từng trạm sạc
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="report-features mb-4">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-warning me-2"></i>
+                                <span>Tỷ lệ sử dụng trạm sạc (%)</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-warning me-2"></i>
+                                <span>Số lượng phiên sạc / trạm</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-warning me-2"></i>
+                                <span>Doanh thu từng trạm</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-warning me-2"></i>
+                                <span>Xếp hạng trạm hiệu quả nhất</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="StationPerformanceReport" class="btn btn-warning flex-grow-1">
+                            <i class="bi bi-speedometer me-2"></i>Xem báo cáo
+                        </a>
+                        <button class="btn btn-outline-warning" data-bs-toggle="tooltip" title="Xuất nhanh">
+                            <i class="bi bi-download"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Reports -->
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm h-100 report-card" style="border-radius: var(--radius); border-top: 4px solid #8b5cf6;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="report-icon me-3" style="background: rgba(139, 92, 246, 0.1);">
+                            <i class="bi bi-people-fill" style="color: #8b5cf6;"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h4 class="fw-bold mb-2" style="color: #8b5cf6;">Báo Cáo Khách Hàng</h4>
+                            <p class="text-secondary mb-0" style="font-size: 14px;">
+                                Phân tích hành vi và chi tiêu của khách hàng
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="report-features mb-4">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color: #8b5cf6;"></i>
+                                <span>Danh sách khách hàng hoạt động</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color: #8b5cf6;"></i>
+                                <span>Tổng chi tiêu / khách hàng</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color: #8b5cf6;"></i>
+                                <span>Số phiên sạc và điện năng sử dụng</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill me-2" style="color: #8b5cf6;"></i>
+                                <span>Top khách hàng VIP</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="CustomerReport" class="btn flex-grow-1" style="background-color: #8b5cf6; border-color: #8b5cf6; color: white;">
+                            <i class="bi bi-person-lines-fill me-2"></i>Xem báo cáo
+                        </a>
+                        <button class="btn" style="border-color: #8b5cf6; color: #8b5cf6;" data-bs-toggle="tooltip" title="Xuất nhanh">
+                            <i class="bi bi-download"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: var(--radius); background: linear-gradient(135deg, var(--vgreen) 0%, #059669 100%);">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="text-white fw-bold mb-2">
+                                <i class="bi bi-rocket-takeoff-fill me-2"></i>Xuất Báo Cáo Tổng Hợp Nhanh
+                            </h5>
+                            <p class="text-white mb-0 opacity-75" style="font-size: 14px;">
+                                Tạo báo cáo tổng hợp toàn bộ hệ thống bao gồm tất cả các chỉ số quan trọng
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="btn-group">
+                                <button class="btn btn-light btn-lg">
+                                    <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>PDF
+                                </button>
+                                <button class="btn btn-light btn-lg">
+                                    <i class="bi bi-file-earmark-excel-fill text-success me-2"></i>Excel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Reports -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: var(--radius);">
+                <div class="card-header bg-transparent border-0 py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-clock-history text-secondary me-2"></i>Báo Cáo Gần Đây
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Loại báo cáo</th>
+                                    <th>Kỳ báo cáo</th>
+                                    <th>Người tạo</th>
+                                    <th>Thời gian</th>
+                                    <th>Định dạng</th>
+                                    <th class="text-end">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <i class="bi bi-cash-stack text-success me-2"></i>
+                                        <strong>Doanh thu</strong>
+                                    </td>
+                                    <td>01/11/2024 - 30/11/2024</td>
+                                    <td>Admin</td>
+                                    <td><small class="text-secondary">2 giờ trước</small></td>
+                                    <td><span class="badge bg-danger">PDF</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="bi bi-battery-charging text-primary me-2"></i>
+                                        <strong>Phiên sạc</strong>
+                                    </td>
+                                    <td>15/11/2024 - 30/11/2024</td>
+                                    <td>Admin</td>
+                                    <td><small class="text-secondary">1 ngày trước</small></td>
+                                    <td><span class="badge bg-success">Excel</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    </script>
+
+    <style>
+        .report-card {
+            transition: all 0.3s ease;
+        }
+
+            .report-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+            }
+
+        .report-icon {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-size: 28px;
+        }
+
+        .report-features li {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .btn-warning {
+            color: #000;
+        }
+
+            .btn-warning:hover {
+                background-color: #d97706;
+                border-color: #d97706;
+                color: #fff;
+            }
+
+        .btn-outline-warning:hover {
+            background-color: #f59e0b;
+            color: #000;
+        }
+    </style>
+}

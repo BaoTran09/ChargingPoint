@@ -1,0 +1,486 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{00F106C2-5D15-4514-8829-2C4C8ABED83B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ChargingApp</RootNamespace>
+    <AssemblyName>ChargingApp</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>packages\BouncyCastle.Cryptography.2.6.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="ChargingApp.Skin">
+      <HintPath>..\..\OneDrive\Documents\My DXSkins\SkinPatch1\ChargingApp.Skin.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Charts.v25.1.Core, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.Desktop.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Data.Desktop.25.1.7-pre-25306\lib\net462\DevExpress.Data.Desktop.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Data.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Data.25.1.7-pre-25306\lib\net462\DevExpress.Data.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.DataAccess.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Drawing.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Drawing.25.1.7-pre-25306\lib\net462\DevExpress.Drawing.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Office.v25.1.Core, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Office.Core.25.1.7-pre-25306\lib\net462\DevExpress.Office.v25.1.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Pdf.v25.1.Core, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Pdf.Core.25.1.7-pre-25306\lib\net462\DevExpress.Pdf.v25.1.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Pdf.v25.1.Drawing, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Pdf.Drawing.25.1.7-pre-25306\lib\net462\DevExpress.Pdf.v25.1.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.PivotGrid.v25.1.Core, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.PivotGrid.Core.25.1.7-pre-25306\lib\net462\DevExpress.PivotGrid.v25.1.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Printing.Core.25.1.7-pre-25306\lib\net462\DevExpress.Printing.v25.1.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.RichEdit.v25.1.Core, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.RichEdit.Core.25.1.7-pre-25306\lib\net462\DevExpress.RichEdit.v25.1.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.RichEdit.v25.1.Export, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.RichEdit.Export.25.1.7-pre-25306\lib\net462\DevExpress.RichEdit.v25.1.Export.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Sparkline.v25.1.Core, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Sparkline.Core.25.1.7-pre-25306\lib\net462\DevExpress.Sparkline.v25.1.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Utils.25.1.7-pre-25306\lib\net462\DevExpress.Utils.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v25.1.UI, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpo.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Xpo.25.1.7-pre-25306\lib\net462\DevExpress.Xpo.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.Navigation.25.1.7-pre-25306\lib\net462\DevExpress.XtraBars.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v25.1.UI, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v25.1.Wizard, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.Navigation.25.1.7-pre-25306\lib\net462\DevExpress.XtraEditors.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraGauges.v25.1.Core, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.Grid.25.1.7-pre-25306\lib\net462\DevExpress.XtraGrid.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.Navigation.25.1.7-pre-25306\lib\net462\DevExpress.XtraLayout.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraNavBar.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.25.1.7-pre-25306\lib\net462\DevExpress.XtraNavBar.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraPivotGrid.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.PivotGrid.25.1.7-pre-25306\lib\net462\DevExpress.XtraPivotGrid.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.Printing.25.1.7-pre-25306\lib\net462\DevExpress.XtraPrinting.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v25.1.Extensions, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraTreeList.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.TreeList.25.1.7-pre-25306\lib\net462\DevExpress.XtraTreeList.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraVerticalGrid.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.VerticalGrid.25.1.7-pre-25306\lib\net462\DevExpress.XtraVerticalGrid.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraWizard.v25.1, Version=25.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>packages\DevExpress.Win.25.1.7-pre-25306\lib\net462\DevExpress.XtraWizard.v25.1.dll</HintPath>
+    </Reference>
+    <Reference Include="MailKit, Version=4.14.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
+      <HintPath>packages\MailKit.4.14.1\lib\net48\MailKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="MimeKit, Version=4.14.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>packages\MimeKit.4.14.0\lib\net48\MimeKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ReaLTaiizor, Version=3.8.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ReaLTaiizor.3.8.1.4\lib\net48\ReaLTaiizor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.6.0\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Formats.Asn1, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Formats.Asn1.8.0.1\lib\net462\System.Formats.Asn1.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.6.0\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.6.0\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.1.0\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Tasks.Extensions.4.6.0\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Accounting\DSChungTu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accounting\DSChungTu.Designer.cs">
+      <DependentUpon>DSChungTu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Accounting\frmGeneralJournal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accounting\frmGeneralJournal.Designer.cs">
+      <DependentUpon>frmGeneralJournal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Accounting\frmChungTu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accounting\frmChungTu.Designer.cs">
+      <DependentUpon>frmChungTu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Accounting\frmReportinput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accounting\frmReportinput.Designer.cs">
+      <DependentUpon>frmReportinput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Accounting\frmHachToan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accounting\frmHachToan.Designer.cs">
+      <DependentUpon>frmHachToan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Accounting\frmSalesJournal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accounting\frmSalesJournal.Designer.cs">
+      <DependentUpon>frmSalesJournal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Accounting\frmSearchDocument.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accounting\frmSearchDocument.Designer.cs">
+      <DependentUpon>frmSearchDocument.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Accounting\frmSendEmail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Accounting\frmSendEmail.Designer.cs">
+      <DependentUpon>frmSendEmail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helper\DashboardHelper.cs" />
+    <Compile Include="Helper\DatabaseHelper.cs" />
+    <Compile Include="Helper\DataHelper.cs" />
+    <Compile Include="Helper\EmailConfig.cs" />
+    <Compile Include="Helper\EmailHelper.cs" />
+    <Compile Include="Helper\GlobalSession.cs" />
+    <Compile Include="Helper\PrintPDFHelper.cs" />
+    <Compile Include="Helper\ReportHelper.cs" />
+    <Compile Include="Helper\SecurityHelper.cs" />
+    <Compile Include="Helper\UserHelper.cs" />
+    <Compile Include="Management\frmCharger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\frmCharger.Designer.cs">
+      <DependentUpon>frmCharger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\frmReasonInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\frmReasonInput.Designer.cs">
+      <DependentUpon>frmReasonInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\frmUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\frmUser.Designer.cs">
+      <DependentUpon>frmUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="mdiProperties.cs" />
+    <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
+    <Compile Include="Report\InvoiceReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\InvoiceReport.Designer.cs">
+      <DependentUpon>InvoiceReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\ReceiptReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\ReceiptReport.Designer.cs">
+      <DependentUpon>ReceiptReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ThanhPhan\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThanhPhan\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ThanhPhan\frmDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThanhPhan\frmDashboard.Designer.cs">
+      <DependentUpon>frmDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ThanhPhan\FrmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThanhPhan\FrmMain.Designer.cs">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ThanhPhan\FrmSignup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThanhPhan\FrmSignup.Designer.cs">
+      <DependentUpon>FrmSignup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ThanhPhan\FrmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThanhPhan\FrmLogin.Designer.cs">
+      <DependentUpon>FrmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Accounting\DSChungTu.resx">
+      <DependentUpon>DSChungTu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Accounting\frmGeneralJournal.resx">
+      <DependentUpon>frmGeneralJournal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Accounting\frmChungTu.resx">
+      <DependentUpon>frmChungTu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Accounting\frmReportinput.resx">
+      <DependentUpon>frmReportinput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Accounting\frmHachToan.resx">
+      <DependentUpon>frmHachToan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Accounting\frmSearchDocument.resx">
+      <DependentUpon>frmSearchDocument.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Accounting\frmSendEmail.resx">
+      <DependentUpon>frmSendEmail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\frmCharger.resx">
+      <DependentUpon>frmCharger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\frmReasonInput.resx">
+      <DependentUpon>frmReasonInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\frmUser.resx">
+      <DependentUpon>frmUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="obj\Debug\ChargingApp.Properties.Resources.resources" />
+    <EmbeddedResource Include="obj\Debug\ChargingApp.ThanhPhan.FrmLogin.resources" />
+    <EmbeddedResource Include="obj\Debug\ChargingApp.ThanhPhan.FrmSignup.resources" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Report\InvoiceReport.resx">
+      <DependentUpon>InvoiceReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\ReceiptReport.resx">
+      <DependentUpon>ReceiptReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThanhPhan\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThanhPhan\frmDashboard.resx">
+      <DependentUpon>frmDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThanhPhan\FrmMain.resx">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThanhPhan\FrmSignup.resx">
+      <DependentUpon>FrmSignup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThanhPhan\FrmLogin.resx">
+      <DependentUpon>FrmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="bin\Debug\App.config" />
+    <None Include="bin\Debug\ChargingApp.exe.config" />
+    <None Include="EmailSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="obj\Debug\.AssemblyReference.cache" />
+    <None Include="obj\Debug\Charging.669A1F2C.Up2Date" />
+    <None Include="obj\Debug\ChargingApp.csproj.AssemblyReference.cache" />
+    <None Include="obj\Debug\ChargingApp.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\ChargingApp.csproj.GenerateResource.cache" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="packages.config" />
+    <None Include="packages\DevExpress.Data.25.1.7-pre-25306\.signature.p7s" />
+    <None Include="packages\DevExpress.Data.25.1.7-pre-25306\DevExpress.Data.25.1.7-pre-25306.nupkg" />
+    <None Include="packages\DevExpress.Data.25.1.7-pre-25306\tools\install.ps1" />
+    <None Include="packages\DevExpress.Data.25.1.7-pre-25306\tools\uninstall.ps1" />
+    <None Include="packages\DevExpress.Xpo.25.1.7-pre-25306\.signature.p7s" />
+    <None Include="packages\DevExpress.Xpo.25.1.7-pre-25306\DevExpress.Xpo.25.1.7-pre-25306.nupkg" />
+    <None Include="packages\ReaLTaiizor.3.8.1.4\.signature.p7s" />
+    <None Include="packages\ReaLTaiizor.3.8.1.4\LICENSE" />
+    <None Include="packages\ReaLTaiizor.3.8.1.4\README.MD" />
+    <None Include="packages\ReaLTaiizor.3.8.1.4\ReaLTaiizor.3.8.1.4.nupkg" />
+    <None Include="packages\System.Configuration.ConfigurationManager.10.0.0\.signature.p7s" />
+    <None Include="packages\System.Configuration.ConfigurationManager.10.0.0\buildTransitive\net461\System.Configuration.ConfigurationManager.targets" />
+    <None Include="packages\System.Configuration.ConfigurationManager.10.0.0\buildTransitive\net462\_._" />
+    <None Include="packages\System.Configuration.ConfigurationManager.10.0.0\buildTransitive\net8.0\_._" />
+    <None Include="packages\System.Configuration.ConfigurationManager.10.0.0\buildTransitive\netcoreapp2.0\System.Configuration.ConfigurationManager.targets" />
+    <None Include="packages\System.Configuration.ConfigurationManager.10.0.0\PACKAGE.md" />
+    <None Include="packages\System.Configuration.ConfigurationManager.10.0.0\System.Configuration.ConfigurationManager.10.0.0.nupkg" />
+    <None Include="bin\Debug\images\.vs\images\CopilotIndices\0.2.1634.3922\CodeChunks.db" />
+    <None Include="bin\Debug\images\.vs\images\CopilotIndices\0.2.1634.3922\CodeChunks.db-shm" />
+    <None Include="bin\Debug\images\.vs\images\CopilotIndices\0.2.1634.3922\CodeChunks.db-wal" />
+    <None Include="bin\Debug\images\.vs\images\CopilotIndices\0.2.1634.3922\SemanticSymbols.db" />
+    <None Include="bin\Debug\images\.vs\images\CopilotIndices\0.2.1634.3922\SemanticSymbols.db-shm" />
+    <None Include="bin\Debug\images\.vs\images\CopilotIndices\0.2.1634.3922\SemanticSymbols.db-wal" />
+    <None Include="bin\Debug\images\.vs\images\FileContentIndex\f63a3aba-3ba4-474e-a0b9-d174f74f0992.vsidx" />
+    <None Include="bin\Debug\images\.vs\ProjectSettings.json" />
+    <None Include="bin\Debug\images\.vs\slnx.sqlite" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Debug\images\.vs\images\v17\" />
+    <Folder Include="bin\Release\" />
+    <Folder Include="obj\Debug\TempPE\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\ChargingApp.exe" />
+    <Content Include="bin\Debug\ChargingApp.pdb" />
+    <Content Include="bin\Debug\DevExpress.Data.v25.1.dll" />
+    <Content Include="bin\Debug\DevExpress.Data.v25.1.xml" />
+    <Content Include="bin\Debug\DevExpress.Xpo.v25.1.dll" />
+    <Content Include="bin\Debug\DevExpress.Xpo.v25.1.xml" />
+    <Content Include="bin\Debug\System.Configuration.ConfigurationManager.dll" />
+    <Content Include="bin\Debug\System.Configuration.ConfigurationManager.xml" />
+    <Content Include="obj\Debug\ChargingApp.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\ChargingApp.exe" />
+    <Content Include="obj\Debug\ChargingApp.pdb" />
+    <Content Include="packages\DevExpress.Data.25.1.7-pre-25306\analyzers\dotnet\DevExpress.Generator.dll" />
+    <Content Include="packages\DevExpress.Data.25.1.7-pre-25306\lib\net462\DevExpress.Data.v25.1.dll" />
+    <Content Include="packages\DevExpress.Data.25.1.7-pre-25306\lib\net462\DevExpress.Data.v25.1.xml" />
+    <Content Include="packages\DevExpress.Data.25.1.7-pre-25306\lib\net8.0\DevExpress.Data.v25.1.dll" />
+    <Content Include="packages\DevExpress.Data.25.1.7-pre-25306\lib\net8.0\DevExpress.Data.v25.1.xml" />
+    <Content Include="packages\DevExpress.Data.25.1.7-pre-25306\tools\VisualStudioToolsManifest.xml" />
+    <Content Include="packages\DevExpress.Xpo.25.1.7-pre-25306\lib\net462\DevExpress.Xpo.v25.1.dll" />
+    <Content Include="packages\DevExpress.Xpo.25.1.7-pre-25306\lib\net462\DevExpress.Xpo.v25.1.xml" />
+    <Content Include="packages\DevExpress.Xpo.25.1.7-pre-25306\lib\net8.0\DevExpress.Xpo.v25.1.dll" />
+    <Content Include="packages\DevExpress.Xpo.25.1.7-pre-25306\lib\net8.0\DevExpress.Xpo.v25.1.xml" />
+    <Content Include="packages\DevExpress.Xpo.25.1.7-pre-25306\readme.txt" />
+    <Content Include="packages\DevExpress.Xpo.25.1.7-pre-25306\tools\VisualStudioToolsManifest.xml" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net10.0-windows7.0\ReaLTaiizor.dll" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net10.0-windows7.0\ReaLTaiizor.xml" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net481\ReaLTaiizor.dll" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net481\ReaLTaiizor.xml" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net48\ReaLTaiizor.dll" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net48\ReaLTaiizor.xml" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net6.0-windows7.0\ReaLTaiizor.dll" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net6.0-windows7.0\ReaLTaiizor.xml" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net7.0-windows7.0\ReaLTaiizor.dll" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net7.0-windows7.0\ReaLTaiizor.xml" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net8.0-windows7.0\ReaLTaiizor.dll" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net8.0-windows7.0\ReaLTaiizor.xml" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net9.0-windows7.0\ReaLTaiizor.dll" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\net9.0-windows7.0\ReaLTaiizor.xml" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\netcoreapp3.1\ReaLTaiizor.dll" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\lib\netcoreapp3.1\ReaLTaiizor.xml" />
+    <Content Include="packages\ReaLTaiizor.3.8.1.4\Taiizor.png" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\Icon.png" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\net10.0\System.Configuration.ConfigurationManager.dll" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\net10.0\System.Configuration.ConfigurationManager.xml" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\net462\System.Configuration.ConfigurationManager.dll" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\net462\System.Configuration.ConfigurationManager.xml" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\net8.0\System.Configuration.ConfigurationManager.dll" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\net8.0\System.Configuration.ConfigurationManager.xml" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\net9.0\System.Configuration.ConfigurationManager.dll" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\net9.0\System.Configuration.ConfigurationManager.xml" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\netstandard2.0\System.Configuration.ConfigurationManager.dll" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\lib\netstandard2.0\System.Configuration.ConfigurationManager.xml" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\THIRD-PARTY-NOTICES.TXT" />
+    <Content Include="packages\System.Configuration.ConfigurationManager.10.0.0\useSharedDesignerContext.txt" />
+    <Content Include="bin\Debug\images\background_login.jpg" />
+    <Content Include="bin\Debug\images\dashboard1.png" />
+    <Content Include="bin\Debug\images\logout.png" />
+    <Content Include="bin\Debug\images\menu3.png" />
+    <Content Include="bin\Debug\images\settings.png" />
+    <Content Include="bin\Debug\images\statisctics1.png" />
+    <Content Include="bin\Debug\images\system.png" />
+    <Content Include="bin\Debug\images\woman.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="packages\DevExpress.Data.25.1.7-pre-25306\analyzers\dotnet\DevExpress.Generator.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

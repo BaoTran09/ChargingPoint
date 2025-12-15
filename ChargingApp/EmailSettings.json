@@ -1,0 +1,11 @@
+{
+  "SmtpServer": "smtp.gmail.com",
+  "Port": 587,
+  "SenderEmail": "tranne2k4@gmail.com",
+  "SenderName": "CÔNG TY CỔ PHẦN PHÁT TRIỂN TRẠM SẠC TOÀN CẦU V-GREEN",
+  "Username": "tranne2k4@gmail.com",
+  "Password": "mjpw uktq mbyu qrkz", // ← App Password 16 ký tự
+  "EnableSsl": true,
+  "UseOAuth2": false,
+  "TimeoutSeconds": 30
+}

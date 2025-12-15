@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj": {}
+    "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj": {}
   },
   "projects": {
-    "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj": {
+    "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj",
+        "projectUniqueName": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj",
         "projectName": "ChargingPoint",
-        "projectPath": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj",
+        "projectPath": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj",
         "packagesPath": "C:\\Users\\trann\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\trann\\Downloads\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\obj\\",
+        "outputPath": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 25.1\\Components\\Offline Packages",
@@ -54,6 +54,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.102.1, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.13.0, )"
@@ -115,6 +119,10 @@
             "itext": {
               "target": "Package",
               "version": "[9.3.0, )"
+            },
+            "itext7": {
+              "target": "Package",
+              "version": "[8.0.2, )"
             },
             "jQuery": {
               "target": "Package",

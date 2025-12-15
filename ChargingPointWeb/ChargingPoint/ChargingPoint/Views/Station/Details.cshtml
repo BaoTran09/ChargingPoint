@@ -1,72 +1,240 @@
 ﻿@model ChargingPoint.DB.Station
-
+@using Microsoft.EntityFrameworkCore
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Đếm trạng thái charger (nếu có DbContext inject được thì tốt hơn, tạm giả lập)
+    var totalChargers = Model.Chargers?.Count() ?? 0;
+    var activeChargers = Model.Chargers?.Count(c => c.Connectors.Any(con => con.Status == "InUse")) ?? 0;
+    var availableChargers = Model.Chargers?.Count(c => c.Connectors.Any(con => con.Status == "Available")) ?? 0;
+    var faultedChargers = totalChargers - activeChargers - availableChargers;
 }
 
-<h1>Details</h1>
+<div class="content-wrapper">
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <div>
+            <nav class="breadcrumb-nav mb-2">
+                <a asp-action="Index" class="text-decoration-none text-secondary">Quản lý trạm sạc</a>
+                <span class="mx-2 text-secondary">/</span>
+                <span class="text-primary">#@Model.Tag</span>
+            </nav>
+            <h2 class="fw-bold mb-1">@Model.Name</h2>
+            <p class="text-secondary mb-0">
+                <i class="bi bi-geo-alt-fill text-success me-1"></i>@Model.Address
+            </p>
+        </div>
+        <div class="d-flex gap-3">
+            <a asp-controller="Charger" asp-action="Index" asp-route-stationId="@Model.StationId"
+               class="btn btn-success d-flex align-items-center gap-2 px-4 py-3 shadow-sm">
+                <i class="bi bi-ev-station-fill"></i>
+                <span class="fw-medium">Quản lý Charger (@totalChargers)</span>
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.StationId" class="btn btn-outline-warning px-4 py-3">
+                <i class="bi bi-pencil-square"></i> Sửa
+            </a>
+        </div>
+    </div>
 
-<div>
-    <h4>Station</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tag)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tag)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StationType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StationType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Latitude)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Latitude)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Longitude)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Longitude)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BuiltDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BuiltDate)
-        </dd>
-    </dl>
+    <div class="row g-5">
+        <!-- Left: Map + Info -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-geo-alt-fill text-success me-2"></i>Vị trí trạm sạc
+                    </h5>
+                    <span class="badge bg-primary bg-opacity-10 text-primary">
+                        @(Model.StationType == "Public" ? "Công cộng" : "Riêng tư")
+                    </span>
+                </div>
+                <div class="card-body p-0">
+                    <div id="map" style="height: 480px; border-radius: 0 0 var(--radius) var(--radius);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Stats + Info -->
+        <div class="col-lg-5">
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-6">
+                    <div class="card border-0 shadow-sm text-center p-4 h-100">
+                        <i class="bi bi-ev-station-fill fs-1 text-success mb-3"></i>
+                        <h4 class="fw-bold mb-1">@totalChargers</h4>
+                        <small class="text-secondary">Tổng Charger</small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card border-0 shadow-sm text-center p-4 h-100 @(activeChargers > 0 ? "border-success border-opacity-25" : "")">
+                        <i class="bi bi-lightning-charge-fill fs-1 text-success mb-3"></i>
+                        <h4 class="fw-bold mb-1 text-success">@activeChargers</h4>
+                        <small class="text-secondary">Đang sạc</small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card border-0 shadow-sm text-center p-4 h-100 @(availableChargers > 0 ? "border-info border-opacity-25" : "")">
+                        <i class="bi bi-plug-fill fs-1 text-info mb-3"></i>
+                        <h4 class="fw-bold mb-1 text-info">@availableChargers</h4>
+                        <small class="text-secondary">Trống</small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card border-0 shadow-sm text-center p-4 h-100 @(faultedChargers > 0 ? "border-danger border-opacity-25" : "")">
+                        <i class="bi bi-exclamation-triangle-fill fs-1 text-danger mb-3"></i>
+                        <h4 class="fw-bold mb-1 text-danger">@faultedChargers</h4>
+                        <small class="text-secondary">Lỗi</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-bottom py-3">
+                    <h5 class="mb-0 fw-semibold">Thông tin chi tiết</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <td class="text-secondary" width="120">Mã trạm</td>
+                            <td class="fw-bold text-primary">#@Model.Tag</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Tên trạm</td>
+                            <td class="fw-semibold">@Model.Name</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Loại trạm</td>
+                            <td>
+                                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2">
+                                    @(Model.StationType == "Public" ? "Công cộng" : "Riêng tư")
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Địa chỉ</td>
+                            <td>@Model.Address</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Tọa độ</td>
+                            <td>
+                                <small class="text-secondary">
+                                    Lat: @Model.Latitude?.ToString("F6")<br>
+                                    Lng: @Model.Longitude?.ToString("F6")
+                                </small>
+                            </td>
+                        </tr>
+                        @if (!string.IsNullOrEmpty(Model.Notes))
+                        {
+                            <tr>
+                                <td class="text-secondary">Ghi chú</td>
+                                <td>@Model.Notes</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td class="text-secondary">Ngày tạo</td>
+                            <td>@Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                        </tr>
+                        @if (Model.BuiltDate.HasValue)
+                        {
+                            <tr>
+                                <td class="text-secondary">Ngày xây dựng</td>
+                                <td>@Model.BuiltDate.Value.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body d-flex flex-wrap gap-3">
+                    <a asp-controller="ChargingSession" asp-action="Detail" asp-route-stationId="@Model.StationId"
+                       class="btn btn-outline-primary px-4 py-3 flex-fill">
+                        <i class="bi bi-graph-up-arrow me-2"></i>Xem phiên sạc
+                    </a>
+                    <a href="https://www.google.com/maps?q=@Model.Latitude,@Model.Longitude" target="_blank"
+                       class="btn btn-outline-success px-4 py-3 flex-fill">
+                        <i class="bi bi-map me-2"></i>Mở Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.StationId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        $(function () {
+            const lat = @Model.Latitude;
+            const lng = @Model.Longitude;
+
+            const map = L.map('map').setView([lat, lng], 17);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Custom V-Green Icon
+            const vgreenIcon = L.divIcon({
+                html: `<div style="background:var(--vgreen);width:48px;height:48px;border-radius:50%;border:5px solid white;box-shadow:0 6px 20px rgba(16,185,129,0.4);display:flex;align-items:center;justify-content:center;animation:pulse 3s infinite;">
+                                 <i class="bi bi-ev-station-fill text-white fs-3"></i>
+                               </div>`,
+                iconSize: [48, 48],
+                iconAnchor: [24, 48],
+                popupAnchor: [0, -48]
+            });
+
+            const marker = L.marker([lat, lng], { icon: vgreenIcon })
+                .addTo(map)
+                .bindPopup(`
+                            <div class="text-center">
+                                <h6 class="fw-bold mb-1">@Model.Name</h6>
+                                <p class="small text-secondary mb-2">#@Model.Tag • @(Model.StationType == "Public" ? "Công cộng" : "Riêng tư")</p>
+                                <a href="/Charger/Index?stationId=@Model.StationId" class="btn btn-success btn-sm">
+                                    <i class="bi bi-ev-station-fill"></i> Xem Charger
+                                </a>
+                            </div>
+                        `, {
+                    permanent: false,
+                    className: 'vgreen-popup'
+                })
+                .openPopup();
+
+            // Pulse animation
+            const style = document.createElement('style');
+            style.textContent = `
+                        @@keyframes pulse {
+                            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+                            70% { box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); }
+                            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+                        }
+                        .leaflet-popup-content-wrapper {
+                            border-radius: var(--radius);
+                            box-shadow: var(--shadow-lg);
+                        }
+                    `;
+            document.head.appendChild(style);
+        });
+    </script>
+
+    <style>
+        #map {
+            border-radius: 0 0 var(--radius) var(--radius);
+            overflow: hidden;
+        }
+
+        .card {
+            transition: var(--transition);
+        }
+
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-lg) !important;
+            }
+    </style>
+}

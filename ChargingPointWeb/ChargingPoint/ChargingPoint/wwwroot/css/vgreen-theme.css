@@ -1,0 +1,35 @@
+﻿:root {
+    --primary: #00A86B;
+    --primary-dark: #008c5a;
+    --gray-100: #f8fafc;
+    --gray-900: #0f172a;
+}
+
+body.font-inter {
+    font-family: 'Inter', 'Roboto', sans-serif;
+}
+
+.menu-item {
+    @apply flex items-center gap-4 px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 font-medium;
+}
+
+    .menu-item.active, .menu-item:hover {
+        @apply bg-emerald-50 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400;
+    }
+
+.menu-divider {
+    @apply text-xs font-bold text-gray-500 dark:text-gray-500 uppercase tracking-wider px-4 mt-6 mb-2;
+}
+
+.nav-item {
+    @apply flex flex-col items-center justify-center text-xs text-gray-600 dark:text-gray-400;
+}
+
+    .nav-item.active, .nav-item:hover {
+        @apply text-emerald-600 dark:text-emerald-400;
+    }
+
+/* Smooth sidebar */
+#sidebarOverlay.active {
+    display: block !important;
+}

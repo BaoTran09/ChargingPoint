@@ -36,6 +36,9 @@ namespace ChargingPoint.Models
         [ForeignKey("VehicleId")]
         public virtual Vehicle Vehicle { get; set; }
 
-     
+        public string? VIN { get; set; }                     // Chiếc xe cụ thể
+        public IndividualVehicle? IndividualVehicle { get; set; }
+        public ICollection<Invoice> Invoice { get; set; }
+
     }
 }

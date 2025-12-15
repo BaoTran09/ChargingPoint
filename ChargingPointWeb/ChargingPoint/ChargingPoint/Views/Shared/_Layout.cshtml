@@ -1,178 +1,631 @@
 ﻿<!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-bs-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - V-Green</title>
+    <title>@ViewData["Title"] - V-Green Charging</title>
 
-    <!-- Vendor CSS -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+    <!-- Favicon -->
+    <link rel="icon" href="~/images/favicon.ico" type="image/x-icon" />
 
-    <!-- Leaflet (map library) -->
-    <link rel="stylesheet" href="~/lib/leaflet/leaflet.css" />
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- App & Custom CSS -->
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ChargingPoint.styles.css" asp-append-version="true" />
+    <!-- Bootstrap 5 + Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Tesla-inspired CSS -->
+    <style>
+        :root {
+            --vgreen: #10b981;
+            --vgreen-dark: #059669;
+            --vgreen-light: #d1fae5;
+            --text-primary: #171a20;
+            --text-secondary: #5c5e62;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f4f4f4;
+            --border-color: #e8e8e8;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --radius: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-bs-theme="dark"] {
+            --text-primary: #f4f4f4;
+            --text-secondary: #a0a0a0;
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --border-color: #1a1a1a;
+            --vgreen: #34d399;
+            --vgreen-dark: #10b981;
+            --shadow-sm: 0 1px 3px rgba(255,255,255,0.03);
+            --shadow-md: 0 4px 12px rgba(255,255,255,0.06);
+            --shadow-lg: 0 12px 40px rgba(255,255,255,0.1);
+        }
+
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Sidebar - Chuẩn Tesla */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 260px;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+
+        @@media (max-width: 991px) {
+            .sidebar {
+                transform: translateX(-100%);
+                box-shadow: var(--shadow-lg);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+        }
+
+        /* Logo Section */
+        .logo-section {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-section img {
+            height: 28px;
+            width: auto;
+        }
+
+        /* Menu Navigation */
+        .menu-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .menu-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            padding: 20px 12px 8px;
+            margin-top: 12px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius);
+            margin: 2px 0;
+            font-weight: 500;
+            font-size: 14px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .menu-link i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .menu-link:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .menu-link.active {
+            background: var(--vgreen-light);
+            color: var(--vgreen-dark);
+        }
+
+        [data-bs-theme="dark"] .menu-link.active {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--vgreen);
+        }
+
+        /* Theme Toggle Section */
+        .theme-section {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .theme-toggle-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: none;
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--border-color);
+        }
+
+        .form-switch {
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .form-switch .form-check-input {
+            width: 44px;
+            height: 24px;
+            cursor: pointer;
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            background-image: none;
+        }
+
+        .form-switch .form-check-input:checked {
+            background-color: var(--vgreen);
+            border-color: var(--vgreen);
+        }
+
+        .form-switch .form-check-input:focus {
+            box-shadow: none;
+            border-color: var(--vgreen);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        @@media (max-width: 991px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .mobile-header img {
+            height: 24px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .menu-btn:hover {
+            background: var(--bg-secondary);
+        }
+
+        .menu-btn i {
+            font-size: 24px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            z-index: 999;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-item i {
+            font-size: 22px;
+        }
+
+        .nav-item.active {
+            color: var(--vgreen);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 3px;
+            background: var(--vgreen);
+            border-radius: 0 0 3px 3px;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 900;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Login Partial Styling */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--vgreen);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 13px;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .btn-logout:hover {
+            background: var(--border-color);
+            border-color: var(--text-secondary);
+        }
+
+        /* Copyright */
+        .copyright {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            padding: 0 20px;
+        }
+
+        /* Content Area Spacing */
+        .content-wrapper {
+            padding: 32px 24px;
+        }
+
+        @@media (max-width: 991px) {
+            .content-wrapper {
+                padding: 16px;
+                margin-top: 60px;
+            }
+        }
+
+        /* Animations */
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sidebar.show {
+            animation: slideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
 
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
     <!-- Sidebar -->
-    <aside class="sidebar">
-        <header class="sidebar-header">
-            <img src="~/Images/logo_v-green.jpg" alt="V-Green Logo" class="header-logo" />
-            <button class="sidebar-toggle">
-                <span class="material-symbols-outlined">chevron_right</span>
-            </button>
-        </header>
-
-        <div class="sidebar-content">
-            <!-- Search form -->
-            <form action="#" class="search-form" onsubmit="return false;">
-                <span class="material-symbols-outlined">search</span>
-                <input type="search" placeholder="Search..." />
-            </form>
-
-            <!-- Menu list -->
-            <ul class="menu-list">
-                <li class="menu-item" data-tooltip="Dashboard">
-                    <a asp-area="" asp-controller="Home" asp-action="Index" class="menu-link">
-                        <span class="material-symbols-outlined">dashboard</span>
-                        <span class="menu-text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="menu-item" data-tooltip="Stations">
-                    <a asp-area="" asp-controller="Station" asp-action="Index" class="menu-link">
-                        <span class="material-symbols-outlined">ev_station</span>
-                        <span class="menu-text">Stations</span>
-                    </a>
-                </li>
-                <li class="menu-item" data-tooltip="Invoices">
-                    <a asp-area="" asp-controller="Invoice" asp-action="MyInvoices" class="menu-link">
-                        <span class="material-symbols-outlined">Invoice</span>
-                        <span class="menu-text">Invoices</span>
-                    </a>
-                </li>
-                <!-- Charging Sessions with submenu -->
-                <li class="menu-item has-submenu" data-tooltip="Charging Sessions">
-                    <a href="javascript:void(0)" class="menu-link">
-                        <span class="material-symbols-outlined">flash_on</span>
-                        <span class="menu-text">Charging Sessions</span>
-                        <span class="submenu-arrow material-symbols-outlined">chevron_right</span>
-                    </a>
-                    <ul class="submenu">
-                        <li class="submenu-item">
-                            <a asp-controller="ChargingSession" asp-action="Index" class="submenu-link">
-                                <span class="material-symbols-outlined">list</span>
-                                <span>All Sessions</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item">
-                            <a asp-controller="ChargingSession" asp-action="ChargingHistory" class="submenu-link">
-                                <span class="material-symbols-outlined">history</span>
-                                <span>Charging History</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item">
-                            <a asp-controller="ChargingSession" asp-action="ChargingRequire" class="submenu-link">
-                                <span class="material-symbols-outlined">assignment</span>
-                                <span>Requiring</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="menu-item" data-tooltip="Reports">
-                    <a asp-area="" asp-controller="Report" asp-action="Index" class="menu-link">
-                        <span class="material-symbols-outlined">bar_chart</span>
-                        <span class="menu-text">Reports</span>
-                    </a>
-                </li>
-                <li class="menu-item" data-tooltip="User">
-                    <a asp-area="" asp-controller="Account" asp-action="CreateEmployee" class="menu-link">
-                        <span class="material-symbols-outlined">bar_chart</span>
-                        <span class="menu-text">CreateEmployee</span>
-                    </a>
-                </li>
-                <li class="menu-item" data-tooltip="User">
-                <a asp-area="" asp-controller="Account" asp-action="Usermanagement" class="menu-link">
-                        <span class="material-symbols-outlined">bar_chart</span>
-                        <span class="menu-text">Usermanagement</span>
-                    </a>
-                </li>
-                <li class="menu-item has-submenu" data-tooltip="Settings">
-                    <a href="javascript:void(0)" class="menu-link">
-                        <span class="material-symbols-outlined">flash_on</span>
-                        <span class="menu-text">Settings</span>
-                        <span class="submenu-arrow material-symbols-outlined">chevron_right</span>
-                    </a>
-
-                <ul class="submenu">
-                    <li class="submenu-item">
-                        <a asp-controller="Customer" asp-action="MyAccount" class="submenu-link">
-                            <span class="material-symbols-outlined">Account</span>
-                            <span>My Account</span>
-                        </a>
-                    </li>
-                    <li class="submenu-item">
-                        <a asp-controller="Customer" asp-action="MyCars" class="submenu-link">
-                            <span class="material-symbols-outlined">Car</span>
-                            <span>My Cars</span>
-                        </a>
-                    </li>
-                    <li class="submenu-item">
-                        <a asp-controller="Customer" asp-action="MyMotorbikes" class="submenu-link">
-                            <span class="material-symbols-outlined">Motorbike</span>
-                            <span>My Motorbikes</span>
-                        </a>
-                    </li>
-                </ul>
-                </li>
-                <partial name="_LoginPartial" />
-            </ul>
+    <aside class="sidebar" id="sidebar">
+        <!-- Logo -->
+        <div class="logo-section">
+            <div class="d-flex align-items-center justify-content-between">
+                <img src="/Images/logo_v-green.jpg" alt="V-Green Charging" /> V-Green Charging 
+                <button class="menu-btn d-lg-none" id="closeSidebar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
         </div>
 
-        <!-- Sidebar footer with theme toggle -->
-        <div class="sidebar-footer">
-            <button class="theme-toggle">
-                <div class="theme-label">
-                    <span class="theme-icon material-symbols-outlined">dark_mode</span>
-                    <span class="theme-text">Dark Mode</span>
+        <!-- Navigation Menu -->
+        <nav class="menu-nav">
+            <a asp-controller="Dashboard" asp-action="Index" class="menu-link">
+                <i class="bi bi-house-door-fill"></i>
+                <span>Trang chủ</span>
+            </a>
+            <a asp-controller="Station" asp-action="Index" class="menu-link">
+                <i class="bi bi-ev-station-fill"></i>
+                <span>Tìm trạm sạc</span>
+            </a>
+            <a asp-controller="Charger" asp-action="MyChargingSessions" class="menu-link">
+                <i class="bi bi-lightning-charge-fill"></i>
+                <span>Đang sạc</span>
+            </a>
+            <a asp-controller="Invoice" asp-action="MyInvoices" class="menu-link">
+                <i class="bi bi-receipt"></i>
+                <span>Hóa đơn</span>
+            </a>
+
+            @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+            {
+                <div class="menu-section-title">Quản trị</div>
+                <a asp-controller="ChargingSession" asp-action="Index" class="menu-link">
+                    <i class="bi bi-list-ul"></i>
+                    <span>Phiên sạc</span>
+                </a>
+                <a asp-controller="Report" asp-action="Index" class="menu-link">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <span>Báo cáo</span>
+                </a>
+                <a asp-controller="Account" asp-action="UserManagement" class="menu-link">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Người dùng</span>
+                </a>
+            }
+
+            <div class="menu-section-title">Cá nhân</div>
+            <a asp-controller="Customer" asp-action="MyAccount" class="menu-link">
+                <i class="bi bi-person-circle"></i>
+                <span>Tài khoản</span>
+            </a>
+            <a asp-controller="Customer" asp-action="MyCars" class="menu-link">
+                <i class="bi bi-car-front-fill"></i>
+                <span>Xe của tôi</span>
+            </a>
+
+            <!-- Login Partial -->
+            <div style="margin-top: 24px;">
+                <partial name="_LoginPartial" />
+            </div>
+        </nav>
+
+        <!-- Theme Toggle -->
+        <div class="theme-section">
+            <button class="theme-toggle-btn" id="themeToggleBtn">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-moon-stars-fill"></i>
+                    <span>Chế độ tối</span>
                 </div>
-                <div class="theme-toggle-track">
-                    <div class="theme-toggle-indicator"></div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="darkSwitch">
                 </div>
             </button>
+            <div class="copyright">© 2025 V-Green Charging</div>
         </div>
     </aside>
 
-    <!-- Main content -->
+    <!-- Main Content -->
     <main class="main-content">
-        @RenderBody()
+        <!-- Mobile Header -->
+        <header class="mobile-header d-lg-none">
+            <button class="menu-btn" id="openSidebar">
+                <i class="bi bi-list"></i>
+            </button>
+            <img src="/images/logo_v-green_small.png" alt="V-Green" />
+            <div style="width: 40px;"></div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="border-top footer text-muted">
-        <div class="container-fluid">
-            &copy; 2025 - V-Green - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+    <!-- Mobile Bottom Navigation -->
+    <nav class="bottom-nav d-lg-none">
+        <a href="/" class="nav-item">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Trang chủ</span>
+        </a>
+        <a href="/Station" class="nav-item">
+            <i class="bi bi-ev-station-fill"></i>
+            <span>Trạm sạc</span>
+        </a>
+        <a href="/Charger/MyChargingSessions" class="nav-item">
+            <i class="bi bi-lightning-charge-fill"></i>
+            <span>Đang sạc</span>
+        </a>
+        <a href="/Invoice/MyInvoices" class="nav-item">
+            <i class="bi bi-receipt"></i>
+            <span>Hóa đơn</span>
+        </a>
+        <a href="/Customer/MyAccount" class="nav-item">
+            <i class="bi bi-person-circle"></i>
+            <span>Tài khoản</span>
+        </a>
+    </nav>
 
-        <!-- Scripts -->
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <link rel="stylesheet" href="~/lib/jquery-ui/dist/jquery-ui.css" />
-    <script src="~/lib/jquery-ui/dist/jquery-ui.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Custom JS - PHẢI LOAD SAU jQuery -->
-    <script src="~/js/script.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const openBtn = document.getElementById('openSidebar');
+            const closeBtn = document.getElementById('closeSidebar');
+            const themeSwitch = document.getElementById('darkSwitch');
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+            // Mobile Menu Toggle
+            const openMenu = () => {
+                sidebar.classList.add('show');
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeMenu = () => {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            };
+
+            openBtn?.addEventListener('click', openMenu);
+            closeBtn?.addEventListener('click', closeMenu);
+            overlay?.addEventListener('click', closeMenu);
+
+            // Dark Mode
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                themeSwitch.checked = true;
+            }
+
+            const toggleTheme = (isDark) => {
+                document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                themeSwitch.checked = isDark;
+            };
+
+            themeSwitch?.addEventListener('change', (e) => toggleTheme(e.target.checked));
+            themeToggleBtn?.addEventListener('click', () => toggleTheme(!themeSwitch.checked));
+
+            // Active Menu Highlighting
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.menu-link, .nav-item').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && (currentPath === href || currentPath.startsWith(href + '/'))) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Close menu on window resize
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (window.innerWidth > 991) {
+                        closeMenu();
+                    }
+                }, 250);
+            });
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -8,7 +8,8 @@ namespace ChargingPoint.Models
     public class Department
     {
         [Key]
-        public int Id { get; set; }
+        [StringLength(200)]
+        public string Id { get; set; }
 
         public string Name { get; set; }
 

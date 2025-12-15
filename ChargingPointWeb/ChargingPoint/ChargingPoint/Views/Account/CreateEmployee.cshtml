@@ -1,176 +1,153 @@
 ﻿@model ChargingPoint.ViewModels.CreateEmployeeViewModel
-
 @{
     ViewData["Title"] = "Tạo nhân viên mới";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container py-4">
+<div class="content-wrapper">
+    <!-- Breadcrumb + Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <nav class="breadcrumb-nav">
+                <a asp-action="UserManagement" class="text-decoration-none text-secondary">Quản lý nhân viên</a>
+                <span class="mx-2 text-secondary">/</span>
+                <span class="text-primary">Tạo nhân viên mới</span>
+            </nav>
+            <h2 class="fw-bold mt-2 mb-1">Tạo tài khoản nhân viên</h2>
+            <p class="text-secondary mb-0">Điền đầy đủ thông tin để thêm nhân viên vào hệ thống</p>
+        </div>
+        <a asp-action="UserManagement" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
     <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Header -->
-            <div class="mb-4">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a asp-action="UserManagement">User Management</a>
-                        </li>
-                        <li class="breadcrumb-item active">Tạo nhân viên mới</li>
-                    </ol>
-                </nav>
-                <h2>➕ Tạo tài khoản nhân viên mới</h2>
-                <p class="text-muted">Nhập thông tin để tạo tài khoản nhân viên</p>
-            </div>
-
-            <!-- Form -->
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-                    <form asp-action="CreateEmployee" method="post">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+        <div class="col-lg-10 col-xl-8">
+            <!-- Main Form Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <form asp-action="CreateEmployee" method="post" autocomplete="off">
                         @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded mb-4"></div>
 
-                        <!-- Account Information Section -->
-                        <h5 class="border-bottom pb-2 mb-3">
-                            <i class="fas fa-user-lock"></i> Thông tin tài khoản
-                        </h5>
+                        <!-- Thông tin tài khoản -->
+                        <div class="mb-5">
+                            <h5 class="fw-semibold mb-4 d-flex align-items-center gap-2">
+                                <i class="bi bi-person-lock fs-4 text-primary"></i>
+                                Thông tin đăng nhập
+                            </h5>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Email" class="form-label">
-                                    <i class="fas fa-envelope"></i> Email <span class="text-danger">*</span>
-                                </label>
-                                <input asp-for="Email" class="form-control" placeholder="employee@vgreen.com" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Username" class="form-label">
-                                    <i class="fas fa-id-badge"></i> Username <span class="text-danger">*</span>
-                                </label>
-                                <input asp-for="Username" class="form-control" placeholder="john.doe" />
-                                <small class="text-muted">Dùng để đăng nhập, không thể thay đổi sau này</small>
-                                <span asp-validation-for="Username" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Password" class="form-label">
-                                    <i class="fas fa-lock"></i> Password <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <input asp-for="Password" type="password" class="form-control" id="password" />
-                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password')">
-                                        <i class="fas fa-eye" id="password-icon"></i>
-                                    </button>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label asp-for="Email" class="form-label fw-medium">Email <span class="text-danger">*</span></label>
+                                    <input asp-for="Email" class="form-control form-control-lg" placeholder="employee@vgreen.vn" />
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
                                 </div>
-                                <small class="text-muted">Tối thiểu 6 ký tự</small>
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="ConfirmPassword" class="form-label">
-                                    <i class="fas fa-lock"></i> Confirm Password <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="confirmPassword" />
-                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirmPassword')">
-                                        <i class="fas fa-eye" id="confirmPassword-icon"></i>
-                                    </button>
+                                <div class="col-md-6">
+                                    <label asp-for="Username" class="form-label fw-medium">Tên đăng nhập <span class="text-danger">*</span></label>
+                                    <input asp-for="Username" class="form-control form-control-lg" placeholder="nguyenvana" />
+                                    <div class="form-text">Không thể thay đổi sau khi tạo</div>
+                                    <span asp-validation-for="Username" class="text-danger small"></span>
                                 </div>
-                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="row g-4 mt-2">
+                                <div class="col-md-6">
+                                    <label asp-for="Password" class="form-label fw-medium">Mật khẩu <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input asp-for="Password" type="password" id="password" class="form-control form-control-lg" />
+                                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('password')">
+                                            <i class="bi bi-eye" id="password-icon"></i>
+                                        </button>
+                                    </div>
+                                    <div class="mt-2">
+                                        <span id="passwordStrength" class="badge bg-secondary">Nhập mật khẩu</span>
+                                    </div>
+                                    <span asp-validation-for="Password" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="ConfirmPassword" class="form-label fw-medium">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input asp-for="ConfirmPassword" type="password" id="confirmPassword" class="form-control form-control-lg" />
+                                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('confirmPassword')">
+                                            <i class="bi bi-eye" id="confirmPassword-icon"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                                </div>
                             </div>
                         </div>
 
-                        <hr class="my-4" />
+                        <hr class="my-5">
 
-                        <!-- Employee Information Section -->
-                        <h5 class="border-bottom pb-2 mb-3">
-                            <i class="fas fa-user"></i> Thông tin cá nhân
-                        </h5>
+                        <!-- Thông tin cá nhân -->
+                        <div class="mb-5">
+                            <h5 class="fw-semibold mb-4 d-flex align-items-center gap-2">
+                                <i class="bi bi-person-circle fs-4 text-success"></i>
+                                Thông tin cá nhân
+                            </h5>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="FullName" class="form-label">
-                                    <i class="fas fa-user-circle"></i> Họ và tên <span class="text-danger">*</span>
-                                </label>
-                                <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
-                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label asp-for="FullName" class="form-label fw-medium">Họ và tên <span class="text-danger">*</span></label>
+                                    <input asp-for="FullName" class="form-control form-control-lg" placeholder="Nguyễn Văn A" />
+                                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="PhoneNumber" class="form-label fw-medium">Số điện thoại</label>
+                                    <input asp-for="PhoneNumber" class="form-control form-control-lg" placeholder="0901234567" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                                </div>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="PhoneNumber" class="form-label">
-                                    <i class="fas fa-phone"></i> Số điện thoại
-                                </label>
-                                <input asp-for="PhoneNumber" class="form-control" placeholder="0123456789" />
-                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            <div class="row g-4 mt-3">
+                                <div class="col-md-6">
+                                    <label asp-for="JobTitle" class="form-label fw-medium">Chức vụ <span class="text-danger">*</span></label>
+                                    <select asp-for="JobTitle" class="form-select form-select-lg">
+                                        <option value="">-- Chọn chức vụ --</option>
+                                        <option value="Manager">Quản lý</option>
+                                        <option value="Technician">Kỹ thuật viên</option>
+                                        <option value="Customer Service">Chăm sóc khách hàng</option>
+                                        <option value="Accountant">Kế toán</option>
+                                        <option value="Sales">Kinh doanh</option>
+                                        <option value="Support Staff">Hỗ trợ vận hành</option>
+                                    </select>
+                                    <span asp-validation-for="JobTitle" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Status" class="form-label fw-medium">Trạng thái tài khoản</label>
+                                    <select asp-for="Status" class="form-select form-select-lg">
+                                        <option value="Active">Hoạt động ngay</option>
+                                        <option value="Inactive">Tạm dừng (cần kích hoạt sau)</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="row">
-
-
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="JobTitle" class="form-label">
-                                    <i class="fas fa-briefcase"></i> Chức vụ <span class="text-danger">*</span>
-                                </label>
-                                <select asp-for="JobTitle" class="form-select">
-                                    <option value="">-- Chọn chức vụ --</option>
-                                    <option value="Manager">Manager</option>
-                                    <option value="Technician">Technician</option>
-                                    <option value="Customer Service">Customer Service</option>
-                                    <option value="Accountant">Accountant</option>
-                                    <option value="Sales">Sales</option>
-                                    <option value="Support Staff">Support Staff</option>
-                                </select>
-                                <span asp-validation-for="JobTitle" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <!-- 
-                        <div class="mb-3">
-                            <label asp-for="Address" class="form-label">
-                                <i class="fas fa-map-marker-alt"></i> Địa chỉ
-                            </label>
-                            <textarea asp-for="Address" class="form-control" rows="2" 
-                                      placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"></textarea>
-                            <span asp-validation-for="Address" class="text-danger"></span>
-                        </div>
-                        -->
-                        <div class="mb-3">
-                            <label asp-for="Status" class="form-label">
-                                <i class="fas fa-toggle-on"></i> Trạng thái
-                            </label>
-                            <select asp-for="Status" class="form-select">
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                            <span asp-validation-for="Status" class="text-danger"></span>
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="UserManagement" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> Hủy
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-end gap-3 mt-5">
+                            <a asp-action="UserManagement" class="btn btn-outline-secondary px-5 py-3">
+                                <i class="bi bi-x-lg"></i> Hủy bỏ
                             </a>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> Tạo nhân viên
+                            <button type="submit" class="btn btn-success px-5 py-3 d-flex align-items-center gap-2 shadow-sm">
+                                <i class="bi bi-check2-circle"></i>
+                                <span class="fw-medium">Tạo nhân viên</span>
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Info Card -->
-            <div class="card mt-3 border-info">
-                <div class="card-body">
-                    <h6 class="card-title">
-                        <i class="fas fa-info-circle text-info"></i> Lưu ý
-                    </h6>
-                    <ul class="mb-0 small">
-                        <li>Username và Email phải là duy nhất trong hệ thống</li>
-                        <li>Username không thể thay đổi sau khi tạo</li>
-                        <li>Mật khẩu mặc định nên được thay đổi sau lần đăng nhập đầu tiên</li>
-                        <li>Nhân viên sẽ đăng nhập bằng Username, không dùng Email</li>
+            <!-- Info Box -->
+            <div class="alert alert-info mt-4 d-flex align-items-start gap-3 border-0">
+                <i class="bi bi-info-circle-fill fs-4 flex-shrink-0 mt-1"></i>
+                <div class="small">
+                    <strong>Lưu ý quan trọng:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Tên đăng nhập và Email phải là duy nhất trong hệ thống</li>
+                        <li>Nhân viên sẽ đăng nhập bằng <strong>Tên đăng nhập</strong> (không dùng Email)</li>
+                        <li>Nên yêu cầu nhân viên đổi mật khẩu ngay lần đăng nhập đầu tiên</li>
+                        <li>Gợi ý: Dùng email công ty để tạo tài khoản (vd: an.nguyen@vgreen.vn)</li>
                     </ul>
                 </div>
             </div>
@@ -179,87 +156,73 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml"); }
 
     <script>
-        // Toggle password visibility
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(inputId + '-icon');
-            
+        // Toggle hiện/ẩn mật khẩu
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
             } else {
                 input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
             }
         }
 
-        // Auto-generate username from email
+        // Tự động điền Username từ Email
         $('#Email').on('blur', function () {
-            const email = $(this).val();
-            const username = $('#Username').val();
-
-            // Chỉ auto-fill nếu username đang trống
-            if (!username && email) {
-                const suggestedUsername = email.split('@@')[0].toLowerCase();
-                $('#Username').val(suggestedUsername);
+            if (!$('#Username').val() && $(this).val()) {
+                const username = $(this).val().split('@@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
+                $('#Username').val(username);
             }
         });
 
-        // Password strength indicator
-        $('#password').on('keyup', function() {
-            const password = $(this).val();
+        // Kiểm tra độ mạnh mật khẩu
+        $('#password').on('input', function () {
+            const val = $(this).val();
             let strength = 0;
-            
-            if (password.length >= 6) strength++;
-            if (password.length >= 10) strength++;
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-            if (/\d/.test(password)) strength++;
-            if (/[^a-zA-Z\d]/.test(password)) strength++;
-            
-            let message = '';
-            let color = '';
-            
-            if (strength < 2) {
-                message = 'Yếu';
-                color = 'danger';
-            } else if (strength < 4) {
-                message = 'Trung bình';
-                color = 'warning';
+            if (val.length >= 6) strength++;
+            if (val.length >= 10) strength++;
+            if (/[a-z]/.test(val) && /[A-Z]/.test(val)) strength++;
+            if (/\d/.test(val)) strength++;
+            if (/[^a-zA-Z0-9]/.test(val)) strength++;
+
+            const badge = $('#passwordStrength');
+            badge.removeClass('bg-danger bg-warning bg-success bg-secondary');
+
+            if (val === '') {
+                badge.text('Nhập mật khẩu').addClass('bg-secondary');
+            } else if (strength <= 2) {
+                badge.text('Yếu').addClass('bg-danger');
+            } else if (strength <= 3) {
+                badge.text('Trung bình').addClass('bg-warning');
             } else {
-                message = 'Mạnh';
-                color = 'success';
-            }
-            
-            // Remove existing badge
-            $('#password').next('.badge').remove();
-            
-            // Add new badge
-            if (password.length > 0) {
-                $(`<span class="badge bg-${color} ms-2">${message}</span>`)
-                    .insertAfter('#password');
+                badge.text('Mạnh').addClass('bg-success');
             }
         });
     </script>
 
     <style>
-        .form-label i {
-            width: 20px;
-            text-align: center;
+        .breadcrumb-nav {
+            font-size: 0.95rem;
         }
-
+        .form-control-lg,
+        .form-select-lg {
+            border-radius: var(--radius);
+        }
         .card {
-            border-radius: 10px;
+            border-radius: var(--radius);
         }
-
-        .btn {
-            border-radius: 5px;
+        .alert-info {
+            background: var(--vgreen-light);
+            border-left: 4px solid var(--vgreen);
+        }
+        hr {
+            border-top: 1px solid var(--border-color);
+            opacity: 1;
         }
     </style>
 }

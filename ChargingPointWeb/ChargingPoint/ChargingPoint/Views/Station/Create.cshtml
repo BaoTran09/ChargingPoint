@@ -1,73 +1,433 @@
 ﻿@model ChargingPoint.DB.Station
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm trạm sạc mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="content-wrapper">
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <nav class="mb-2" style="font-size: 13px;">
+                <a asp-action="Index" class="text-decoration-none text-secondary">Quản lý trạm sạc</a>
+                <span class="mx-2 text-secondary">/</span>
+                <span style="color: var(--vgreen); font-weight: 500;">Tạo trạm mới</span>
+            </nav>
+            <h2 class="fw-bold mb-1" style="font-size: 28px; color: var(--text-primary);">Thêm trạm sạc mới</h2>
+            <p class="text-secondary mb-0" style="font-size: 14px;">Nhập thông tin và chọn vị trí trên bản đồ</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2" style="font-weight: 500; border-radius: var(--radius);">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </div>
 
-<h4>Station</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Tag" class="control-label"></label>
-                <input asp-for="Tag" class="form-control" />
-                <span asp-validation-for="Tag" class="text-danger"></span>
+    <div class="row g-4">
+        <!-- Form -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: var(--radius);">
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" style="border-radius: var(--radius);"></div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Tag" class="form-label fw-medium" style="font-size: 13px; color: var(--text-secondary);">
+                                    Mã trạm <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="Tag" class="form-control" placeholder="VG001" style="height: 44px; border-radius: var(--radius); font-size: 14px;" />
+                                <span asp-validation-for="Tag" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="StationType" class="form-label fw-medium" style="font-size: 13px; color: var(--text-secondary);">
+                                    Loại trạm <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="StationType" class="form-select" style="height: 44px; border-radius: var(--radius); font-size: 14px;">
+                                    <option value="">-- Chọn loại --</option>
+                                    <option value="Public">Công cộng</option>
+                                    <option value="Private">Riêng tư</option>
+                                    <option value="Partner">Đối tác</option>
+                                </select>
+                                <span asp-validation-for="StationType" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label asp-for="Name" class="form-label fw-medium" style="font-size: 13px; color: var(--text-secondary);">
+                                Tên trạm <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control" placeholder="V-Green Vincom Mega Mall" style="height: 44px; border-radius: var(--radius); font-size: 14px;" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mt-3">
+                            <label asp-for="Address" class="form-label fw-medium" style="font-size: 13px; color: var(--text-secondary);">
+                                Địa chỉ chi tiết <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Address" class="form-control" placeholder="Số 1 Lê Duẩn, Quận 1, TP.HCM" style="height: 44px; border-radius: var(--radius); font-size: 14px;" />
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium" style="font-size: 13px; color: var(--text-secondary);">
+                                    Vĩ độ (Latitude) <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="Latitude" type="text" class="form-control text-center" id="latInput" readonly 
+                                       style="height: 44px; border-radius: var(--radius); font-size: 14px; font-weight: 600; background: var(--vgreen-light); color: var(--vgreen-dark);" />
+                                <span asp-validation-for="Latitude" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium" style="font-size: 13px; color: var(--text-secondary);">
+                                    Kinh độ (Longitude) <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="Longitude" type="text" class="form-control text-center" id="lngInput" readonly 
+                                       style="height: 44px; border-radius: var(--radius); font-size: 14px; font-weight: 600; background: var(--vgreen-light); color: var(--vgreen-dark);" />
+                                <span asp-validation-for="Longitude" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label asp-for="Notes" class="form-label fw-medium" style="font-size: 13px; color: var(--text-secondary);">Ghi chú</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Tầng hầm B2, gần cổng số 3..." style="border-radius: var(--radius); font-size: 14px;"></textarea>
+                        </div>
+
+                        <div class="alert alert-info mt-4" style="border-radius: var(--radius); border-left: 4px solid var(--vgreen);">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <small><strong>Hướng dẫn:</strong> Click vào bản đồ bên phải để chọn vị trí trạm sạc</small>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2" style="font-weight: 500; border-radius: var(--radius);">
+                                <i class="bi bi-x-lg"></i> Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-success px-4 py-2 d-flex align-items-center gap-2 shadow-sm" style="font-weight: 500; border-radius: var(--radius);">
+                                <i class="bi bi-check2-circle"></i>
+                                <span>Tạo trạm sạc</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <!-- Map Picker -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: var(--radius);">
+                <div class="card-header bg-transparent border-bottom-0 py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold" style="font-size: 16px;">
+                        <i class="bi bi-geo-alt-fill text-success me-2"></i>Chọn vị trí trên bản đồ
+                    </h5>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="locateMeBtn" style="font-size: 13px; border-radius: var(--radius);">
+                        <i class="bi bi-crosshair"></i> Vị trí hiện tại
+                    </button>
+                </div>
+                <div class="card-body p-0" style="position: relative;">
+                    <div id="map" style="height: 580px; border-radius: 0 0 var(--radius) var(--radius);"></div>
+                    <div id="mapHint" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 400; background: white; padding: 16px 24px; border-radius: var(--radius); box-shadow: var(--shadow-md); pointer-events: none; transition: var(--transition);">
+                        <i class="bi bi-cursor-fill text-success me-2" style="font-size: 20px;"></i>
+                        <span style="font-size: 14px; font-weight: 500; color: var(--text-primary);">Click vào bản đồ để chọn vị trí</span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="StationType" class="control-label"></label>
-                <input asp-for="StationType" class="form-control" />
-                <span asp-validation-for="StationType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Latitude" class="control-label"></label>
-                <input asp-for="Latitude" class="form-control" />
-                <span asp-validation-for="Latitude" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Longitude" class="control-label"></label>
-                <input asp-for="Longitude" class="form-control" />
-                <span asp-validation-for="Longitude" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuiltDate" class="control-label"></label>
-                <input asp-for="BuiltDate" class="form-control" />
-                <span asp-validation-for="BuiltDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        let map, marker;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map - Vietnam center
+            map = L.map('map', {
+                center: [16.0471, 108.2068],
+                zoom: 6,
+                zoomControl: true,
+                scrollWheelZoom: true
+            });
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Force map to render properly
+            setTimeout(function() {
+                map.invalidateSize();
+            }, 100);
+
+            // Custom V-Green marker icon
+            const vgreenIcon = L.divIcon({
+                html: `<div style="position: relative;">
+                           <div style="background: var(--vgreen); width: 44px; height: 44px; border-radius: 50%; border: 4px solid white; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); display: flex; align-items: center; justify-content: center; animation: markerPulse 2s infinite;">
+                               <i class="bi bi-ev-station-fill text-white" style="font-size: 20px;"></i>
+                           </div>
+                           <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 8px solid white;"></div>
+                       </div>`,
+                iconSize: [44, 52],
+                iconAnchor: [22, 52],
+                popupAnchor: [0, -52],
+                className: 'custom-marker-icon'
+            });
+
+            // Current location marker icon
+            const currentLocationIcon = L.divIcon({
+                html: `<div style="position: relative;">
+                           <div style="background: #3b82f6; width: 44px; height: 44px; border-radius: 50%; border: 4px solid white; box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); display: flex; align-items: center; justify-content: center; animation: locationPulse 1.5s infinite;">
+                               <i class="bi bi-geo-alt-fill text-white" style="font-size: 20px;"></i>
+                           </div>
+                       </div>`,
+                iconSize: [44, 44],
+                iconAnchor: [22, 44],
+                popupAnchor: [0, -44],
+                className: 'current-location-icon'
+            });
+
+            // Click on map to place marker
+            map.on('click', function(e) {
+                const lat = e.latlng.lat.toFixed(6);
+                const lng = e.latlng.lng.toFixed(6);
+
+                // Update input fields - Các input với asp-for sẽ có id giống tên property
+                const latInput = document.getElementById('Latitude');
+                const lngInput = document.getElementById('Longitude');
+
+                if (latInput) latInput.value = lat;
+                if (lngInput) lngInput.value = lng;
+
+                // Remove old marker if exists
+                if (marker) {
+                    map.removeLayer(marker);
+                }
+
+                // Add new marker
+                marker = L.marker([lat, lng], { icon: vgreenIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div style="min-width: 200px; padding: 4px;">
+                            <h6 style="margin: 0 0 8px 0; font-weight: 600; color: var(--text-primary);">Vị trí trạm mới</h6>
+                            <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--text-secondary);">
+                                <strong>Latitude:</strong> ${lat}
+                            </p>
+                            <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">
+                                <strong>Longitude:</strong> ${lng}
+                            </p>
+                        </div>
+                    `, {
+                        className: 'custom-popup'
+                    })
+                    .openPopup();
+
+                // Zoom to marker with smooth animation
+                map.setView([lat, lng], 16, {
+                    animate: true,
+                    duration: 0.5
+                });
+
+                // Hide hint
+                document.getElementById('mapHint').style.opacity = '0';
+                document.getElementById('mapHint').style.pointerEvents = 'none';
+            });
+
+            // Locate Me button
+            document.getElementById('locateMeBtn').addEventListener('click', function() {
+                if (!navigator.geolocation) {
+                    alert("Trình duyệt của bạn không hỗ trợ định vị");
+                    return;
+                }
+
+                // Show loading state
+                const btn = this;
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-arrow-clockwise spin"></i> Đang định vị...';
+                btn.disabled = true;
+
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        // Update inputs
+                        document.getElementById('Latitude').value = lat.toFixed(6);
+                        document.getElementById('Longitude').value = lng.toFixed(6);
+                        document.getElementById('latInput').value = lat.toFixed(6);
+                        document.getElementById('lngInput').value = lng.toFixed(6);
+
+                        // Remove old marker
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+
+                        // Add current location marker
+                        marker = L.marker([lat, lng], { icon: currentLocationIcon })
+                            .addTo(map)
+                            .bindPopup(`
+                                <div style="min-width: 200px; padding: 4px;">
+                                    <h6 style="margin: 0 0 8px 0; font-weight: 600; color: #3b82f6;">
+                                        <i class="bi bi-geo-alt-fill"></i> Vị trí hiện tại của bạn
+                                    </h6>
+                                    <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--text-secondary);">
+                                        <strong>Latitude:</strong> ${lat.toFixed(6)}
+                                    </p>
+                                    <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">
+                                        <strong>Longitude:</strong> ${lng.toFixed(6)}
+                                    </p>
+                                </div>
+                            `, {
+                                className: 'custom-popup'
+                            })
+                            .openPopup();
+
+                        // Zoom to location
+                        map.setView([lat, lng], 16, {
+                            animate: true,
+                            duration: 0.5
+                        });
+
+                        // Hide hint
+                        document.getElementById('mapHint').style.opacity = '0';
+
+                        // Reset button
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                    },
+                    function(error) {
+                        console.error('Geolocation error:', error);
+                        alert("Không thể lấy vị trí của bạn. Vui lòng cho phép truy cập vị trí hoặc chọn thủ công trên bản đồ.");
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            });
+
+            // Change cursor on map
+            map.getContainer().style.cursor = 'crosshair';
+
+            // Show hint initially
+            setTimeout(function() {
+                const hint = document.getElementById('mapHint');
+                if (document.getElementById('Latitude').value === '') {
+                    hint.style.opacity = '1';
+                } else {
+                    hint.style.opacity = '0';
+                }
+            }, 500);
+        });
+    </script>
+
+    <style>
+        /* Map animations */
+        @@keyframes markerPulse {
+            0%, 100% {
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            }
+            50% {
+                box-shadow: 0 6px 30px rgba(16, 185, 129, 0.7), 0 0 0 10px rgba(16, 185, 129, 0.1);
+            }
+        }
+
+        @@keyframes locationPulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.9), 0 0 0 10px rgba(59, 130, 246, 0.2);
+            }
+        }
+
+        @@keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .spin {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Map cursor */
+        #map {
+            cursor: crosshair !important;
+        }
+
+        .leaflet-container {
+            background: var(--bg-secondary);
+        }
+
+        /* Custom popup styling */
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            padding: 0;
+        }
+
+        .custom-popup .leaflet-popup-content {
+            margin: 12px;
+        }
+
+        .custom-popup .leaflet-popup-tip {
+            background: white;
+        }
+
+        /* Map hint styling */
+        #mapHint {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Form styling */
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--vgreen);
+            box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.15);
+        }
+
+        .form-control[readonly] {
+            cursor: default;
+        }
+
+        /* Alert info styling */
+        .alert-info {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--vgreen);
+            color: var(--text-primary);
+        }
+
+        [data-bs-theme="dark"] .alert-info {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        /* Button hover effects */
+        .btn-success:hover {
+            background: var(--vgreen-dark);
+            border-color: var(--vgreen-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+
+        /* Responsive */
+        @@media (max-width: 991px) {
+            #map {
+                height: 400px !important;
+            }
+        }
+    </style>
 }

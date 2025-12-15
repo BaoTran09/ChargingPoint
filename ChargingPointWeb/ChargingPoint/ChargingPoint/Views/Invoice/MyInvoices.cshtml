@@ -1,117 +1,95 @@
 ﻿@model IEnumerable<ChargingPoint.Models.Invoice>
-
 @{
-    ViewData["Title"] = "Hóa Đơn Của Tôi";
-    var filterStatus = ViewBag.FilterStatus as string;
+    ViewData["Title"] = "Hóa đơn của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var filterStatus = Context.Request.Query["status"].ToString();
+    var totalInvoices = Model.Count();
+    var unpaid = Model.Where(i => i.Status == "Unpaid" && (!i.ExpireDate.HasValue || i.ExpireDate >= DateTime.Today)).ToList();
+    var paid = Model.Where(i => i.Status == "Paid").ToList();
+    var overdue = Model.Where(i => i.Status == "Unpaid" && i.ExpireDate.HasValue && i.ExpireDate < DateTime.Today).ToList();
 }
 
-<div class="container mt-4">
+<div class="content-wrapper">
     <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h3><i class="fas fa-file-invoice-dollar"></i> Hóa Đơn Của Tôi</h3>
-            <p class="text-muted">Quản lý và theo dõi hóa đơn sạc điện</p>
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-receipt text-success me-2"></i>
+                Hóa đơn của tôi
+            </h2>
+            <p class="text-secondary mb-0">Quản lý và thanh toán hóa đơn sạc điện</p>
         </div>
     </div>
 
     <!-- Filter Tabs -->
-    <ul class="nav nav-pills mb-4">
-        <li class="nav-item">
-            <a class="nav-link @(string.IsNullOrEmpty(filterStatus) ? "active" : "")"
-               href="@Url.Action("MyInvoices")">
-                <i class="fas fa-list"></i> Tất Cả
-                <span class="badge bg-secondary ms-1">@Model.Count()</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(filterStatus == "Unpaid" ? "active" : "")"
-               href="@Url.Action("MyInvoices", new { status = "Unpaid" })">
-                <i class="fas fa-clock"></i> Chưa Thanh Toán
-                <span class="badge bg-warning ms-1">@Model.Count(i => i.Status == "Unpaid" && (!i.ExpireDate.HasValue || i.ExpireDate > DateTime.Now))</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(filterStatus == "Paid" ? "active" : "")"
-               href="@Url.Action("MyInvoices", new { status = "Paid" })">
-                <i class="fas fa-check-circle"></i> Đã Thanh Toán
-                <span class="badge bg-success ms-1">@Model.Count(i => i.Status == "Paid")</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-               href="@Url.Action("MyInvoices", new { status = "Overdue" })">
-                <i class="fas fa-exclamation-triangle"></i> Quá Hạn
-                <span class="badge bg-danger ms-1">@Model.Count(i => i.Status == "Unpaid" && i.ExpireDate.HasValue && i.ExpireDate < DateTime.Now)</span>
-            </a>
-        </li>
-    </ul>
+    <div class="card border-0 shadow-sm mb-5">
+        <div class="card-body p-4">
+            <ul class="nav nav-pills nav-fill gap-3">
+                <li class="nav-item flex-fill">
+                    <a class="nav-link rounded @(string.IsNullOrEmpty(filterStatus) ? "active bg-primary text-white" : "bg-light")"
+                       asp-action="MyInvoices">
+                        <i class="bi bi-list-ul me-2"></i>
+                        Tất cả
+                        <span class="badge bg-white text-dark ms-2">@totalInvoices</span>
+                    </a>
+                </li>
+                <li class="nav-item flex-fill">
+                    <a class="nav-link rounded @(filterStatus == "Unpaid" ? "active bg-warning text-dark" : "bg-light")"
+                       asp-action="MyInvoices" asp-route-status="Unpaid">
+                        <i class="bi bi-clock me-2"></i>
+                        Chưa thanh toán
+                        <span class="badge @(filterStatus == "Unpaid" ? "bg-dark" : "bg-warning") ms-2">@unpaid.Count</span>
+                    </a>
+                </li>
+                <li class="nav-item flex-fill">
+                    <a class="nav-link rounded @(filterStatus == "Paid" ? "active bg-success text-white" : "bg-light")"
+                       asp-action="MyInvoices" asp-route-status="Paid">
+                        <i class="bi bi-check2-circle me-2"></i>
+                        Đã thanh toán
+                        <span class="badge @(filterStatus == "Paid" ? "bg-white text-success" : "bg-success") ms-2">@paid.Count</span>
+                    </a>
+                </li>
+                <li class="nav-item flex-fill">
+                    <a class="nav-link rounded @(filterStatus == "Overdue" ? "active bg-danger text-white" : "bg-light")"
+                       asp-action="MyInvoices" asp-route-status="Overdue">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Quá hạn
+                        <span class="badge @(filterStatus == "Overdue" ? "bg-white text-danger" : "bg-danger") ms-2">@overdue.Count</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 
     <!-- Summary Cards -->
-    <div class="row mb-4">
+    <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">Tổng Hóa Đơn</p>
-                            <h4 class="mb-0">@Model.Count()</h4>
-                        </div>
-                        <div class="icon-box bg-primary">
-                            <i class="fas fa-file-invoice"></i>
-                        </div>
-                    </div>
-                </div>
+            <div class="card border-0 shadow-sm h-100 text-center p-4">
+                <i class="bi bi-receipt fs-1 text-primary mb-3"></i>
+                <h4 class="fw-bold mb-1">@totalInvoices</h4>
+                <small class="text-secondary">Tổng hóa đơn</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">Chưa Thanh Toán</p>
-                            <h4 class="mb-0 text-warning">
-                                @Model.Where(i => i.Status == "Unpaid" && (!i.ExpireDate.HasValue || i.ExpireDate > DateTime.Now)).Sum(i => i.Total ?? 0).ToString("N0")₫
-                            </h4>
-                        </div>
-                        <div class="icon-box bg-warning">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                    </div>
-                </div>
+            <div class="card border-0 shadow-sm h-100 text-center p-4 @(unpaid.Any() ? "border-warning border-opacity-50" : "")">
+                <i class="bi bi-clock fs-1 text-warning mb-3"></i>
+                <h4 class="fw-bold mb-1 text-warning">@unpaid.Sum(i => i.Total ?? 0):N0 ₫</h4>
+                <small class="text-secondary">Chưa thanh toán</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">Đã Thanh Toán</p>
-                            <h4 class="mb-0 text-success">
-                                @Model.Where(i => i.Status == "Paid").Sum(i => i.Total ?? 0).ToString("N0")₫
-                            </h4>
-                        </div>
-                        <div class="icon-box bg-success">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                    </div>
-                </div>
+            <div class="card border-0 shadow-sm h-100 text-center p-4">
+                <i class="bi bi-check2-all fs-1 text-success mb-3"></i>
+                <h4 class="fw-bold mb-1 text-success">@paid.Sum(i => i.Total ?? 0):N0 ₫</h4>
+                <small class="text-secondary">Đã thanh toán</small>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">Quá Hạn</p>
-                            <h4 class="mb-0 text-danger">
-                                @Model.Where(i => i.Status == "Unpaid" && i.ExpireDate.HasValue && i.ExpireDate < DateTime.Now).Sum(i => i.Total ?? 0).ToString("N0")₫
-                            </h4>
-                        </div>
-                        <div class="icon-box bg-danger">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                    </div>
-                </div>
+            <div class="card border-0 shadow-sm h-100 text-center p-4 @(overdue.Any() ? "border-danger border-opacity-50" : "")">
+                <i class="bi bi-exclamation-diamond-fill fs-1 text-danger mb-3"></i>
+                <h4 class="fw-bold mb-1 text-danger">@overdue.Sum(i => i.Total ?? 0):N0 ₫</h4>
+                <small class="text-secondary">Quá hạn</small>
             </div>
         </div>
     </div>
@@ -120,117 +98,106 @@
     @if (Model.Any())
     {
         <div class="card border-0 shadow-sm">
-            <div class="card-body">
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="bg-light">
                             <tr>
-                                <th>Mã HĐ</th>
-                                <th>Ngày Tạo</th>
-                                <th>Thông Tin</th>
-                                <th>Số Tiền</th>
-                                <th>Hạn TT</th>
-                                <th>Trạng Thái</th>
-                                <th>Thao Tác</th>
+                                <th class="ps-4">Mã hóa đơn</th>
+                                <th>Ngày tạo</th>
+                                <th>Trạm & Xe</th>
+                                <th class="text-end">Số tiền</th>
+                                <th>Hạn thanh toán</th>
+                                <th>Trạng thái</th>
+                                <th class="text-center">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var invoice in Model)
+                            @foreach (var i in Model.OrderByDescending(x => x.CreatedAt))
                             {
-                                var isOverdue = invoice.Status == "Unpaid" && invoice.ExpireDate.HasValue && invoice.ExpireDate < DateTime.Now;
-                                var daysUntilDue = invoice.ExpireDate.HasValue ? (invoice.ExpireDate.Value - DateTime.Now).Days : 0;
+                                var isOverdue = i.Status == "Unpaid" && i.ExpireDate.HasValue && i.ExpireDate < DateTime.Today;
+                                var daysLeft = i.ExpireDate.HasValue ? (i.ExpireDate.Value.Date - DateTime.Today).Days : 0;
 
                                 <tr>
-                                    <td>
-                                        <strong>@invoice.InvoiceId</strong>
-                                        <div class="small text-muted">Số: @invoice.InvoiceNumber</div>
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-primary">#@i.InvoiceNumber</div>
+                                        <small class="text-secondary">ID: @i.InvoiceId</small>
                                     </td>
                                     <td>
-                                        @invoice.CreatedAt.ToString("dd/MM/yyyy")
-                                        <div class="small text-muted">@invoice.CreatedAt.ToString("HH:mm")</div>
+                                        <div>@i.CreatedAt:dd/MM/yyyy</div>
+                                        <small class="text-secondary">@i.CreatedAt:HH:mm</small>
                                     </td>
                                     <td>
-                                        <div>
-                                            <i class="fas fa-charging-station"></i>
-                                            <strong>@(invoice.ChargingSession?.Connector?.Charger?.Station?.Name ?? "N/A")</strong>
+                                        <div class="fw-medium">
+                                            <i class="bi bi-ev-station-fill text-success me-1"></i>
+                                            @(i.ChargingSession?.Connector?.Charger?.Station?.Name ?? "—")
                                         </div>
-                                        <div class="small text-muted">
-                                            <i class="fas fa-car"></i>
-                                            @(invoice.ChargingSession?.Vehicle?.LicensePlate ?? "N/A")
-                                        </div>
+                                        <small class="text-secondary">
+                                            <i class="bi bi-car-front-fill me-1"></i>
+                                            @(i.ChargingSession?.Vehicle?.LicensePlate ?? "—")
+                                        </small>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong class="text-primary fs-5">@($"{i.Total ?? 0:N0}") ₫</strong>
                                     </td>
                                     <td>
-                                        <strong class="text-primary">@((invoice.Total ?? 0).ToString("N0"))₫</strong>
-                                        <div class="small text-muted">
-                                            Điện: @((invoice.TotalAmountService ?? 0).ToString("N0"))₫
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @if (invoice.ExpireDate.HasValue)
+                                        @if (i.ExpireDate.HasValue)
                                         {
-                                            @invoice.ExpireDate.Value.ToString("dd/MM/yyyy")
+                                            <div>@i.ExpireDate.Value:dd/MM/yyyy</div>
+                                            @if (i.Status == "Unpaid")
+                                            {
+                                                if (isOverdue)
+                                                {
+                                                    <span class="badge bg-danger mt-1">Quá hạn @Math.Abs(daysLeft) ngày</span>
+                                                }
+                                                else if (daysLeft <= 3)
+                                                {
+                                                    <span class="badge bg-warning mt-1">Còn @daysLeft ngày</span>
+                                                }
+                                            }
                                         }
                                         else
                                         {
-                                            <span class="text-muted">N/A</span>
-                                        }
-                                        @if (invoice.Status == "Unpaid" && invoice.ExpireDate.HasValue)
-                                        {
-                                            if (isOverdue)
-                                            {
-                                                <div class="small text-danger">
-                                                    <i class="fas fa-clock"></i> Quá @Math.Abs(daysUntilDue) ngày
-                                                </div>
-                                            }
-                                            else if (daysUntilDue <= 3)
-                                            {
-                                                <div class="small text-warning">
-                                                    <i class="fas fa-clock"></i> Còn @daysUntilDue ngày
-                                                </div>
-                                            }
+                                            <span class="text-muted">—</span>
                                         }
                                     </td>
                                     <td>
-                                        @if (invoice.Status == "Paid")
+                                        @if (i.Status == "Paid")
                                         {
-                                            <span class="badge bg-success">
-                                                <i class="fas fa-check"></i> Đã thanh toán
+                                            <span class="badge bg-success px-3 py-2">
+                                                <i class="bi bi-check2-all me-1"></i> Đã thanh toán
                                             </span>
-                                            @if (invoice.PaidAt.HasValue)
-                                            {
-                                                <div class="small text-muted">@invoice.PaidAt.Value.ToString("dd/MM/yyyy")</div>
-                                            }
                                         }
                                         else if (isOverdue)
                                         {
-                                            <span class="badge bg-danger">
-                                                <i class="fas fa-exclamation-triangle"></i> Quá hạn
+                                            <span class="badge bg-danger px-3 py-2">
+                                                <i class="bi bi-exclamation-triangle-fill me-1"></i> Quá hạn
                                             </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-warning">
-                                                <i class="fas fa-clock"></i> Chưa thanh toán
+                                            <span class="badge bg-warning px-3 py-2">
+                                                <i class="bi bi-clock me-1"></i> Chưa thanh toán
                                             </span>
                                         }
                                     </td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="@Url.Action("Detail", new { id = invoice.InvoiceId })"
-                                               class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
-                                                <i class="fas fa-eye"></i>
+                                    <td class="text-center">
+                                        <div class="d-flex gap-1 justify-content-center">
+                                            <a asp-action="Detail" asp-route-id="@i.InvoiceId"
+                                               class="btn btn-outline-primary btn-sm" title="Xem chi tiết">
+                                                <i class="bi bi-eye"></i>
                                             </a>
-                                            <a href="@Url.Action("DownloadPdf", new { id = invoice.InvoiceId })"
-                                               class="btn btn-sm btn-outline-secondary" title="Tải PDF">
-                                                <i class="fas fa-download"></i>
+                                            <a asp-action="DownloadPdf" asp-route-id="@i.InvoiceId"
+                                               class="btn btn-outline-secondary btn-sm" title="Tải PDF">
+                                                <i class="bi bi-file-earmark-arrow-down"></i>
                                             </a>
-                                            @if (invoice.Status == "Unpaid")
+                                            @if (i.Status == "Unpaid" && !isOverdue)
                                             {
-                                                <button class="btn btn-sm btn-success"
-                                                        onclick="showPaymentInfo(@invoice.InvoiceId, @(invoice.Total ?? 0), '@invoice.InvoiceNumber.ToString("D7")')"
-                                                        title="Thanh toán">
-                                                    <i class="fas fa-credit-card"></i>
+                                                <button type="button" class="btn btn-success btn-sm"
+                                                        onclick="showPaymentModal('@i.InvoiceNumber', '@($"{i.Total ?? 0:N0}")', '@i.InvoiceId')">
+                                                    <i class="bi bi-credit-card"></i>
                                                 </button>
+
                                             }
                                         </div>
                                     </td>
@@ -244,12 +211,12 @@
     }
     else
     {
-        <div class="text-center py-5">
-            <i class="fas fa-inbox fa-5x text-muted mb-3"></i>
-            <h5>Chưa có hóa đơn nào</h5>
-            <p class="text-muted">Hóa đơn sẽ được tạo tự động sau mỗi phiên sạc</p>
-            <a href="@Url.Action("Index", "Charger")" class="btn btn-primary mt-3">
-                <i class="fas fa-charging-station"></i> Tìm Trạm Sạc
+        <div class="text-center py-6">
+            <i class="bi bi-receipt fs-1 text-muted opacity-50 mb-4" style="font-size: 5rem;"></i>
+            <h4 class="text-muted mb-3">Chưa có hóa đơn nào</h4>
+            <p class="text-secondary mb-4">Hóa đơn sẽ được tạo tự động sau mỗi phiên sạc</p>
+            <a asp-controller="Charger" asp-action="Index" class="btn btn-success btn-lg px-5 shadow-sm">
+                <i class="bi bi-ev-station-fill"></i> Tìm trạm sạc
             </a>
         </div>
     }
@@ -258,135 +225,91 @@
 <!-- Payment Modal -->
 <div class="modal fade" id="paymentModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius);">
+            <div class="modal-header bg-success text-white">
                 <h5 class="modal-title">
-                    <i class="fas fa-credit-card"></i> Thông Tin Thanh Toán
+                    <i class="bi bi-credit-card me-2"></i>
+                    Thông tin thanh toán
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Chuyển khoản đến tài khoản:</strong>
+            <div class="modal-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-bank fs-1 text-success mb-3"></i>
+                    <h5>Chuyển khoản đến tài khoản V-Green</h5>
                 </div>
-                <div class="payment-info">
-                    <table class="table">
-                        <tr>
-                            <td><strong>Chủ TK:</strong></td>
-                            <td>LE BAO TRAN</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Số TK:</strong></td>
-                            <td><span class="text-primary fw-bold">1030946681</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Ngân hàng:</strong></td>
-                            <td>VIETCOMBANK</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Số tiền:</strong></td>
-                            <td><strong class="text-success" id="paymentAmount"></strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Nội dung:</strong></td>
-                            <td><span class="text-danger fw-bold" id="paymentContent"></span></td>
-                        </tr>
-                    </table>
+                <table class="table table-borderless">
+                    <tr>
+                        <td class="text-secondary fw-medium">Chủ tài khoản</td>
+                        <td class="fw-bold">CÔNG TY TNHH V-GREEN</td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary fw-medium">Số tài khoản</td>
+                        <td class="fw-bold text-primary fs-5">1030946681</td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary fw-medium">Ngân hàng</td>
+                        <td class="fw-bold">Vietcombank - Chi nhánh TP.HCM</td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary fw-medium">Số tiền</td>
+                        <td class="fw-bold text-success fs-5" id="modalAmount"></td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary fw-medium">Nội dung</td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" id="modalContent" class="form-control fw-bold text-danger" readonly />
+                                <button class="btn btn-outline-primary" onclick="copyContent()">
+                                    <i class="bi bi-copy"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Vui lòng ghi đúng <strong>nội dung chuyển khoản</strong> để hệ thống tự động xác nhận trong vòng 5 phút.
                 </div>
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <small>
-                        <strong>Lưu ý:</strong> Vui lòng ghi chính xác nội dung chuyển khoản để hệ thống tự động xác nhận thanh toán.
-                    </small>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" onclick="copyPaymentContent()">
-                    <i class="fas fa-copy"></i> Copy Nội Dung
-                </button>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        let currentContent = '';
-
-        function showPaymentInfo(invoiceId, amount, invoiceNumber) {
-            currentContent = 'VGREEN ' + invoiceNumber;
-            $('#paymentAmount').text(amount.toLocaleString('vi-VN') + '₫');
-            $('#paymentContent').text(currentContent);
-
-            const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
-            modal.show();
+        function showPaymentModal(invoiceNumber, amount, invoiceId) {
+            const content = `VGREEN ${invoiceNumber}`;
+            document.getElementById('modalAmount').textContent = amount + ' ₫';
+            document.getElementById('modalContent').value = content;
+            new bootstrap.Modal(document.getElementById('paymentModal')).show();
         }
 
-        function copyPaymentContent() {
-            navigator.clipboard.writeText(currentContent).then(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Đã copy!',
-                    text: 'Nội dung chuyển khoản đã được copy',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }).catch(() => {
-                Swal.fire('Lỗi', 'Không thể copy', 'error');
-            });
+        function copyContent() {
+            const input = document.getElementById('modalContent');
+            input.select();
+            document.execCommand('copy');
+            alert('Đã copy nội dung chuyển khoản!');
         }
     </script>
-}
 
-@section Styles {
     <style>
-        .icon-box {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
-
-        .table td {
-            vertical-align: middle;
-        }
-
-        .badge {
-            padding: 6px 12px;
-            font-size: 0.85rem;
-        }
-
-        .btn-group .btn {
-            border-radius: 4px !important;
-            margin-right: 4px;
-        }
-
-            .btn-group .btn:last-child {
-                margin-right: 0;
-            }
-
-        .payment-info table td {
-            padding: 10px;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .payment-info table tr:last-child td {
-            border-bottom: none;
-        }
-
         .nav-pills .nav-link {
-            color: #6c757d;
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            font-weight: 500;
         }
 
             .nav-pills .nav-link.active {
-                background-color: #0d6efd;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             }
+
+        .table tbody tr:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        #paymentModal .modal-content {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
     </style>
 }

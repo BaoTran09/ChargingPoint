@@ -1,4 +1,4 @@
-﻿using ChargingPoint.Models;
+﻿ using ChargingPoint.Models;
 /// ViewModel cho hiển thị danh sách sessions
 
 namespace ChargingPoint.ViewModels

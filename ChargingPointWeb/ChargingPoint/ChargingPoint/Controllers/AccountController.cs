@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using ChargingPoint.ViewModels;
+﻿using ChargingPoint.DB;
 using ChargingPoint.Models;
-using ChargingPoint.DB;
 using ChargingPoint.Services;
-using Microsoft.Extensions.Logging;
+using ChargingPoint.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChargingPoint.Controllers

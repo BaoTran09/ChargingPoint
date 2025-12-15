@@ -1,0 +1,19 @@
+78,52,46
+109,76,65
+panel: 245, 55
+button: 253, 74
+open account or management: 245, 330
+close account: 245, 55
+colour submenu: 64, 64, 64
+skin mưới tạo
+
+    //Recommended code for runtime skin initialization.  
+    [STAThread]
+    static void Main() {
+        // If your custom skin is derived from a template skin that resides in the BonusSkins library, ensure that you register the template skin first using the BonusSkins.Register method.  
+        // DevExpress.UserSkins.BonusSkins.Register();  
+        Assembly asm = typeof(DevExpress.UserSkins.RoundedTheme.RoundedTheme).Assembly;
+        DevExpress.XtraEditors.WindowsFormsSettings.RegisterUserSkins(asm);
+        Application.Run(new Form1());
+    }
+

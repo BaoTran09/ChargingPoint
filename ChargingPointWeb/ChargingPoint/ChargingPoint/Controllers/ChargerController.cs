@@ -10,6 +10,9 @@ using ChargingPoint.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace ChargingPoint.Controllers
 {
@@ -32,82 +35,19 @@ namespace ChargingPoint.Controllers
             _chargingService = chargingService;
             _logger = logger;
         }
-        /*
-        // GET: Charger/Index - Danh sách Stations
-        public async Task<IActionResult> Index()
-        {
-            var stations = await _context.Station
-                .Include(s => s.Chargers)
-                .OrderBy(s => s.Name)
-                .ToListAsync();
 
-            return View(stations);
-        }
-        */
-        // GET: Charger/Chargers/{stationId}
-        /* public async Task<IActionResult> Index(long stationId, string? filter)
-         {
-             var station = await _context.Station
-                 .Include(s => s.Chargers)
-                     .ThenInclude(c => c.Connectors)
-                 .FirstOrDefaultAsync(s => s.StationId == stationId);
-
-             if (station == null) return NotFound();
-
-             var chargers = station.Chargers.AsQueryable();
-
-             if (!string.IsNullOrEmpty(filter))
-             {
-                 if (filter == "Car")
-                     chargers = chargers.Where(c => c.UseFor == "Ô tô" || c.UseFor == "Car");
-                 else if (filter == "Motorbike")
-                     chargers = chargers.Where(c => c.UseFor == "Xe máy" || c.UseFor == "Motorbike");
-             }
-
-             ViewBag.Station = station;
-             ViewBag.Filter = filter;
-
-             return View(chargers.ToList());
-         }
-        */
-        // GET: /Charger?stationId=1
-        /* public async Task<IActionResult> Index(long stationId, string? filter)
-         {
-             var station = await _context.Station
-                 .Include(s => s.Chargers)
-                     .ThenInclude(c => c.Connectors)
-                 .FirstOrDefaultAsync(s => s.StationId == stationId);
-
-             if (station == null) return NotFound();
-
-             var chargers = station.Chargers.AsQueryable();
-             if (!string.IsNullOrEmpty(filter))
-             {
-                 if (filter == "Car")
-                     chargers = chargers.Where(c => c.UseFor == "Ô tô" || c.UseFor == "Car");
-                 else if (filter == "Motorbike")
-                     chargers = chargers.Where(c => c.UseFor == "Xe máy" || c.UseFor == "Motorbike");
-             }
-
-             ViewBag.Station = station;
-             ViewBag.Filter = filter;
-             return View(chargers.ToList());
-         }
-        */
-        // GET: /Charger?stationId=1&filter=Car
-        
         public async Task<IActionResult> Index([FromQuery] long stationId, [FromQuery] string? filter)
         {
             if (stationId <= 0) return BadRequest("Thiếu stationId");
 
             var station = await _context.Station
-                .Include(s => s.Charger)
+                .Include(s => s.Chargers)
                     .ThenInclude(c => c.Connectors)
                 .FirstOrDefaultAsync(s => s.StationId == stationId);
 
             if (station == null) return NotFound();
 
-            var chargers = station.Charger.AsQueryable();
+            var chargers = station.Chargers.AsQueryable();
 
             if (!string.IsNullOrEmpty(filter))
             {
@@ -121,76 +61,46 @@ namespace ChargingPoint.Controllers
             ViewBag.Filter = filter;
             return View(chargers.ToList());
         }
-        /*
-        // GET: Charger/Detail/{chargerId}
-        public async Task<IActionResult> Detail(long chargerId)
-        {
-            var charger = await _context.Charger
-                .Include(c => c.Station)
-                .Include(c => c.Connectors)
-                    .ThenInclude(cn => cn.ChargingSessions.Where(s => s.Status == "Charging" || s.Status == "PoweredOff"))
-                        .ThenInclude(s => s.Vehicle)
-                .FirstOrDefaultAsync(c => c.ChargerId == chargerId);
-
-            if (charger == null) return NotFound();
-
-            return View(charger);
-        }*/
-
-        // GET: Charger/RequestCharging/{connectorId}
+       
         public async Task<IActionResult> RequestCharging(long connectorId)
         {
             var connector = await _context.Connector
+                .Include(c => c.ConnectorId == connectorId)
                 .Include(c => c.Charger)
                     .ThenInclude(ch => ch.Station)
-                .FirstOrDefaultAsync(c => c.ConnectorId == connectorId);
+                .FirstOrDefaultAsync();
 
-            if (connector == null) return NotFound();
+            if (connector == null)
+                return Json(new { success = false, message = "Không tìm thấy cổng sạc" });
 
             if (connector.Status != "Available")
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = "Connector đang được sử dụng hoặc không khả dụng"
-                });
-            }
+                return Json(new { success = false, message = "Cổng sạc đang được sử dụng" });
 
             var user = await _userManager.GetUserAsync(User);
             var customer = await _context.Customer
-                .Include(c => c.Vehicles.Where(v => v.Manufacturer != null))
+                .Include(c => c.Vehicles)
                 .FirstOrDefaultAsync(c => c.UserId == user.Id);
 
             if (customer == null || !customer.Vehicles.Any())
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = "Bạn chưa có xe nào. Vui lòng thêm xe trong phần Settings."
-                });
-            }
+                return Json(new { success = false, message = "Bạn chưa có xe nào. Vui lòng thêm xe trước." });
 
-            // Filter vehicles theo loại charger
-            var chargerUseFor = connector.Charger.UseFor?.ToLower();
+            // Lọc xe phù hợp
             var vehicles = customer.Vehicles.AsQueryable();
-
-            if (chargerUseFor?.Contains("ô tô") == true || chargerUseFor?.Contains("car") == true)
-            {
+            var useFor = connector.Charger.UseFor?.ToLower();
+            if (useFor?.Contains("ô tô") == true || useFor?.Contains("car") == true)
                 vehicles = vehicles.Where(v => v.VehicleType == "Car");
-            }
-            else if (chargerUseFor?.Contains("xe máy") == true || chargerUseFor?.Contains("motorbike") == true)
-            {
+            else if (useFor?.Contains("xe máy") == true || useFor?.Contains("motorbike") == true)
                 vehicles = vehicles.Where(v => v.VehicleType == "Motorbike");
-            }
 
-            var viewModel = new RequestChargingViewModel
+            var vm = new RequestChargingViewModel
             {
                 ConnectorId = connectorId,
                 Connector = connector,
                 Vehicles = vehicles.ToList()
             };
 
-            return PartialView("_RequestChargingModal", viewModel);
+            // QUAN TRỌNG: Trả về FULL MODAL HTML
+            return PartialView("_RequestChargingModal", vm);
         }
 
         // POST: Charger/SubmitChargingRequest
@@ -328,22 +238,7 @@ namespace ChargingPoint.Controllers
             // 4. Trả về View
             return View("ChargingDetail", session);
         }
-        /*public async Task<IActionResult> ChargingDetail(long id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var customer = await _context.Customer.FirstOrDefaultAsync(c => c.UserId == user.Id);
-            if (customer == null) return NotFound();
-
-            var session = await _context.ChargingSession
-                .Include(s => s.Connector).ThenInclude(c => c.Charger).ThenInclude(ch => ch.Station)
-                .Include(s => s.Vehicle)
-                .FirstOrDefaultAsync(s => s.SessionId == id && s.Vehicle.CustomerId == customer.CustomerID);
-
-            if (session == null) return NotFound();
-
-            return View("ChargingDetail", session); // ĐÚNG FILE + ĐÚNG MODEL
-        }*/
-        // API: Get Charging Progress (Customer)
+        
 
         [HttpGet]
         public async Task<IActionResult> GetMyChargingProgress(long sessionId)

@@ -1,75 +1,213 @@
 ﻿@model ChargingPoint.DB.Station
-
 @{
-    ViewData["Title"] = "Edit";
-
+    ViewData["Title"] = "Chỉnh sửa trạm sạc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="content-wrapper">
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <div>
+            <nav class="breadcrumb-nav mb-2">
+                <a asp-action="Index" class="text-decoration-none text-secondary">Quản lý trạm sạc</a>
+                <span class="mx-2 text-secondary">/</span>
+                <a asp-action="Details" asp-route-id="@Model.StationId" class="text-decoration-none text-secondary">#@Model.Tag</a>
+                <span class="mx-2 text-secondary">/</span>
+                <span class="text-primary">Chỉnh sửa</span>
+            </nav>
+            <h2 class="fw-bold mb-1">Chỉnh sửa trạm sạc #@Model.Tag</h2>
+            <p class="text-secondary mb-0">@Model.Name</p>
+        </div>
+        <a asp-action="Details" asp-route-id="@Model.StationId" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </div>
 
-<h4>Station</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="StationId" />
-            <div class="form-group">
-                <label asp-for="Tag" class="control-label"></label>
-                <input asp-for="Tag" class="form-control" />
-                <span asp-validation-for="Tag" class="text-danger"></span>
+    <div class="row g-5">
+        <!-- Form -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-5">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="StationId" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded mb-4"></div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label asp-for="Tag" class="form-label fw-medium">Mã trạm <span class="text-danger">*</span></label>
+                                <input asp-for="Tag" class="form-control form-control-lg" placeholder="VG001" />
+                                <span asp-validation-for="Tag" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="StationType" class="form-label fw-medium">Loại trạm <span class="text-danger">*</span></label>
+                                <select asp-for="StationType" class="form-select form-select-lg">
+                                    <option value="">-- Chọn loại --</option>
+                                    <option value="Public" selected="@(Model.StationType == "Public")">Công cộng</option>
+                                    <option value="Private" selected="@(Model.StationType == "Private")">Riêng tư</option>
+                                    <option value="Partner" selected="@(Model.StationType == "Partner")">Đối tác</option>
+                                </select>
+                                <span asp-validation-for="StationType" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label asp-for="Name" class="form-label fw-medium">Tên trạm <span class="text-danger">*</span></label>
+                            <input asp-for="Name" class="form-control form-control-lg" placeholder="V-Green Vincom Mega Mall" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mt-3">
+                            <label asp-for="Address" class="form-label fw-medium">Địa chỉ chi tiết <span class="text-danger">*</span></label>
+                            <input asp-for="Address" class="form-control form-control-lg" placeholder="Số 1 Lê Duẩn, Quận 1, TP.HCM" />
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-4 mt-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">Vĩ độ (Latitude) <span class="text-danger">*</span></label>
+                                <input asp-for="Latitude" type="text" class="form-control form-control-lg text-center" id="latInput" readonly />
+                                <span asp-validation-for="Latitude" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">Kinh độ (Longitude) <span class="text-danger">*</span></label>
+                                <input asp-for="Longitude" type="text" class="form-control form-control-lg text-center" id="lngInput" readonly />
+                                <span asp-validation-for="Longitude" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label asp-for="Notes" class="form-label fw-medium">Ghi chú</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Tầng hầm B2, gần cổng số 3..."></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 mt-5">
+                            <a asp-action="Details" asp-route-id="@Model.StationId" class="btn btn-outline-secondary px-5 py-3">
+                                <i class="bi bi-x-lg"></i> Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-success px-5 py-3 d-flex align-items-center gap-2 shadow-sm">
+                                <i class="bi bi-check2-circle"></i>
+                                <span class="fw-medium">Lưu thay đổi</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <!-- Map Picker -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-geo-alt-fill text-success me-2"></i>Cập nhật vị trí trạm
+                    </h5>
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="locateMe()">
+                        <i class="bi bi-crosshair"></i> Vị trí hiện tại
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div id="map" style="height: 580px; border-radius: 0 0 var(--radius) var(--radius);"></div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="StationType" class="control-label"></label>
-                <input asp-for="StationType" class="form-control" />
-                <span asp-validation-for="StationType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Latitude" class="control-label"></label>
-                <input asp-for="Latitude" class="form-control" />
-                <span asp-validation-for="Latitude" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Longitude" class="control-label"></label>
-                <input asp-for="Longitude" class="form-control" />
-                <span asp-validation-for="Longitude" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuiltDate" class="control-label"></label>
-                <input asp-for="BuiltDate" class="form-control" />
-                <span asp-validation-for="BuiltDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <!-- Thêm jQuery (bắt buộc cho trang Edit) -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+        <script>
+            let map, marker;
+
+            const initialLat = @Html.Raw(Model.Latitude.HasValue ? Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "10.7769");
+            const initialLng = @Html.Raw(Model.Longitude.HasValue ? Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "106.7009");
+
+            $(function () {
+                map = L.map('map').setView([initialLat, initialLng], 16);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Icon giống hệt trang Create
+                const vgreenIcon = L.divIcon({
+                    html: `<div style="position:relative;">
+                                <div style="background:var(--vgreen);width:44px;height:44px;border-radius:50%;border:5px solid white;box-shadow:0 6px 20px rgba(16,185,129,0.5);display:flex;align-items:center;justify-content:center;animation:pulse 2s infinite;">
+                                    <i class="bi bi-ev-station-fill text-white fs-3"></i>
+                                </div>
+                           </div>`,
+                    iconSize: [44, 44],
+                    iconAnchor: [22, 44],
+                    popupAnchor: [0, -44]
+                });
+
+                // Đặt marker ban đầu
+                placeMarker(initialLat, initialLng, vgreenIcon);
+
+                // Click map → di chuyển marker + cập nhật input
+                map.on('click', function (e) {
+                    const lat = e.latlng.lat.toFixed(6);
+                    const lng = e.latlng.lng.toFixed(6);
+                    placeMarker(lat, lng, vgreenIcon);
+                });
+            });
+
+            function placeMarker(lat, lng, icon) {
+                // Cập nhật cả 2 cặp input (asp-for và readonly display)
+                $('#Latitude').val(lat);
+                $('#Longitude').val(lng);
+                $('#latInput').val(lat);
+                $('#lngInput').val(lng);
+
+                if (marker) map.removeLayer(marker);
+
+                marker = L.marker([lat, lng], { icon: icon })
+                    .addTo(map)
+                    .bindPopup(`<b>Vị trí mới</b><br>Lat: ${lat}<br>Lng: ${lng}`)
+                    .openPopup();
+
+                map.setView([lat, lng], 16);
+            }
+
+            function locateMe() {
+                if (!navigator.geolocation) {
+                    alert("Trình duyệt không hỗ trợ định vị");
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const lat = pos.coords.latitude.toFixed(6);
+    const lng = pos.coords.longitude.toFixed(6);
+                    placeMarker(lat, lng, L.divIcon({
+                        html: `<div style="background:#3b82f6;width:44px;height:44px;border-radius:50%;border:5px solid white;box-shadow:0 0 30px #3b82f6;animation:pulse 1.5s infinite;">
+                                    <i class="bi bi-geo-alt-fill text-white fs-3"></i>
+                               </div>`,
+                        iconSize: [44, 44],
+                        iconAnchor: [22, 44]
+                    }));
+                }, () => alert("Không thể lấy vị trí hiện tại"));
+            }
+
+            @@keyframes pulse {
+                0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); }
+                70% { box-shadow: 0 0 0 20px rgba(16,185,129,0); }
+                100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+            }
+        </script>
+
+        <style>
+            #map { cursor: crosshair !important; }
+            .form-control[readonly] {
+                background-color: var(--vgreen-light);
+                color: var(--vgreen-dark);
+                font-weight: 600;
+            }
+        </style>
 }

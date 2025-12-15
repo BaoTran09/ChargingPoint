@@ -238,69 +238,46 @@ namespace ChargingPoint.Controllers
         }
 
         // Main Search Action - Xử lý tìm kiếm với nhiều filter
+        // GET: /Station/Search
         [HttpGet]
         public IActionResult Search(string searchString, bool searchNorth = false, bool searchCenter = false, bool searchSouth = false)
         {
-            var stations = _context.Station.AsQueryable();
+            var query = _context.Station.AsQueryable();
 
-            // Filter theo text search nếu có
+            // 1. Tìm theo từ khóa
             if (!string.IsNullOrWhiteSpace(searchString))
             {
-                var searchTerm = searchString.ToLower().Trim();
-                stations = stations.Where(s =>
-                    (!string.IsNullOrEmpty(s.Name) && s.Name.ToLower().Contains(searchTerm)) ||
-                    (!string.IsNullOrEmpty(s.Address) && s.Address.ToLower().Contains(searchTerm)) ||
-                    (!string.IsNullOrEmpty(s.Tag) && s.Tag.ToLower().Contains(searchTerm)) ||
-                    (!string.IsNullOrEmpty(s.StationType) && s.StationType.ToLower().Contains(searchTerm)) ||
-                    (!string.IsNullOrEmpty(s.Notes) && s.Notes.ToLower().Contains(searchTerm))
-                );
+                var term = searchString.Trim().ToLower();
+                query = query.Where(s =>
+                    EF.Functions.Like(s.Name ?? "", $"%{term}%") ||
+                    EF.Functions.Like(s.Address ?? "", $"%{term}%") ||
+                    EF.Functions.Like(s.Tag ?? "", $"%{term}%"));
             }
 
-            // Filter theo miền địa lý nếu có ít nhất 1 miền được chọn
+            // 2. Lọc theo vùng miền (nếu chọn)
             if (searchNorth || searchCenter || searchSouth)
             {
-                stations = stations.Where(s =>
-                    (searchNorth && s.Latitude.HasValue && s.Longitude.HasValue &&
-                     s.Latitude.Value >= NORTH_MIN_LAT && s.Latitude.Value <= NORTH_MAX_LAT &&
-                     s.Longitude.Value >= NORTH_MIN_LON && s.Longitude.Value <= NORTH_MAX_LON) ||
-                    (searchCenter && s.Latitude.HasValue && s.Longitude.HasValue &&
-                     s.Latitude.Value >= CENTER_MIN_LAT && s.Latitude.Value < CENTER_MAX_LAT &&
-                     s.Longitude.Value >= CENTER_MIN_LON && s.Longitude.Value <= CENTER_MAX_LON) ||
-                    (searchSouth && s.Latitude.HasValue && s.Longitude.HasValue &&
-                     s.Latitude.Value >= SOUTH_MIN_LAT && s.Latitude.Value < SOUTH_MAX_LAT &&
-                     s.Longitude.Value >= SOUTH_MIN_LON && s.Longitude.Value <= SOUTH_MAX_LON)
-                );
+                query = query.Where(s => s.Latitude.HasValue && s.Longitude.HasValue &&
+                    (searchNorth && s.Latitude >= 19.8m && s.Latitude <= 23.5m && s.Longitude >= 102.0m && s.Longitude <= 109.5m) ||
+                    (searchCenter && s.Latitude >= 11.5m && s.Latitude < 19.8m && s.Longitude >= 106.0m && s.Longitude <= 110.0m) ||
+                    (searchSouth && s.Latitude >= 8.5m && s.Latitude < 11.5m && s.Longitude >= 104.0m && s.Longitude <= 109.0m));
             }
 
-            var results = stations.OrderBy(s => s.Name).ToList();
+            var results = query.OrderBy(s => s.Name).ToList();
 
-            // Debug log
-            Console.WriteLine($"Search executed - Term: '{searchString}', Regions: N:{searchNorth}/C:{searchCenter}/S:{searchSouth}, Results: {results.Count}");
-            foreach (var station in results)
-            {
-                Console.WriteLine($"Station: {station.Name}, Lat: {station.Latitude}, Lon: {station.Longitude}, Region: {GetRegionByLatitudeLongitude(station.Latitude, station.Longitude)}");
-            }
-
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" ||
-                Request.Headers["Content-Type"].ToString().Contains("application/json"))
+            // Nếu là AJAX → trả JSON
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 return Json(results);
             }
-            else
-            {
-                ViewBag.SearchString = searchString;
-                ViewBag.SearchNorth = searchNorth;
-                ViewBag.SearchCenter = searchCenter;
-                ViewBag.SearchSouth = searchSouth;
-                ViewBag.ResultCount = results.Count;
 
-                return View("Index", results);
-            }
+            // Nếu là request thường → trả full view
+            ViewBag.SearchString = searchString;
+            ViewBag.SearchNorth = searchNorth;
+            ViewBag.SearchCenter = searchCenter;
+            ViewBag.SearchSouth = searchSouth;
+
+            return View("Index", results);
         }
-     
-
-
-
-
     }
 }
