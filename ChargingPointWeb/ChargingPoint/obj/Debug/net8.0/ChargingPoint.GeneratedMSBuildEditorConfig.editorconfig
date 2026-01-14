@@ -17,187 +17,195 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ChargingPoint
 build_property.RootNamespace = ChargingPoint
-build_property.ProjectDir = C:\Users\trann\Downloads\ChargingPoint\ChargingPointWeb\ChargingPoint\ChargingPoint\
+build_property.ProjectDir = C:\Users\trann\Downloads\ChargingPoint\ChargingPointWeb\ChargingPoint\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\trann\Downloads\ChargingPoint\ChargingPointWeb\ChargingPoint\ChargingPoint
+build_property.MSBuildProjectDirectory = C:\Users\trann\Downloads\ChargingPoint\ChargingPointWeb\ChargingPoint
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Account/ChangePassword.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Account/ChangePassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Account/CompleteProfile.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Account/CompleteProfile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDb21wbGV0ZVByb2ZpbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Account/CreateEmployee.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Account/CreateEmployee.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDcmVhdGVFbXBsb3llZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Account/EmailSent.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Account/EmailSent.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxFbWFpbFNlbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Account/Login.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Account/Register.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Account/Usermanagement.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Account/Usermanagement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxVc2VybWFuYWdlbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Account/VerifyEmail.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Account/VerifyEmail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxWZXJpZnlFbWFpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Charger/ChargingDetail.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Charger/ChargingDetail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdlclxDaGFyZ2luZ0RldGFpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Charger/Index.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Charger/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdlclxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Charger/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdlclxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Charger/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdlclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Charger/MyChargingSessions.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Charger/MyChargingSessions.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdlclxNeUNoYXJnaW5nU2Vzc2lvbnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Charger/_RequestChargingModal.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Charger/_RequestChargingModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdlclxfUmVxdWVzdENoYXJnaW5nTW9kYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/ChargingSession/ActiveSessions.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/ChargingSession/ActiveSessions.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdpbmdTZXNzaW9uXEFjdGl2ZVNlc3Npb25zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/ChargingSession/ChargingHistory.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/ChargingSession/ChargingHistory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdpbmdTZXNzaW9uXENoYXJnaW5nSGlzdG9yeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/ChargingSession/ChargingRequire.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/ChargingSession/ChargingRequire.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdpbmdTZXNzaW9uXENoYXJnaW5nUmVxdWlyZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/ChargingSession/Detail.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/ChargingSession/Detail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdpbmdTZXNzaW9uXERldGFpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/ChargingSession/Index.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/ChargingSession/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdpbmdTZXNzaW9uXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/ChargingSession/RequiringSessions.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/ChargingSession/RequiringSessions.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcmdpbmdTZXNzaW9uXFJlcXVpcmluZ1Nlc3Npb25zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Customer/Index.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Customer/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Customer/MyAccount.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Customer/MyAccount.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcTXlBY2NvdW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Customer/MyCars.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Customer/MyCars.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcTXlDYXJzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Customer/MyMotorbikes.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Customer/MyMotorbikes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcTXlNb3RvcmJpa2VzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Customer/_VehicleCard.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Customer/_VehicleCard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcX1ZlaGljbGVDYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Customer/_VehicleList.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Customer/_VehicleList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcX1ZlaGljbGVMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Customer/_VehicleModal.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Customer/_VehicleModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcX1ZlaGljbGVNb2RhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Dashboard/Index.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Dashboard/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Home/Index.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Invoice/Detail.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Invoice/Detail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52b2ljZVxEZXRhaWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Invoice/MyInvoices.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Invoice/MyInvoices.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52b2ljZVxNeUludm9pY2VzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Report/Index.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Report/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0XEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Shared/Error.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Shared/_AccountLayout.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Shared/_AccountLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BY2NvdW50TGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Shared/_LoginPartial.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Station/Create.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Station/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhdGlvblxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Station/Delete.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Station/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhdGlvblxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Station/Details.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Station/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhdGlvblxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Station/Edit.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Station/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhdGlvblxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Station/Index.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Station/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhdGlvblxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Station/Search.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Station/Search.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhdGlvblxTZWFyY2guY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Station/_StationTableRows.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Station/_StationTableRows.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhdGlvblxfU3RhdGlvblRhYmxlUm93cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/_ViewImports.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/_ViewStart.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/ChargingPoint/Views/Shared/_Layout.cshtml]
+[C:/Users/trann/Downloads/ChargingPoint/ChargingPointWeb/ChargingPoint/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-za3vu858kv

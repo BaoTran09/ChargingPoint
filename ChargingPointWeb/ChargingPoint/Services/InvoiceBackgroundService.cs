@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿/*using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
@@ -47,55 +47,7 @@ namespace ChargingPoint.Services
 
             _logger.LogInformation("🛑 Invoice Background Service stopped");
         }
-        /*
 
-        private async Task ProcessCompletedSessions()
-        {
-            using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<StoreDBContext>();
-            var invoiceService = scope.ServiceProvider.GetRequiredService<IInvoiceService>();
-
-            // Look for completed sessions without invoices
-            var completedSessions = await context.ChargingSession
-                .Where(s => s.Status == "Completed" &&
-                           s.EndTime != null &&
-                           !context.Invoices.Any(i => i.SessionId == s.SessionId))
-                .OrderBy(s => s.EndTime)
-                .Take(10)
-                .ToListAsync();
-
-            if (completedSessions.Any())
-            {
-                _logger.LogInformation(
-                    "📋 Found {Count} completed sessions without invoices",
-                    completedSessions.Count);
-
-                foreach (var session in completedSessions)
-                {
-                    try
-                    {
-                        _logger.LogInformation("💰 Generating invoice for session {SessionId}...", session.SessionId);
-
-                        var invoice = await invoiceService.GenerateInvoice(session.SessionId);
-
-                        _logger.LogInformation(
-                            "✅ Invoice {InvoiceId} created and email sent for session {SessionId}",
-                            invoice.InvoiceId,
-                            session.SessionId);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex,
-                            "❌ Failed to generate invoice for session {SessionId}",
-                            session.SessionId);
-                    }
-
-                    // Small delay between each invoice
-                    await Task.Delay(1000);
-                }
-            }
-        }
-        */
         // In InvoiceBackgroundService.cs: InvoiceBackgroundService, modify the ProcessCompletedSessions method
         private async Task ProcessCompletedSessions()
         {
@@ -207,3 +159,4 @@ namespace ChargingPoint.Services
 
     }
 }
+*/

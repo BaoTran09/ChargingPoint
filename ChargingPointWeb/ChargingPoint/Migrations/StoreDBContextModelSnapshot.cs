@@ -296,6 +296,36 @@ namespace ChargingPoint.Migrations
                     b.ToTable("Charger", (string)null);
                 });
 
+            modelBuilder.Entity("ChargingPoint.Models.ChargingCurve", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsDcFastCharge")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("MaxPowerKW")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("SocFrom")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SocTo")
+                        .HasColumnType("int");
+
+                    b.Property<long>("VehicleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("ChargingCurve", (string)null);
+                });
+
             modelBuilder.Entity("ChargingPoint.Models.ChargingSession", b =>
                 {
                     b.Property<long>("SessionId")
@@ -361,7 +391,7 @@ namespace ChargingPoint.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("ChargingSession", (string)null);
+                    b.ToTable("ChargingSessions");
                 });
 
             modelBuilder.Entity("ChargingPoint.Models.Connector", b =>
@@ -485,11 +515,63 @@ namespace ChargingPoint.Migrations
                     b.ToTable("Employee", (string)null);
                 });
 
+            modelBuilder.Entity("ChargingPoint.Models.Image", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Caption")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<long>("EntityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images", (string)null);
+                });
+
             modelBuilder.Entity("ChargingPoint.Models.IndividualVehicle", b =>
                 {
                     b.Property<string>("VIN")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<int?>("BatterySOC")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BatterySOH")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -507,6 +589,9 @@ namespace ChargingPoint.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ProductionDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<long>("VehicleId")
                         .HasColumnType("bigint");
 
@@ -516,7 +601,7 @@ namespace ChargingPoint.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("IndividualVehicle");
+                    b.ToTable("IndividualVehicle", (string)null);
                 });
 
             modelBuilder.Entity("ChargingPoint.Models.Invoice", b =>
@@ -611,7 +696,7 @@ namespace ChargingPoint.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("Invoices", (string)null);
+                    b.ToTable("Invoice", (string)null);
                 });
 
             modelBuilder.Entity("ChargingPoint.Models.InvoiceDetail", b =>
@@ -817,68 +902,6 @@ namespace ChargingPoint.Migrations
                     b.ToTable("Role", (string)null);
                 });
 
-            modelBuilder.Entity("ChargingPoint.Models.Transaction", b =>
-                {
-                    b.Property<string>("TransactionId")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal?>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Content")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("FromAccountName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("FromBankCode")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FromBankName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<long?>("InvoiceId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("InvoiceNumber")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("ToAccountName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("ToBankCode")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ToBankName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("TransactionCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TransactionType")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Url")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("TransactionId");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.ToTable("Transactions", (string)null);
-                });
-
             modelBuilder.Entity("ChargingPoint.Models.Vehicle", b =>
                 {
                     b.Property<long>("VehicleId")
@@ -899,6 +922,9 @@ namespace ChargingPoint.Migrations
                     b.Property<decimal?>("BatteryUsableKWh")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("ConnectorType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -907,9 +933,6 @@ namespace ChargingPoint.Migrations
 
                     b.Property<bool>("DcChargingSupport")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LicensePlate")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Manufacturer")
                         .HasColumnType("nvarchar(max)");
@@ -923,14 +946,11 @@ namespace ChargingPoint.Migrations
                     b.Property<string>("Model")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ProductionDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int?>("NominalVoltage")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("VIN")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VehicleType")
                         .HasColumnType("nvarchar(max)");
@@ -1100,6 +1120,17 @@ namespace ChargingPoint.Migrations
                     b.Navigation("Station");
                 });
 
+            modelBuilder.Entity("ChargingPoint.Models.ChargingCurve", b =>
+                {
+                    b.HasOne("ChargingPoint.Models.Vehicle", "Vehicles")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vehicles");
+                });
+
             modelBuilder.Entity("ChargingPoint.Models.ChargingSession", b =>
                 {
                     b.HasOne("ChargingPoint.Models.Connector", "Connector")
@@ -1113,7 +1144,7 @@ namespace ChargingPoint.Migrations
                         .HasForeignKey("IndividualVehicleVIN");
 
                     b.HasOne("ChargingPoint.Models.Vehicle", "Vehicle")
-                        .WithMany("ChargingSessions")
+                        .WithMany()
                         .HasForeignKey("VehicleId");
 
                     b.Navigation("Connector");
@@ -1165,7 +1196,7 @@ namespace ChargingPoint.Migrations
                         .HasForeignKey("CustomerId");
 
                     b.HasOne("ChargingPoint.Models.Vehicle", "Vehicle")
-                        .WithMany()
+                        .WithMany("IndividualVehicles")
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1245,22 +1276,11 @@ namespace ChargingPoint.Migrations
                     b.Navigation("RefInvoice");
                 });
 
-            modelBuilder.Entity("ChargingPoint.Models.Transaction", b =>
-                {
-                    b.HasOne("ChargingPoint.Models.Invoice", "Invoice")
-                        .WithMany()
-                        .HasForeignKey("InvoiceId");
-
-                    b.Navigation("Invoice");
-                });
-
             modelBuilder.Entity("ChargingPoint.Models.Vehicle", b =>
                 {
-                    b.HasOne("ChargingPoint.DB.Customer", "Customer")
+                    b.HasOne("ChargingPoint.DB.Customer", null)
                         .WithMany("Vehicles")
                         .HasForeignKey("CustomerId");
-
-                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1379,7 +1399,7 @@ namespace ChargingPoint.Migrations
 
             modelBuilder.Entity("ChargingPoint.Models.Vehicle", b =>
                 {
-                    b.Navigation("ChargingSessions");
+                    b.Navigation("IndividualVehicles");
                 });
 #pragma warning restore 612, 618
         }

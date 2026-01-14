@@ -82,6 +82,24 @@
           }
         }
       },
+      "CloudinaryDotNet/1.27.9": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3",
+          "System.Net.Http": "4.3.4",
+          "System.Text.RegularExpressions": "4.3.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/CloudinaryDotNet.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/CloudinaryDotNet.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "DocumentFormat.OpenXml/2.16.0": {
         "type": "package",
         "dependencies": {
@@ -5209,6 +5227,25 @@
         "lib/netstandard2.1/ClosedXML.dll",
         "lib/netstandard2.1/ClosedXML.xml",
         "nuget-logo.png"
+      ]
+    },
+    "CloudinaryDotNet/1.27.9": {
+      "sha512": "cQ3/+kHrA1SnwT6Bx6ZamJKKF/sb5Cl8uFAHTHpZ2HjdpfeCjSdfBRUA+aASOdbLGdL64jhLIEMaoWqXwAr9hQ==",
+      "type": "package",
+      "path": "cloudinarydotnet/1.27.9",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "CloudinaryIcon.png",
+        "README.md",
+        "cloudinarydotnet.1.27.9.nupkg.sha512",
+        "cloudinarydotnet.nuspec",
+        "lib/net452/CloudinaryDotNet.dll",
+        "lib/net452/CloudinaryDotNet.xml",
+        "lib/netstandard1.3/CloudinaryDotNet.dll",
+        "lib/netstandard1.3/CloudinaryDotNet.xml",
+        "lib/netstandard2.0/CloudinaryDotNet.dll",
+        "lib/netstandard2.0/CloudinaryDotNet.xml"
       ]
     },
     "DocumentFormat.OpenXml/2.16.0": {
@@ -14539,6 +14576,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "ClosedXML >= 0.102.1",
+      "CloudinaryDotNet >= 1.27.9",
       "MailKit >= 4.13.0",
       "Microsoft.AspNetCore.Authentication.Cookies >= 2.3.0",
       "Microsoft.AspNetCore.Authentication.Google >= 8.0.19",
@@ -14567,11 +14605,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj",
+      "projectUniqueName": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint.csproj",
       "projectName": "ChargingPoint",
-      "projectPath": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj",
+      "projectPath": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint.csproj",
       "packagesPath": "C:\\Users\\trann\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\obj\\",
+      "outputPath": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\DevExpress 25.1\\Components\\Offline Packages",
@@ -14617,6 +14655,10 @@
           "ClosedXML": {
             "target": "Package",
             "version": "[0.102.1, )"
+          },
+          "CloudinaryDotNet": {
+            "target": "Package",
+            "version": "[1.27.9, )"
           },
           "MailKit": {
             "target": "Package",

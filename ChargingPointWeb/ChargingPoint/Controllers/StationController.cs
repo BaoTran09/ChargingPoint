@@ -39,7 +39,7 @@ namespace ChargingPoint.Controllers
         // GET: Station - Hiển thị danh sách tất cả stations
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Station.ToListAsync());
+            return View(await _context.Stations.ToListAsync());
         }
 
         // GET: Station/Details/5
@@ -50,7 +50,7 @@ namespace ChargingPoint.Controllers
                 return NotFound();
             }
 
-            var store = await _context.Station
+            var store = await _context.Stations
                 .FirstOrDefaultAsync(m => m.StationId == id);
             if (store == null)
             {
@@ -88,7 +88,7 @@ namespace ChargingPoint.Controllers
                 return NotFound();
             }
 
-            var store = await _context.Station.FindAsync(id);
+            var store = await _context.Stations.FindAsync(id);
             if (store == null)
             {
                 return NotFound();
@@ -137,7 +137,7 @@ namespace ChargingPoint.Controllers
                 return NotFound();
             }
 
-            var store = await _context.Station
+            var store = await _context.Stations
                 .FirstOrDefaultAsync(m => m.StationId == id);
 
             if (store == null)
@@ -153,10 +153,10 @@ namespace ChargingPoint.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var store = await _context.Station.FindAsync(id);
+            var store = await _context.Stations.FindAsync(id);
             if (store != null)
             {
-                _context.Station.Remove(store);
+                _context.Stations.Remove(store);
             }
 
             await _context.SaveChangesAsync();
@@ -165,14 +165,14 @@ namespace ChargingPoint.Controllers
 
         private bool StoreExists(long id)
         {
-            return _context.Station.Any(e => e.StationId == id);
+            return _context.Stations.Any(e => e.StationId == id);
         }
 
         [HttpGet]
         [Route("GetStores")]
         public IActionResult GetStores()
         {
-            var stores = _context.Station.ToList();
+            var stores = _context.Stations.ToList();
             return Json(stores);
         }
 
@@ -188,7 +188,7 @@ namespace ChargingPoint.Controllers
 
             try
             {
-                var suggestions = _context.Station
+                var suggestions = _context.Stations
                     .Where(s => (!string.IsNullOrEmpty(s.Name) && s.Name.ToLower().Contains(term.ToLower())) ||
                                (!string.IsNullOrEmpty(s.Address) && s.Address.ToLower().Contains(term.ToLower())) ||
                                (!string.IsNullOrEmpty(s.Tag) && s.Tag.ToLower().Contains(term.ToLower())))
@@ -242,7 +242,7 @@ namespace ChargingPoint.Controllers
         [HttpGet]
         public IActionResult Search(string searchString, bool searchNorth = false, bool searchCenter = false, bool searchSouth = false)
         {
-            var query = _context.Station.AsQueryable();
+            var query = _context.Stations.AsQueryable();
 
             // 1. Tìm theo từ khóa
             if (!string.IsNullOrWhiteSpace(searchString))

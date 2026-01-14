@@ -20,7 +20,7 @@ public class EmployeeController : Controller
     public async Task<IActionResult> MyAccount()
     {
         var user = await _userManager.GetUserAsync(User);
-        var employee = await _context.Employee
+        var employee = await _context.Employees
             .FirstOrDefaultAsync(e => e.UserId == user.Id);
 
         ViewBag.Employee = employee;

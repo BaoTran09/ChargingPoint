@@ -351,7 +351,7 @@ namespace ChargingPoint.Controllers
                 UpdatedAt = DateTime.UtcNow
             };
 
-            _context.Customer.Add(customer);
+            _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
             user.EmailConfirmed = true;
@@ -366,7 +366,7 @@ namespace ChargingPoint.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UserManagement()
         {
-            var employees = await _context.Employee
+            var employees = await _context.Employees
                 .Include(e => e.User)
                 .ToListAsync();
 
@@ -431,7 +431,7 @@ namespace ChargingPoint.Controllers
                         CreatedAt = DateTime.UtcNow
                     };
 
-                    _context.Employee.Add(employee);
+                    _context.Employees.Add(employee);
                     await _context.SaveChangesAsync();
 
                     TempData["Success"] = $"Employee {model.Username} created successfully!";

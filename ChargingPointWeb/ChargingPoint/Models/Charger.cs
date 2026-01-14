@@ -1,5 +1,6 @@
 ﻿using ChargingPoint.DB;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static System.Collections.Specialized.BitVector32;
 
 namespace ChargingPoint.Models
@@ -26,11 +27,12 @@ namespace ChargingPoint.Models
         public DateTime? CreatedAt { get; set; } // Ngày tạo
 
 
-        public string? PicturePath { get; set; } //đường dẫn hình ảnh
+      //  public string? PicturePath { get; set; } //đường dẫn hình ảnh
         public string? UseFor { get; set; }      //Trụ sạc xe ô tô hay xe máy
         public string?Note { get; set; }      //Trụ sạc xe ô tô hay xe máy
 
-
+        [NotMapped]
+        public string? PrimaryImageUrl { get; set; }
         public Station Station { get; set; } // Liên kết với Station
         public ICollection<Connector> Connectors { get; set; } = new List<Connector>();
     }

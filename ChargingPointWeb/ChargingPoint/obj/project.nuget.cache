@@ -1,13 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "Mz8Tcgk8fHs=",
+  "dgSpecHash": "BoJiWAof3Hg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint\\ChargingPoint.csproj",
+  "projectFilePath": "C:\\Users\\trann\\Downloads\\ChargingPoint\\ChargingPointWeb\\ChargingPoint\\ChargingPoint.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\trann\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\trann\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
     "C:\\Users\\trann\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\trann\\.nuget\\packages\\closedxml\\0.102.1\\closedxml.0.102.1.nupkg.sha512",
+    "C:\\Users\\trann\\.nuget\\packages\\cloudinarydotnet\\1.27.9\\cloudinarydotnet.1.27.9.nupkg.sha512",
     "C:\\Users\\trann\\.nuget\\packages\\documentformat.openxml\\2.16.0\\documentformat.openxml.2.16.0.nupkg.sha512",
     "C:\\Users\\trann\\.nuget\\packages\\excelnumberformat\\1.1.0\\excelnumberformat.1.1.0.nupkg.sha512",
     "C:\\Users\\trann\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",

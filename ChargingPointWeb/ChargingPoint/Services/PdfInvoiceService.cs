@@ -1,4 +1,4 @@
-﻿using QuestPDF.Fluent;
+﻿/*using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -26,49 +26,7 @@ namespace ChargingPoint.Services
     // ========================================================
     // PDF INVOICE SERVICE V3 - Tương thích với DB Version 3
     // ========================================================
-    /*
-     public class PdfInvoiceService : IPdfInvoiceService
-    {
-        private readonly StoreDBContext _context;
-
-        public PdfInvoiceService(StoreDBContext context)
-        {
-            _context = context;
-        }
-
-        // Sync version for compatibility
-        public byte[] GenerateInvoicePdf(Invoice invoice)
-        {
-            // TODO: Implement PDF generation
-            // Using library like iTextSharp, QuestPDF, or Rotativa
-            return new byte[0]; // Placeholder
-        }
-
-        // Async version
-        public async Task<byte[]> GenerateInvoice(long invoiceId)
-        {
-            var invoice = await _context.Invoice
-                .Include(i => i.InvoiceDetails)
-                .FirstOrDefaultAsync(i => i.InvoiceId == invoiceId);
-
-            if (invoice == null) return new byte[0];
-
-            return GenerateInvoicePdf(invoice);
-        }
-
-        public async Task<string> SaveInvoicePdfAsync(long invoiceId, string folderPath)
-        {
-            var pdfBytes = await GenerateInvoice(invoiceId);
-            var fileName = $"Invoice_{invoiceId}.pdf";
-            var fullPath = Path.Combine(folderPath, fileName);
-
-            Directory.CreateDirectory(folderPath);
-            await File.WriteAllBytesAsync(fullPath, pdfBytes);
-
-            return $"/invoices/{fileName}";
-        }
-    }
-     */
+ 
     public class PdfInvoiceService : IPdfInvoiceService
     {
         private readonly StoreDBContext _context;
@@ -333,8 +291,7 @@ namespace ChargingPoint.Services
                         table.Cell().Element(CellStyle).AlignRight().Text(
                             (detail.DiscountAmount ?? 0) > 0 ? $"-{detail.DiscountAmount ?? 0:N0}" : "-"
                         );
-                      /*  table.Cell().Element(CellStyle).AlignRight()
-                            .Text($"{detail.TotalLine ?? 0:N0}").Bold();*/
+                      
                     }
 
                     static IContainer CellStyle(IContainer c) => c
@@ -527,3 +484,4 @@ namespace ChargingPoint.Services
         }
     }
 }
+*/

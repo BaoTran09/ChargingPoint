@@ -1,232 +1,109 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using ChargingPoint.Models; 
+using ChargingPoint.Models;
+
+using ChargingPoint.DB;
 
 namespace ChargingPoint.DB
 {
-    // Kế thừa IdentityDbContext nếu dùng Identity, hoặc DbContext thường nếu tự quản lý user
     public class StoreDBContext : IdentityDbContext<Users>
     {
         public StoreDBContext(DbContextOptions<StoreDBContext> options) : base(options)
         {
         }
 
-        #region DbSet Definitions (Khai báo bảng)
-
-        // --- Core Business ---
-        public DbSet<Station> Station { get; set; }
-        public DbSet<Charger> Charger { get; set; }
-        public DbSet<Connector> Connector { get; set; }
-        public DbSet<ChargingSession> ChargingSession { get; set; }
-        public DbSet<Customer> Customer { get; set; }
-        public DbSet<Vehicle> Vehicle { get; set; }
-
-        // --- HR & Admin ---
-        public DbSet<Department> Department { get; set; }
-        public DbSet<Role> Role { get; set; }
-        public DbSet<Employee> Employee { get; set; }
-        // public DbSet<Account> Accounts { get; set; } // Nếu có bảng Account riêng ngoài Identity
-
-        // --- Finance & Accounting ---
-        public DbSet<Invoice> Invoice { get; set; }
-        public DbSet<InvoiceDetail> InvoiceDetail { get; set; }
-
-        public DbSet<Receipt> Receipt { get; set; }
-        public DbSet<ReceiptDetail> ReceiptDetail { get; set; }
-
-        public DbSet<Transaction> Transaction { get; set; } // Sửa tên class cho khớp model
-
-        public DbSet<RevenueItem> RevenueItem { get; set; }
-        
-
+        #region DbSet Definitions
+        public DbSet<Station> Stations { get; set; }
+        public DbSet<Charger> Chargers { get; set; }
+        public DbSet<Connector> Connectors { get; set; }
+        public DbSet<ChargingSession> ChargingSessions { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<IndividualVehicle> IndividualVehicles { get; set; }
+        public DbSet<ChargingCurve> ChargingCurves { get; set; }
+        public DbSet<Department> Departments { get; set; }
+      //  public DbSet<Role> Roles { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+        public DbSet<Receipt> Receipts { get; set; }
+        public DbSet<ReceiptDetail> ReceiptDetails { get; set; }
+        public DbSet<RevenueItem> RevenueItems { get; set; }
+        public DbSet<Image> Images { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Cấu hình mối quan hệ 1-1 giữa User và Employee
-            modelBuilder.Entity<Users>()
-                .HasOne<Employee>(u => u.Employee)
-                .WithOne(e => e.User)
-                .HasForeignKey<Employee>(e => e.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
 
-            // Cấu hình mối quan hệ 1-1 giữa User và Customer
-            modelBuilder.Entity<Users>()
-                .HasOne(u => u.Customer)
-                .WithOne(c => c.User)
-                .HasForeignKey<Customer>(c => c.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // === 1. TÊN BẢNG CHÍNH XÁC ===
+            // === 1. ĐẶT TÊN BẢNG (Theo đúng Attribute [Table] trong code của bạn) ===
             modelBuilder.Entity<Station>().ToTable("Station");
+            modelBuilder.Entity<Department>().ToTable("Department");
+            modelBuilder.Entity<Employee>().ToTable("Employee");
+            modelBuilder.Entity<Customer>().ToTable("Customer");
+            modelBuilder.Entity<Role>().ToTable("Role");
+            modelBuilder.Entity<Vehicle>().ToTable("Vehicle");
+            modelBuilder.Entity<IndividualVehicle>().ToTable("IndividualVehicle");
+
+            // Các bảng khác không có [Table]
             modelBuilder.Entity<Charger>().ToTable("Charger");
             modelBuilder.Entity<Connector>().ToTable("Connector");
-            modelBuilder.Entity<Customer>().ToTable("Customer");
-            modelBuilder.Entity<Vehicle>().ToTable("Vehicle");
-            modelBuilder.Entity<ChargingSession>().ToTable("ChargingSession");
-            modelBuilder.Entity<Department>().ToTable("Department");
-            modelBuilder.Entity<Role>().ToTable("Role");
-            modelBuilder.Entity<Employee>().ToTable("Employee");
-            modelBuilder.Entity<Invoice>().ToTable("Invoices");
+            modelBuilder.Entity<ChargingCurve>().ToTable("ChargingCurve");
+            modelBuilder.Entity<Image>().ToTable("Images");
+            modelBuilder.Entity<RevenueItem>().ToTable("RevenueItem");
+            modelBuilder.Entity<Invoice>().ToTable("Invoice");
             modelBuilder.Entity<InvoiceDetail>().ToTable("InvoiceDetail");
             modelBuilder.Entity<Receipt>().ToTable("Receipt");
             modelBuilder.Entity<ReceiptDetail>().ToTable("ReceiptDetail");
-            modelBuilder.Entity<Transaction>().ToTable("Transactions");
-            modelBuilder.Entity<RevenueItem>().ToTable("RevenueItem");
 
-            // === 2. KHÓA CHÍNH PHỨC HỢP ===
+            // === 2. KHÓA CHÍNH PHỨC HỢP (Composite Keys) ===
+            // Cấu hình STT là một phần của khóa chính cho chi tiết hóa đơn và phiếu thu
             modelBuilder.Entity<InvoiceDetail>()
                 .HasKey(id => new { id.InvoiceId, id.STT });
 
             modelBuilder.Entity<ReceiptDetail>()
                 .HasKey(rd => new { rd.ReceiptId, rd.STT });
 
-        
-          
-            // === 5. CÁC FK KHÁC (đúng rồi, giữ nguyên) ===
+            // === 3. MỐI QUAN HỆ IDENTITY (1-1) ===
+            // Kết nối tài khoản User với Employee và Customer thông qua UserId
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.User)
+                .WithOne(u => u.Employee)
+                .HasForeignKey<Employee>(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Customer>()
+                .HasOne(c => c.User)
+                .WithOne(u => u.Customer)
+                .HasForeignKey<Customer>(c => c.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // === 4. CÁC MỐI QUAN HỆ NGHIỆP VỤ ===
+
+            // Một trạm sạc có nhiều bộ sạc
             modelBuilder.Entity<Charger>()
                 .HasOne(c => c.Station)
                 .WithMany(s => s.Chargers)
-                .HasForeignKey(c => c.StationId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(c => c.StationId);
 
+            // Một bộ sạc có nhiều đầu nối (Connector)
             modelBuilder.Entity<Connector>()
                 .HasOne(c => c.Charger)
                 .WithMany(ch => ch.Connectors)
-                .HasForeignKey(c => c.ChargerId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(c => c.ChargerId);
 
+            // Một mẫu xe (Vehicle) có nhiều xe thực tế (IndividualVehicle)
+            modelBuilder.Entity<IndividualVehicle>()
+                .HasOne(iv => iv.Vehicle)
+                .WithMany(v => v.IndividualVehicles)
+                .HasForeignKey(iv => iv.VehicleId);
 
-            /*
-                        // Role -> Employee (1-to-many)
-                builder.Entity<Employee>()
-                    .HasOne(e => e.Role)
-                    .WithMany(r => r.Employees)
-                    .HasForeignKey(e => e.RoleId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
-                // Station -> Charger (1-to-many)
-                builder.Entity<Charger>()
-                    .HasOne(c => c.Station)
-                    .WithMany(s => s.Chargers)
-                    .HasForeignKey(c => c.StationId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                // Charger -> Connector (1-to-many)
-                builder.Entity<Connector>()
-                    .HasOne(c => c.Charger)
-                    .WithMany(ch => ch.Connectors)
-                    .HasForeignKey(c => c.ChargerId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                // Customer -> Vehicle (1-to-many)
-                builder.Entity<Vehicle>()
-                    .HasOne(v => v.Customer)
-                    .WithMany(c => c.Vehicles)
-                    .HasForeignKey(v => v.CustomerId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                // Connector -> ChargingSession (1-to-many)
-                builder.Entity<ChargingSession>()
-                    .HasOne(cs => cs.Connector)
-                    .WithMany(c => c.ChargingSessions)
-                    .HasForeignKey(cs => cs.ConnectorId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                // Vehicle -> ChargingSession (1-to-many)
-                builder.Entity<ChargingSession>()
-                    .HasOne(cs => cs.Vehicle)
-                    .WithMany(v => v.ChargingSessions)
-                    .HasForeignKey(cs => cs.VehicleId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
-                // ChargingSession -> Invoice (1-to-many)
-                builder.Entity<Invoice>()
-                    .HasOne(i => i.ChargingSession)
-                    .WithMany(cs => cs.Invoices)
-                    .HasForeignKey(i => i.SessionId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
-                // Customer -> Invoice (1-to-many)
-                builder.Entity<Invoice>()
-                    .HasOne(i => i.Customer)
-                    .WithMany(c => c.Invoices)
-                    .HasForeignKey(i => i.CustomerId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                // Invoice -> InvoiceDetail (1-to-many)
-                builder.Entity<InvoiceDetail>()
-                    .HasOne(id => id.Invoice)
-                    .WithMany(i => i.InvoiceDetails)
-                    .HasForeignKey(id => id.InvoiceId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                // Invoice -> Transaction (1-to-many)
-                builder.Entity<Transaction>()
-                    .HasOne(t => t.Invoice)
-                    .WithMany(i => i.Transactions)
-                    .HasForeignKey(t => t.InvoiceId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
-                // Receipt Relationships
-                builder.Entity<Receipt>()
-                    .HasOne(r => r.Customer)
-                    .WithMany(c => c.Receipts)
-                    .HasForeignKey(r => r.CustomerId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                builder.Entity<Receipt>()
-                    .HasOne(r => r.Employee)
-                    .WithMany(e => e.Receipts)
-                    .HasForeignKey(r => r.EmployeeId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
-                builder.Entity<Receipt>()
-                    .HasOne(r => r.Invoice)
-                    .WithMany(i => i.Receipts)
-                    .HasForeignKey(r => r.InvoiceId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
-                builder.Entity<Receipt>()
-                    .HasOne(r => r.Transaction)
-                    .WithMany(t => t.Receipts)
-                    .HasForeignKey(r => r.TransactionId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                // Receipt -> ReceiptDetail (1-to-many)
-                builder.Entity<ReceiptDetail>()
-                    .HasOne(rd => rd.Receipt)
-                    .WithMany(r => r.ReceiptDetails)
-                    .HasForeignKey(rd => rd.ReceiptId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-             */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            // Một mẫu xe có nhiều mốc trong đường cong sạc
+            modelBuilder.Entity<ChargingCurve>()
+                .HasOne(cc => cc.Vehicles)
+                .WithMany()
+                .HasForeignKey(cc => cc.VehicleId);
         }
-
-
-
-
-
-
     }
 }

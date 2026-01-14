@@ -13,7 +13,6 @@ namespace ChargingPoint.DB
         [StringLength(200)]
         public string? Tag { get; set; }
 
-        // GIỮ NOT NULL như cũ để không phá code hiện tại
         [Required]
         [StringLength(200)]
         public string Name { get; set; } = null!;
@@ -21,7 +20,6 @@ namespace ChargingPoint.DB
         [StringLength(50)]
         public string? StationType { get; set; }
 
-        // === CÁC CỘT MỚI – để nullable trước ===
         [StringLength(500)]
         public string? Street { get; set; }
 
@@ -37,7 +35,6 @@ namespace ChargingPoint.DB
         [StringLength(200)]
         public string? Province { get; set; }
 
-        // GIỮ LẠI cột Address cũ để không phá app cũ
         [StringLength(500)]
         public string? Address { get; set; }
 

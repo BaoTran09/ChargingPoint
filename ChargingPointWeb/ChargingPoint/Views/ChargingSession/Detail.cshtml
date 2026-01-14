@@ -128,7 +128,7 @@
                                 <div>
                                     <small class="text-secondary">Phương tiện</small>
                                     <div class="fw-bold">@Model.Vehicle?.Model</div>
-                                    <small>@Model.Vehicle?.LicensePlate • @Model.Vehicle?.Manufacturer</small>
+                                    <small>@Model.IndividualVehicle?.LicensePlate • @Model.Vehicle?.Manufacturer</small>
                                 </div>
                             </div>
                         </div>
@@ -137,8 +137,8 @@
                                 <i class="bi bi-person-circle fs-3 text-info"></i>
                                 <div>
                                     <small class="text-secondary">Khách hàng</small>
-                                    <div class="fw-bold">@Model.Vehicle?.Customer?.FullName</div>
-                                    <small>@Model.Vehicle?.Customer?.PhoneNumber</small>
+                                    <div class="fw-bold">@Model.IndividualVehicle?.Customer?.FullName</div>
+                                    <small>@Model.IndividualVehicle?.Customer?.PhoneNumber</small>
                                 </div>
                             </div>
                         </div>

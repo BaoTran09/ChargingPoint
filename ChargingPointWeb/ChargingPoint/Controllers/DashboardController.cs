@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*
+ * using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChargingPoint.DB;
 using Microsoft.AspNetCore.Authorization;
@@ -279,4 +280,4 @@ namespace ChargingPoint.Controllers
 
     // ViewModel for Dashboard
  
-}
+}*/

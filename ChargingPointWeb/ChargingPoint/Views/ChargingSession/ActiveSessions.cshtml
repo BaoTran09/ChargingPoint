@@ -28,11 +28,11 @@
                             <div class="col-12">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="avatar bg-success text-white rounded-circle" style="width:48px;height:48px;">
-                                        @(s.Vehicle?.LicensePlate?.FirstOrDefault() ?? 'V')
+                                        @(s.IndividualVehicle?.LicensePlate?.FirstOrDefault() ?? 'V')
                                     </div>
                                     <div>
                                         <div class="fw-bold">@s.Vehicle?.Model</div>
-                                        <small class="text-secondary">@s.Vehicle?.Customer?.FullName</small>
+                                        <small class="text-secondary">@s.IndividualVehicle?.Customer?.FullName</small>
                                     </div>
                                 </div>
                             </div>

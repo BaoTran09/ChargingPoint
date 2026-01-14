@@ -55,7 +55,7 @@
                         <div class="d-flex align-items-center gap-4 mb-4">
                             <div class="avatar bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow"
                                  style="width: 80px; height: 80px; font-size: 2.2rem;">
-                                @(activeSession.Vehicle?.LicensePlate?.FirstOrDefault() ?? 'V')
+                                @(activeSession.IndividualVehicle?.LicensePlate?.FirstOrDefault() ?? 'V')
                             </div>
                             <div>
                                 <h3 class="fw-bold mb-1">@activeSession.Vehicle?.Model</h3>
@@ -182,7 +182,7 @@
                                     </td>
                                     <td>
                                         <div class="fw-semibold">@s.Vehicle?.Model</div>
-                                        <small class="text-secondary">@s.Vehicle?.LicensePlate</small>
+                                        <small class="text-secondary">@s.IndividualVehicle?.LicensePlate</small>
                                     </td>
                                     <td>
                                         <small>@s.StartTime:dd/MM HH:mm</small>

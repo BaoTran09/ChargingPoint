@@ -7,148 +7,96 @@
     var connector = session?.Connector;
     var charger = connector?.Charger;
     var station = charger?.Station;
-    var vehicle = session?.Vehicle;
-    var customer = Model.Customer ?? vehicle?.Customer;
+
+    // THAY ĐỔI: Lấy thông tin từ IndividualVehicle qua quan hệ VIN
+    var individualVehicle = session?.IndividualVehicle;
+    var vehicleTemplate = individualVehicle?.Vehicle; // Thông số mẫu xe (VF8, VF9...)
+
+    var customer = Model.Customer ?? individualVehicle?.Customer;
     var user = customer?.User;
 }
 
 <div class="container mt-4">
-    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3>Hóa Đơn Sạc Điện</h3>
-            <p class="text-muted mb-0">Mã: <strong>@Model.InvoiceId</strong></p>
+            <h3 class="text-primary fw-bold">Hóa Đơn Sạc Điện</h3>
+            <p class="text-muted mb-0">Mã hóa đơn: <strong>#@Model.InvoiceId</strong></p>
         </div>
         <div>
             @if (Model.Status == "Paid")
             {
-                <span class="badge bg-success badge-lg">ĐÃ THANH TOÁN</span>
+                <span class="badge bg-success badge-lg px-4 py-2"><i class="fas fa-check-circle me-2"></i>ĐÃ THANH TOÁN</span>
             }
             else if (isOverdue)
             {
-                <span class="badge bg-danger badge-lg">QUÁ HẠN</span>
+                <span class="badge bg-danger badge-lg px-4 py-2"><i class="fas fa-exclamation-circle me-2"></i>QUÁ HẠN</span>
             }
             else
             {
-                <span class="badge bg-warning badge-lg">CHƯA THANH TOÁN</span>
+                <span class="badge bg-warning text-dark badge-lg px-4 py-2"><i class="fas fa-clock me-2"></i>CHỜ THANH TOÁN</span>
             }
         </div>
     </div>
 
     <div class="row">
-        <!-- Left Column - Invoice Details -->
         <div class="col-lg-8">
-            <div class="card invoice-card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5 class="mb-0">HÓA ĐƠN GIÁ TRỊ GIA TĂNG</h5>
-                            <small>V-GREEN CHARGING STATION</small>
+            <div class="card invoice-card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <h5 class="mb-0 fw-bold">HÓA ĐƠN GIÁ TRỊ GIA TĂNG</h5>
+                            <small class="opacity-75">V-GREEN CHARGING NETWORK</small>
                         </div>
-                        <div class="col-md-6 text-end">
-                            <div class="invoice-number">
-                                <div class="small">Mẫu số: @Model.InvoiceTemplate</div>
-                                <div class="small">Ký hiệu: @Model.InvoiceSymbol</div>
-                                <div><strong>Số: @Model.InvoiceNumber</strong></div>
-                            </div>
+                        <div class="col-md-5 text-end border-start border-white border-opacity-25">
+                            <div class="small">Mẫu số: @Model.InvoiceTemplate</div>
+                            <div class="small">Ký hiệu: @Model.InvoiceSymbol</div>
+                            <div class="h5 mb-0">Số: <strong>@Model.InvoiceNumber.ToString("D7")</strong></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card-body p-4">
-                    <!-- Company Info -->
                     <div class="section mb-4">
-                        <h6 class="section-title">ĐƠN VỊ CUNG CẤP DỊCH VỤ</h6>
-                        <table class="info-table">
-                            <tr>
-                                <td width="30%"><strong>Đơn vị:</strong></td>
-                                <td>CÔNG TY CỔ PHẦN PHÁT TRIỂN TRẠM SẠC TOÀN CẦU V-GREEN</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Cơ sở:</strong></td>
-                                <td>@(station?.Name ?? "N/A")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Địa chỉ:</strong></td>
-                                <td>@(station?.Address ?? "N/A")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Số điện thoại:</strong></td>
-                                <td>1900 1234</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Số tài khoản:</strong></td>
-                                <td><strong class="text-primary">LE BAO TRAN - 1030946681 - VIETCOMBANK</strong></td>
-                            </tr>
-                        </table>
+                        <h6 class="section-title text-uppercase"><i class="fas fa-building me-2"></i>Đơn vị cung cấp dịch vụ</h6>
+                        <div class="ps-3 border-start border-3 border-primary border-opacity-25">
+                            <p class="mb-1"><strong>CÔNG TY CP PHÁT TRIỂN TRẠM SẠC TOÀN CẦU V-GREEN</strong></p>
+                            <p class="mb-1 text-muted small"><i class="fas fa-map-marker-alt me-2"></i>Trạm: @(station?.Name ?? "Hệ thống trạm sạc V-Green")</p>
+                            <p class="mb-1 text-muted small"><i class="fas fa-location-arrow me-2"></i>Địa chỉ: @(station?.Address ?? "Toàn quốc")</p>
+                            <p class="mb-0 text-muted small"><i class="fas fa-phone me-2"></i>Hotline: 1900 1234</p>
+                        </div>
                     </div>
 
-                    <!-- Customer Info -->
-                    <div class="section mb-4">
-                        <h6 class="section-title">THÔNG TIN KHÁCH HÀNG</h6>
-                        <table class="info-table">
-                            <tr>
-                                <td width="30%"><strong>Họ tên:</strong></td>
-                                <td>@(Model.Snashot_CustomerName ?? customer?.FullName ?? "N/A")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Số điện thoại:</strong></td>
-                                <td>@(Model.Snashot_CustomerPhone ?? customer?.PhoneNumber ?? "N/A")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Email:</strong></td>
-                                <td>@(Model.Snashot_CustomerEmail ?? user?.Email ?? "N/A")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Xe:</strong></td>
-                                <td>@(vehicle != null ? $"{vehicle.Manufacturer} {vehicle.Model} {vehicle.Version}".Trim() : "N/A")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Biển số xe:</strong></td>
-                                <td><strong class="text-danger">@(vehicle?.LicensePlate ?? "N/A")</strong></td>
-                            </tr>
-                        </table>
+                    <div class="row section mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <h6 class="section-title text-uppercase"><i class="fas fa-user me-2"></i>Khách hàng</h6>
+                            <div class="info-content small ps-2">
+                                <p class="mb-1"><strong>@((Model.Snashot_CustomerName ?? customer?.FullName ?? "Khách hàng vãng lai").ToUpper())</strong></p>
+                                <p class="mb-1">SĐT: @(Model.Snashot_CustomerPhone ?? customer?.PhoneNumber ?? "N/A")</p>
+                                <p class="mb-0">Email: @(Model.Snashot_CustomerEmail ?? user?.Email ?? "N/A")</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="section-title text-uppercase"><i class="fas fa-car me-2"></i>Thông tin phương tiện</h6>
+                            <div class="info-content small ps-2">
+                                <p class="mb-1"><strong>@(vehicleTemplate?.Manufacturer) @(vehicleTemplate?.Model)</strong></p>
+                                <p class="mb-1">Biển số: <span class="badge bg-dark">@(individualVehicle?.LicensePlate ?? "N/A")</span></p>
+                                <p class="mb-0 text-muted">Số khung (VIN): @(individualVehicle?.VIN ?? "N/A")</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Invoice Date Info -->
                     <div class="section mb-4">
-                        <h6 class="section-title">THÔNG TIN HÓA ĐƠN</h6>
-                        <table class="info-table">
-                            <tr>
-                                <td width="30%"><strong>Ngày tạo:</strong></td>
-                                <td>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Hạn thanh toán:</strong></td>
-                                <td class="text-danger"><strong>@(Model.ExpireDate?.ToString("dd/MM/yyyy") ?? "N/A")</strong></td>
-                            </tr>
-                            @if (Model.Status == "Paid")
-                            {
-                                <tr>
-                                    <td><strong>Ngày thanh toán:</strong></td>
-                                    <td class="text-success">@(Model.PaidAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Phương thức:</strong></td>
-                                    <td>@(Model.PaymentMethod ?? "N/A")</td>
-                                </tr>
-                            }
-                        </table>
-                    </div>
-
-                    <!-- Service Table from InvoiceDetail -->
-                    <div class="section mb-4">
-                        <h6 class="section-title">CHI TIẾT DỊCH VỤ</h6>
+                        <h6 class="section-title text-uppercase"><i class="fas fa-list me-2"></i>Chi tiết dịch vụ sạc</h6>
                         <div class="table-responsive">
-                            <table class="table table-bordered service-table">
+                            <table class="table table-hover border service-table">
                                 <thead class="table-light">
                                     <tr>
-                                        <th width="5%">STT</th>
-                                        <th width="35%">Dịch vụ</th>
-                                        <th width="12%">Số lượng</th>
-                                        <th width="10%">Đơn vị</th>
-                                        <th width="18%">Đơn giá</th>
-                                        <th width="20%">Thành tiền</th>
+                                        <th class="text-center">STT</th>
+                                        <th>Nội dung dịch vụ</th>
+                                        <th class="text-center">Số lượng</th>
+                                        <th class="text-center">ĐVT</th>
+                                        <th class="text-end">Đơn giá</th>
+                                        <th class="text-end">Thành tiền</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -158,193 +106,191 @@
                                         {
                                             <tr>
                                                 <td class="text-center">@detail.STT</td>
-                                                <td>@(detail.RevenueItem?.ItemName ?? "Dịch vụ")</td>
-                                                <td class="text-end">@(detail.Quantities?.ToString() ?? "0")</td>
-                                                <td class="text-center">@(detail.Unit ?? "")</td>
+                                                <td>
+                                                    <strong>@(detail.RevenueItem?.ItemName ?? "Dịch vụ sạc điện")</strong><br>
+                                                    <small class="text-muted">Phiên sạc: @(session?.StartTime?.ToString("dd/MM HH:mm") ?? "")</small>
+                                                </td>
+                                                <td class="text-center">@(detail.Quantities?.ToString() ?? "0")</td>
+                                                <td class="text-center">@(detail.Unit ?? "kWh")</td>
                                                 <td class="text-end">@((detail.UnitPrice ?? 0).ToString("N0"))</td>
-                                                <td class="text-end"><strong>@((detail.Amount ?? 0).ToString("N0"))</strong></td>
+                                                <td class="text-end fw-bold">@((detail.Amount ?? 0).ToString("N0"))</td>
                                             </tr>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="6" class="text-center text-muted">Không có dữ liệu chi tiết</td>
-                                        </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- Summary -->
-                    <div class="section">
-                        <div class="row">
-                            <div class="col-md-6"></div>
-                            <div class="col-md-6">
-                                <table class="table summary-table">
+                    <div class="section border-top pt-3">
+                        <div class="row justify-content-end">
+                            <div class="col-md-6 col-lg-5">
+                                <table class="table table-sm table-borderless summary-table mb-0">
                                     <tr>
-                                        <td>Tổng tiền hàng:</td>
-                                        <td class="text-end">@((Model.TotalAmountService ?? 0).ToString("N0")) VND</td>
+                                        <td class="text-muted">Cộng tiền dịch vụ:</td>
+                                        <td class="text-end">@((Model.TotalAmountService ?? 0).ToString("N0"))</td>
                                     </tr>
                                     @if ((Model.TotalAmountDiscount ?? 0) > 0)
                                     {
                                         <tr>
-                                            <td>Chiết khấu:</td>
-                                            <td class="text-end text-danger">-@((Model.TotalAmountDiscount ?? 0).ToString("N0")) VND</td>
+                                            <td class="text-muted">Chiết khấu/Giảm giá:</td>
+                                            <td class="text-end text-danger">-@((Model.TotalAmountDiscount ?? 0).ToString("N0"))</td>
                                         </tr>
                                     }
                                     <tr>
-                                        <td>Thuế GTGT (10%):</td>
-                                        <td class="text-end">@((Model.TotalAmountTax ?? 0).ToString("N0")) VND</td>
+                                        <td class="text-muted">Thuế GTGT (10%):</td>
+                                        <td class="text-end">@((Model.TotalAmountTax ?? 0).ToString("N0"))</td>
                                     </tr>
-                                    <tr class="total-row">
-                                        <td><strong>TỔNG CỘNG:</strong></td>
-                                        <td class="text-end"><strong class="text-success">@((Model.Total ?? 0).ToString("N0")) VND</strong></td>
+                                    <tr class="border-top">
+                                        <td class="h5 fw-bold">TỔNG CỘNG:</td>
+                                        <td class="h5 fw-bold text-success text-end">@((Model.Total ?? 0).ToString("N0")) VND</td>
                                     </tr>
                                 </table>
-                                <p class="text-muted small mb-0">
-                                    <em>Bằng chữ: @NumberToWords((long)(Model.Total ?? 0)) đồng</em>
+                                <p class="text-muted small italic text-end mt-2">
+                                    <em>(Bằng chữ: @NumberToWords((long)(Model.Total ?? 0)) đồng)</em>
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="card-footer text-center text-muted">
-                    <small>Cảm ơn quý khách đã sử dụng dịch vụ V-Green!</small>
+                <div class="card-footer bg-light text-center py-3">
+                    <p class="mb-0 small text-muted">Hóa đơn điện tử được khởi tạo từ hệ thống quản lý trạm sạc V-GREEN</p>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column - Actions -->
         <div class="col-lg-4">
             @if (Model.Status == "Unpaid")
             {
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">Thanh Toán</h5>
+                <div class="card shadow-sm border-0 mb-4 overflow-hidden">
+                    <div class="card-header bg-success text-white py-3 fw-bold">
+                        <i class="fas fa-wallet me-2"></i>THANH TOÁN TRỰC TUYẾN
                     </div>
                     <div class="card-body">
-                        @if (!string.IsNullOrEmpty(Model.QRCodeData))
-                        {
-                            <div class="payment-qr text-center mb-3">
-                                <img src="@Model.PaymentLink" alt="QR Code" class="img-fluid" style="max-width: 200px;" />
-                                <p class="small text-muted mt-2">Quét mã để thanh toán</p>
-                            </div>
-                        }
-                        <div class="alert alert-info small">
-                            <strong>Chuyển khoản đến:</strong>
-                        </div>
-                        <table class="table table-sm small">
-                            <tr>
-                                <td><strong>Chủ TK:</strong></td>
-                                <td>LE BAO TRAN</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Số TK:</strong></td>
-                                <td><strong class="text-primary">1030946681</strong></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Ngân hàng:</strong></td>
-                                <td>VIETCOMBANK</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Số tiền:</strong></td>
-                                <td><strong class="text-success">@((Model.Total ?? 0).ToString("N0"))₫</strong></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Nội dung:</strong></td>
-                                <td><code class="text-danger">VGREEN @Model.InvoiceNumber.ToString("D7")</code></td>
-                            </tr>
-                        </table>
-                        <button class="btn btn-success w-100 mb-2" onclick="copyPaymentInfo()">
-                            <i class="fas fa-copy"></i> Copy Nội Dung CK
-                        </button>
                         @if (!string.IsNullOrEmpty(Model.PaymentLink))
                         {
-                            <a href="@Model.PaymentLink" class="btn btn-outline-success w-100 mb-2" target="_blank">
-                                <i class="fas fa-mobile-alt"></i> Mở VCB Mobile App
-                            </a>
+                            <div class="text-center mb-4 p-3 bg-light rounded">
+                                <img src="@Model.PaymentLink" alt="QR Payment" class="img-fluid shadow-sm rounded" style="max-width: 180px;" />
+                                <div class="mt-2 small text-muted">Quét mã VietQR để thanh toán nhanh</div>
+                            </div>
                         }
-                        <button class="btn btn-primary w-100 mt-3" onclick="showUploadProof()">
-                            <i class="fas fa-upload"></i> Upload Chứng Từ
+
+                        <div class="bg-primary bg-opacity-10 p-3 rounded mb-3">
+                            <h6 class="fw-bold text-primary mb-3">Thông tin chuyển khoản:</h6>
+                            <div class="small d-flex flex-column gap-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Ngân hàng:</span>
+                                    <span class="fw-bold">VIETCOMBANK</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Chủ TK:</span>
+                                    <span class="fw-bold">LE BAO TRAN</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">Số TK:</span>
+                                    <span class="fw-bold text-primary fs-6">1030946681</span>
+                                </div>
+                                <div class="d-flex justify-content-between border-top pt-2">
+                                    <span class="text-muted">Nội dung:</span>
+                                    <span class="fw-bold text-danger">VGREEN @Model.InvoiceNumber.ToString("D7")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-success w-100 mb-2 py-2 fw-bold shadow-sm" onclick="copyPaymentInfo()">
+                            <i class="fas fa-copy me-2"></i> SAO CHÉP NỘI DUNG
+                        </button>
+
+                        <button class="btn btn-primary w-100 py-2 fw-bold" onclick="showUploadProof()">
+                            <i class="fas fa-upload me-2"></i> XÁC NHẬN ĐÃ CHUYỂN
                         </button>
                     </div>
                 </div>
-                @if (isOverdue)
-                {
-                    <div class="alert alert-danger">
-                        <strong><i class="fas fa-exclamation-triangle"></i> Hóa đơn đã quá hạn!</strong><br>
-                        <small>Vui lòng thanh toán sớm để tránh phí phạt.</small>
-                    </div>
-                }
             }
             else
             {
-                <div class="card shadow-sm mb-4">
-                    <div class="card-body text-center">
-                        <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
-                        <h5 class="text-success mt-3">Đã Thanh Toán</h5>
-                        <p class="text-muted">@(Model.PaidAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</p>
-                        <p class="mb-0"><strong>Phương thức:</strong> @(Model.PaymentMethod ?? "N/A")</p>
+                <div class="card shadow-sm border-0 mb-4 bg-success bg-opacity-10">
+                    <div class="card-body text-center py-5">
+                        <div class="display-4 text-success mb-3"><i class="fas fa-check-circle"></i></div>
+                        <h4 class="fw-bold text-success">THANH TOÁN THÀNH CÔNG</h4>
+                        <hr>
+                        <p class="mb-1 small">Ngày: @(Model.PaidAt?.ToString("dd/MM/yyyy HH:mm"))</p>
+                        <p class="mb-0 small">Kênh: @(Model.PaymentMethod ?? "VietQR")</p>
                     </div>
                 </div>
             }
 
-            <!-- Actions -->
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h6 class="mb-0"><i class="fas fa-cog"></i> Thao Tác</h6>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h6 class="mb-0 fw-bold"><i class="fas fa-print me-2"></i>TIỆN ÍCH</h6>
                 </div>
-                <div class="card-body">
-                    <a href="@Url.Action("DownloadPdf", new { id = Model.InvoiceId })"
-                       class="btn btn-outline-primary w-100 mb-2">
-                        <i class="fas fa-download"></i> Tải Hóa Đơn PDF
-                    </a>
-                    <a href="@Url.Action("MyInvoices")" class="btn btn-outline-secondary w-100 mb-2">
-                        <i class="fas fa-arrow-left"></i> Quay Lại Danh Sách
+                <div class="card-body d-flex flex-column gap-2">
+                    <a href="@Url.Action("DownloadPdf", new { id = Model.InvoiceId })" class="btn btn-outline-primary text-start">
+                        <i class="fas fa-file-pdf me-2 text-danger"></i> Xuất hóa đơn (PDF)
                     </a>
                     @if (Model.SessionId.HasValue)
                     {
-                        <a href="@Url.Action("Detail", "ChargingSession", new { id = Model.SessionId })"
-                           class="btn btn-outline-info w-100">
-                            <i class="fas fa-bolt"></i> Xem Phiên Sạc
+                        <a href="@Url.Action("ChargingDetail", "Charger", new { id = Model.SessionId })" class="btn btn-outline-info text-start">
+                            <i class="fas fa-bolt me-2"></i> Chi tiết phiên sạc
                         </a>
                     }
+                    <a href="@Url.Action("MyChargingSessions", "Charger")" class="btn btn-outline-secondary text-start">
+                        <i class="fas fa-list me-2"></i> Lịch sử giao dịch
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Upload Proof Modal -->
-<div class="modal fade" id="uploadProofModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="fas fa-upload"></i> Upload Chứng Từ Thanh Toán</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="uploadProofForm" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Ảnh chứng từ:</label>
-                        <input type="file" class="form-control" name="proof" accept="image/*" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Mã giao dịch:</label>
-                        <input type="text" class="form-control" name="transactionId" placeholder="VD: FT24014XXXXX">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Gửi</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
+
+@section Styles {
+    <style>
+        .invoice-card {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .section-title {
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            color: #0d6efd;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .service-table th {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .service-table td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        .info-content p {
+            margin-bottom: 0.4rem;
+        }
+
+        .badge-lg {
+            border-radius: 50px;
+            font-weight: 700;
+        }
+
+        .summary-table td {
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+    </style>
+}
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -354,112 +300,18 @@
             navigator.clipboard.writeText(text).then(() => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Đã copy!',
-                    text: 'Nội dung chuyển khoản đã được copy',
+                    title: 'Đã sao chép!',
+                    text: 'Vui lòng dán vào nội dung chuyển khoản ngân hàng.',
                     timer: 2000,
-                    showConfirmButton: false
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
                 });
             });
         }
-
-        function showUploadProof() {
-            const modal = new bootstrap.Modal(document.getElementById('uploadProofModal'));
-            modal.show();
-        }
-
-        $('#uploadProofForm').on('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            formData.append('invoiceId', '@Model.InvoiceId');
-
-            $.ajax({
-                url: '@Url.Action("UploadPaymentProof")',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('uploadProofModal'));
-                    modal.hide();
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Thành công!',
-                            text: response.message
-                        }).then(() => location.reload());
-                    } else {
-                        Swal.fire('Lỗi', response.message, 'error');
-                    }
-                },
-                error: function () {
-                    Swal.fire('Lỗi', 'Không thể upload. Vui lòng thử lại!', 'error');
-                }
-            });
-        });
     </script>
 }
 
-@section Styles {
-    <style>
-        .badge-lg {
-            padding: 10px 20px;
-            font-size: 1.1rem;
-        }
-
-        .invoice-card {
-            border: none;
-        }
-
-        .section {
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            border-bottom: 2px solid #0066cc;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-            color: #0066cc;
-            font-weight: 600;
-        }
-
-        .info-table {
-            width: 100%;
-        }
-
-            .info-table td {
-                padding: 8px 0;
-                border-bottom: 1px solid #f0f0f0;
-            }
-
-            .info-table tr:last-child td {
-                border-bottom: none;
-            }
-
-        .service-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-
-        .service-table td {
-            vertical-align: middle;
-        }
-
-        .summary-table {
-            border: 2px solid #dee2e6;
-        }
-
-            .summary-table td {
-                padding: 10px;
-                border-bottom: 1px solid #dee2e6;
-            }
-
-            .summary-table .total-row td {
-                background-color: #f8f9fa;
-                font-size: 1.2rem;
-                border-top: 3px solid #0066cc;
-            }
-    </style>
-}
 
 @functions {
     string NumberToWords(long number)

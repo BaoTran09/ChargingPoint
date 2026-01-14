@@ -9,6 +9,7 @@
       "ChargingPoint/1.0.0": {
         "dependencies": {
           "ClosedXML": "0.102.1",
+          "CloudinaryDotNet": "1.27.9",
           "MailKit": "4.13.0",
           "Microsoft.AspNetCore.Authentication.Cookies": "2.3.0",
           "Microsoft.AspNetCore.Authentication.Google": "8.0.19",
@@ -89,6 +90,19 @@
           "lib/netstandard2.1/ClosedXML.dll": {
             "assemblyVersion": "0.102.1.0",
             "fileVersion": "0.102.1.0"
+          }
+        }
+      },
+      "CloudinaryDotNet/1.27.9": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3",
+          "System.Net.Http": "4.3.4",
+          "System.Text.RegularExpressions": "4.3.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/CloudinaryDotNet.dll": {
+            "assemblyVersion": "1.27.9.0",
+            "fileVersion": "1.27.9.0"
           }
         }
       },
@@ -3444,6 +3458,13 @@
       "sha512": "sha512-Zb0/SgczPKLqlCHpSZzMG2qzaT3HpdkFrYJU8TTFRMfC0NLTSlp8gw26tZAtJp+Do0szAhPrWjkTp9flH9Or0A==",
       "path": "closedxml/0.102.1",
       "hashPath": "closedxml.0.102.1.nupkg.sha512"
+    },
+    "CloudinaryDotNet/1.27.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cQ3/+kHrA1SnwT6Bx6ZamJKKF/sb5Cl8uFAHTHpZ2HjdpfeCjSdfBRUA+aASOdbLGdL64jhLIEMaoWqXwAr9hQ==",
+      "path": "cloudinarydotnet/1.27.9",
+      "hashPath": "cloudinarydotnet.1.27.9.nupkg.sha512"
     },
     "DocumentFormat.OpenXml/2.16.0": {
       "type": "package",

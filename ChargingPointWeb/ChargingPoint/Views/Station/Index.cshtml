@@ -108,7 +108,8 @@
                                         </td>
                                         <td>
                                             <span class="badge bg-primary bg-opacity-10 text-primary" style="font-size: 11px; padding: 4px 10px;">
-                                                @(s.StationType == "Public" ? "Công cộng" : "Riêng tư")
+                                            @(s.StationType == "Car/Moto" ? "Xe ô tô/Xe máy" :
+                                                    s.StationType == "Car" ? "Xe ô tô" : "Xe máy")
                                             </span>
                                         </td>
                                         <td class="text-end pe-4">
@@ -143,8 +144,10 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
 
     <script>
-        let map, markers = L.layerGroup();
-        
+        let map,
+            markers = L.layerGroup(),   // trạm sạc
+            userLayer = L.layerGroup(); // vị trí user
+
         // Custom V-Green marker icon
         const vgreenIcon = L.divIcon({
             html: `<div style="background: var(--vgreen); width: 36px; height: 36px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center;">
@@ -167,6 +170,16 @@
             className: 'selected-marker'
         });
 
+        const userMarkerIcon = L.icon({
+            iconUrl: '/Images/usermarkerIcon.png',
+            iconSize: [42, 42],
+            iconAnchor: [21, 42],
+            popupAnchor: [0, -42],
+            className: 'userlocation-marker'
+        });
+
+
+
         $(function () {
             // Initialize map
             map = L.map('map', {
@@ -183,6 +196,10 @@
             }).addTo(map);
 
             markers.addTo(map);
+            userLayer.addTo(map);
+            initializeGeolocation();
+
+
 
             // Load initial data
             const initialData = @Html.Raw(json);
@@ -335,7 +352,11 @@
                 `);
                 return;
             }
-
+            const StationTypeLabels = {
+                "Car/Moto": "Xe ô tô & Xe máy",
+                "Car": "Xe ô tô",
+                "Moto": "Xe máy"
+            };
             data.forEach(s => {
                 const row = `
                     <tr class="align-middle station-row" data-lat="${s.Latitude}" data-lon="${s.Longitude}" style="cursor: pointer; transition: var(--transition);">
@@ -346,8 +367,8 @@
                         </td>
                         <td>
                             <span class="badge bg-primary bg-opacity-10 text-primary" style="font-size: 11px; padding: 4px 10px;">
-                                ${s.StationType === "Public" ? "Công cộng" : "Riêng tư"}
-                            </span>
+                                ${StationTypeLabels[s.StationType] || "Không xác định"}
+                         </span>
                         </td>
                         <td class="text-end pe-4">
                             <div class="btn-group btn-group-sm" role="group">
@@ -380,6 +401,238 @@
                 }
             });
         }
+        // ===== USER LOCATION =====
+        // Check if page is served over HTTPS or localhost
+        function isSecureContext() {
+            return window.isSecureContext ||
+                location.hostname === 'localhost' ||
+                location.hostname === '127.0.0.1';
+        }
+
+        // Initialize geolocation
+        function initializeGeolocation() {
+            if (!navigator.geolocation) {
+                showLocationToast('error', 'Trình duyệt của bạn không hỗ trợ định vị');
+                console.error("Browser doesn't support geolocation");
+                return;
+            }
+
+            if (!isSecureContext()) {
+                showLocationToast('warning', 'Định vị chỉ hoạt động trên HTTPS');
+                console.warn('Geolocation requires HTTPS or localhost');
+                return;
+            }
+
+            // Show loading indicator
+            showLocationToast('info', 'Đang xác định vị trí của bạn...', 0);
+
+            // Request position with optimized settings
+            navigator.geolocation.getCurrentPosition(
+                getUserPosition,
+                handleLocationError,
+                {
+                    enableHighAccuracy: false,  // Changed to false for better compatibility
+                    timeout: 15000,             // Increased timeout
+                    maximumAge: 300000          // Accept cached position up to 5 minutes
+                }
+            );
+        }
+        function getUserPosition(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+
+            // Clear old user location
+            userLayer.clearLayers();
+
+            // Create user marker
+            const userMarker = L.marker([lat, lng], {
+                icon: userMarkerIcon
+            }).bindPopup(`
+                <div style="text-align: center;">
+                    <strong>📍 Vị trí của bạn</strong><br>
+                    <small style="color: #6c757d;">Độ chính xác: ~${Math.round(accuracy)}m</small>
+                </div>
+            `);
+
+            // Create accuracy circle
+            const accuracyCircle = L.circle([lat, lng], {
+                radius: accuracy,
+                color: '#3b82f6',
+                fillColor: '#3b82f6',
+                fillOpacity: 0.15,
+                weight: 2
+            });
+
+            // Add to map
+            const featureGroup = L.featureGroup([userMarker, accuracyCircle]);
+            userLayer.addLayer(featureGroup);
+
+            // Smooth zoom to user location
+            map.flyTo([lat, lng], 14, {
+                animate: true,
+                duration: 1.2
+            });
+
+            // Show success message
+            showLocationToast('success', 'Đã xác định vị trí của bạn');
+
+            console.log(`✓ User location → Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}, Accuracy: ${Math.round(accuracy)}m`);
+        }
+
+        function handleLocationError(error) {
+            let message = '';
+            let suggestion = '';
+
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'Bạn đã từ chối quyền truy cập vị trí';
+                    suggestion = 'Vui lòng bật quyền truy cập vị trí trong cài đặt trình duyệt';
+                    console.warn('⚠ User denied geolocation permission');
+                    break;
+
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Không thể xác định vị trí của bạn';
+                    suggestion = 'Hãy kiểm tra:\n• Bật Location Services trên máy tính\n• Kết nối WiFi/Internet ổn định\n• Cho phép trình duyệt truy cập vị trí';
+                    console.warn('⚠ Location unavailable - possible causes: GPS off, no WiFi, or permission denied at system level');
+                    break;
+
+                case error.TIMEOUT:
+                    message = 'Quá thời gian xác định vị trí';
+                    suggestion = 'Thử lại hoặc kiểm tra kết nối mạng';
+                    console.warn('⚠ Geolocation timeout');
+                    break;
+
+                default:
+                    message = 'Lỗi không xác định khi lấy vị trí';
+                    suggestion = 'Vui lòng thử lại sau';
+                    console.error('⚠ Unknown geolocation error:', error);
+            }
+
+            // Show error toast with retry option
+            showLocationToast('error', message, 5000);
+
+            // Log detailed suggestion to console
+            if (suggestion) {
+                console.info('💡 Suggestion:', suggestion);
+            }
+
+            // Add retry button to UI (optional)
+            addRetryButton();
+        }
+
+        function showLocationToast(type, message, duration = 3000) {
+            // Remove existing toast if any
+            const existingToast = document.getElementById('locationToast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.id = 'locationToast';
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${type === 'error' ? '#dc3545' : type === 'success' ? '#198754' : type === 'warning' ? '#ffc107' : '#0dcaf0'};
+                color: ${type === 'warning' ? '#000' : '#fff'};
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                font-size: 14px;
+                max-width: 300px;
+                animation: slideIn 0.3s ease-out;
+            `;
+
+            const icon = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            toast.innerHTML = `${icon} ${message}`;
+
+            document.body.appendChild(toast);
+
+            // Auto remove after duration (if duration > 0)
+            if (duration > 0) {
+                setTimeout(() => {
+                    toast.style.animation = 'slideOut 0.3s ease-in';
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+        }
+
+        // Add retry button to map (optional)
+        function addRetryButton() {
+            // Check if button already exists
+            if (document.getElementById('retryLocationBtn')) return;
+
+            const retryBtn = document.createElement('button');
+            retryBtn.id = 'retryLocationBtn';
+            retryBtn.innerHTML = '<i class="bi bi-geo-alt-fill"></i> Thử lại';
+            retryBtn.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: var(--vgreen);
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 25px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                z-index: 1000;
+                transition: all 0.3s;
+            `;
+
+            retryBtn.onmouseover = () => {
+                retryBtn.style.transform = 'scale(1.05)';
+                retryBtn.style.boxShadow = '0 6px 16px rgba(0,0,0,0.3)';
+            };
+
+            retryBtn.onmouseout = () => {
+                retryBtn.style.transform = 'scale(1)';
+                retryBtn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+            };
+
+            retryBtn.onclick = () => {
+                retryBtn.remove();
+                initializeGeolocation();
+            };
+
+            document.body.appendChild(retryBtn);
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+        @@keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        @@keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+
+
+
+
     </script>
 
     <style>

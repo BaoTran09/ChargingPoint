@@ -1,0 +1,117 @@
+﻿@model ChargingPoint.ViewModels.ChargerFormViewModel
+@{
+    ViewData["Title"] = "Thêm trụ sạc mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-route-stationId="@Model.StationId">Danh sách trụ</a></li>
+            <li class="breadcrumb-item active">Thêm mới</li>
+        </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-success text-white py-3">
+            <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Thêm trụ sạc mới</h5>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6 class="text-primary border-bottom pb-2 mb-3">Thông tin cơ bản</h6>
+                        <p>Stations count: @Model.Stations?.Count</p>
+
+                        <div class="mb-3">
+                            <label asp-for="StationId" class="form-label fw-bold">Trạm sạc <span class="text-danger">*</span></label>
+                            <select asp-for="StationId" class="form-select" asp-items="@(new SelectList(Model.Stations, "StationId", "Name"))">
+                                <option value="">-- Chọn trạm --</option>
+
+                            </select>
+                            <span asp-validation-for="StationId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <!-- -->
+                            <label asp-for="Name" class="form-label fw-bold">Tên trụ sạc <span class="text-danger">*</span></label>
+                            <input asp-for="Name" class="form-control" placeholder="VD: Trụ sạc nhanh DC - 01" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label asp-for="SerialNumber" class="form-label fw-bold">Số Serial</label>
+                                <input asp-for="SerialNumber" class="form-control" />
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label asp-for="Model" class="form-label fw-bold">Model</label>
+                                <input asp-for="Model" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="text-primary border-bottom pb-2 mb-3">Thông số kỹ thuật</h6>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label asp-for="ChargerType" class="form-label fw-bold">Loại sạc</label>
+                                <select asp-for="ChargerType" class="form-select">
+                                    <option value="AC">Sạc chậm (AC)</option>
+                                    <option value="DC">Sạc nhanh (DC)</option>
+                                </select>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label asp-for="MaxPowerKW" class="form-label fw-bold">Công suất (kW) <span class="text-danger">*</span></label>
+                                <input asp-for="MaxPowerKW" class="form-control" type="number" step="0.1" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label asp-for="PortCount" class="form-label fw-bold">Số cổng sạc</label>
+                                <input asp-for="PortCount" class="form-control" type="number" />
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label asp-for="UseFor" class="form-label fw-bold">Dành cho</label>
+                                <select asp-for="UseFor" class="form-select">
+                                    <option value="Car">Ô tô</option>
+                                    <option value="Motorbike">Xe máy</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-0">
+                        <h6 class="text-primary border-bottom pb-2 mb-3">Hình ảnh & Khác</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Ảnh trụ sạc</label>
+                                <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" />                 
+                                <div class="form-text">Chọn ảnh đại diện cho trụ sạc (JPG, PNG).</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Status" class="form-label fw-bold">Trạng thái</label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Online">Hoạt động (Online)</option>
+                                    <option value="Offline">Bảo trì (Offline)</option>
+                                    <option value="Broken">Hỏng (Broken)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-3 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="bi bi-save me-2"></i>Lưu thông tin
+                    </button>
+                    <a asp-action="Index" asp-route-stationId="@Model.StationId" class="btn btn-outline-secondary px-4">Hủy bỏ</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,187 +1,128 @@
-﻿@using System.Text.Json
-@model ChargingPoint.ViewModels.RequestChargingViewModel
-@{
-    var charger = Model.Connector?.Charger;
-    var station = charger?.Station;
-}
+﻿@model ChargingPoint.ViewModels.RequestChargingViewModel
 
-<div class="modal fade" id="requestChargingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius);">
+<div class="modal fade" id="requestChargingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-ev-station-fill me-2"></i>
-                    Yêu cầu sạc xe
+                <h5 class="modal-title">
+                    <i class="bi bi-lightning-charge-fill"></i> Yêu cầu sạc
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
-            <form id="chargingRequestForm" hx-post="@Url.Action("SubmitChargingRequest")" hx-target="#chargingRequestForm" hx-swap="outerHTML">
+            
+            <form id="chargingRequestForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="ConnectorId" value="@Model.ConnectorId" />
-
-                <div class="modal-body py-4">
-                    <!-- Charger Info Card -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-body p-4">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <h6 class="fw-bold mb-2">
-                                        <i class="bi bi-ev-station-fill text-success me-2"></i>
-                                        @(charger?.Model ?? charger?.Name ?? "Trụ sạc")
-                                    </h6>
-                                    <div class="small text-secondary">
-                                        <i class="bi bi-geo-alt-fill me-1"></i>
-                                        @station?.Name • @station?.Address
-                                    </div>
-                                    <div class="small text-secondary mt-1">
-                                        <i class="bi bi-plug-fill me-1"></i>
-                                        Cổng @Model.Connector.ConnectorIndex • @Model.Connector.ConnectorType
-                                    </div>
-                                </div>
-                                <div class="col-md-4 text-end">
-                                    <div class="badge bg-warning text-dark fs-6 px-3 py-2">
-                                        @charger?.ChargerType
-                                    </div>
-                                    <div class="fw-bold text-success fs-4 mt-2">
-                                        @charger?.MaxPowerKW kW
-                                    </div>
-                                </div>
+                
+                <div class="modal-body">
+                    <!-- Thông tin trạm -->
+                    <div class="alert alert-info">
+                        <strong><i class="bi bi-info-circle"></i> Thông tin trụ sạc</strong>
+                        <div class="mt-2">
+                            <div class="mb-1">
+                                <small class="text-muted">Trạm:</small>
+                                <strong>@Model.StationName</strong>
+                            </div>
+                            <div class="mb-1">
+                                <small class="text-muted">Trụ sạc:</small>
+                                <strong>@Model.ChargerName</strong>
+                            </div>
+                            <div>
+                                <span class="badge bg-primary">@Model.ChargerType</span>
+                                <span class="badge bg-info">@Model.ChargerMaxPower kW</span>
+                                <span class="badge bg-success">Connector #@Model.Connector.ConnectorIndex</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Vehicle Selection -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            <i class="bi bi-car-front-fill text-primary me-2"></i>
-                            Chọn xe của bạn
+                    <!-- Chọn xe -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-car-front-fill"></i> Chọn xe của bạn
+                            <span class="text-danger">*</span>
                         </label>
-
-                        @if (!Model.Vehicles.Any())
-                        {
-                            <div class="alert alert-warning">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                Bạn chưa có xe nào. Vui lòng <a href="@Url.Action("MyCars", "Customer")" class="alert-link">thêm xe</a> trước khi sạc.
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="row g-3">
-                                @foreach (var v in Model.Vehicles)
-                                {
-                                    var isVinFast = v.Manufacturer?.Contains("VinFast", StringComparison.OrdinalIgnoreCase) == true;
-                                    var isCompatible = (charger.ChargerType == "AC" && v.AcChargingSupport) ||
-                                    (charger.ChargerType == "DC" && v.DcChargingSupport);
-
-                                    <div class="col-12">
-                                        <div class="vehicle-card p-4 rounded-3 border @(isCompatible ? "border-primary" : "border-danger border-opacity-50")
-                                             @(isVinFast ? "border-success border-opacity-75" : "")"
-                                             data-vehicle="@JsonSerializer.Serialize(v)"
-                                             style="cursor: pointer; transition: var(--transition);">
-                                            <div class="form-check">
-                                                <input class="form-check-input vehicle-radio" type="radio" name="VehicleId" value="@v.VehicleId"
-                                                       id="vehicle_@v.VehicleId" @(isCompatible ? "" : "disabled") required>
-                                                <label class="form-check-label w-100" for="vehicle_@v.VehicleId">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <div class="fw-bold fs-5 text-primary">
-                                                                @v.LicensePlate
-                                                                @if (isVinFast)
-                                                                {
-                                                                    <span class="badge bg-success ms-2">VinFast</span>
-                                                                }
-                                                            </div>
-                                                            <div class="text-secondary">
-                                                                @v.Manufacturer @v.Model
-                                                            </div>
-                                                            <div class="small text-muted mt-1">
-                                                                <i class="bi bi-battery-full text-success me-1"></i>
-                                                                @v.BatteryGrossKWh kWh
-                                                                @if (charger.ChargerType == "AC")
-                                                                {
-                                                                    <span class="ms-3">
-                                                                        <i class="bi bi-plug text-info me-1"></i>
-                                                                        AC: @(v.AcChargingSupport ? $"{v.MaxAcChargeKW} kW" : "Không hỗ trợ")
-                                                                    </span>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span class="ms-3">
-                                                                        <i class="bi bi-bolt text-warning me-1"></i>
-                                                                        DC: @(v.DcChargingSupport ? $"{v.MaxDcChargeKW} kW" : "Không hỗ trợ")
-                                                                    </span>
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                        <div class="text-end">
-                                                            @if (isCompatible)
-                                                            {
-                                                                <i class="bi bi-check-circle-fill text-success fs-1"></i>
-                                                            }
-                                                            else
-                                                            {
-                                                                <i class="bi bi-x-circle-fill text-danger fs-1"></i>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                    @if (!isCompatible)
-                                                    {
-                                                        <div class="alert alert-danger mt-3 mb-0 small py-2">
-                                                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                                                            Xe không hỗ trợ sạc @charger.ChargerType
-                                                        </div>
-                                                    }
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        }
+                        <select class="form-select" name="VIN" id="vehicleSelect" required>
+                            <option value="">-- Chọn xe --</option>
+                            @foreach (var vehicle in Model.IndividualVehicles)
+                            {
+                                var batteryInfo = vehicle.BatterySOC.HasValue ? $"{vehicle.BatterySOC}%" : "N/A";
+                                var licensePlate = !string.IsNullOrEmpty(vehicle.LicensePlate) ? $" - {vehicle.LicensePlate}" : "";
+                                
+                                <option value="@vehicle.VIN" 
+                                        data-soc="@(vehicle.BatterySOC ?? 0)"
+                                        data-model="@vehicle.Vehicle.Model"
+                                        data-battery="@vehicle.Vehicle.BatteryGrossKWh">
+                                    @vehicle.Vehicle.Manufacturer @vehicle.Vehicle.Model@licensePlate (Pin: @batteryInfo)
+                                </option>
+                            }
+                        </select>
                     </div>
 
-                    <!-- Charging Settings -->
-                    <div id="chargingSettings" style="display: none;">
-                        <hr class="my-4">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    <i class="bi bi-battery-half text-warning me-2"></i>
-                                    Pin hiện tại (%)
-                                </label>
-                                <input type="number" name="StartSOC" id="startSOC" class="form-control form-control-lg text-center"
-                                       min="1" max="99" value="20" required />
+                    <!-- Hiển thị thông tin xe đã chọn -->
+                    <div id="vehicleInfo" class="alert alert-light d-none">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <small class="text-muted">Pin hiện tại:</small>
+                                <div class="fs-5 fw-bold text-primary" id="currentSOC">--%</div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    <i class="bi bi-battery-full text-success me-2"></i>
-                                    Sạc đến (%)
-                                </label>
-                                <input type="number" name="TargetSOC" id="targetSOC" class="form-control form-control-lg text-center"
-                                       min="10" max="100" value="80" required />
-                                <div class="form-text">Khuyến nghị: 80% để bảo vệ pin</div>
+                            <div class="col-6">
+                                <small class="text-muted">Dung lượng pin:</small>
+                                <div class="fs-6 fw-bold" id="batteryCapacity">-- kWh</div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Estimate -->
-                        <div id="estimateBox" class="alert alert-info mt-4" style="display: none;">
-                            <h6 class="fw-bold mb-3">
-                                <i class="bi bi-calculator me-2"></i>
-                                Ước tính sạc
-                            </h6>
-                            <div id="estimateContent" class="row g-3 small"></div>
+                    <!-- Mức pin mong muốn -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-battery-charging"></i> Mức pin mong muốn
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="range" 
+                               class="form-range" 
+                               name="TargetSOC" 
+                               id="targetSOCRange" 
+                               min="1" 
+                               max="100" 
+                               value="80" 
+                               step="1">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">0%</span>
+                            <span class="fs-4 fw-bold text-success" id="targetSOCDisplay">80%</span>
+                            <span class="text-muted">100%</span>
                         </div>
+                    </div>
+
+                    <!-- Ước tính -->
+                    <div id="estimateInfo" class="alert alert-success d-none">
+                        <strong><i class="bi bi-calculator"></i> Ước tính:</strong>
+                        <div class="mt-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Năng lượng cần sạc:</span>
+                                <strong id="energyEstimate">-- kWh</strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Thời gian dự kiến:</span>
+                                <strong id="timeEstimate">-- phút</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warning -->
+                    <div class="alert alert-warning">
+                        <small>
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <strong>Lưu ý:</strong> Thời gian sạc thực tế có thể khác do điều kiện pin và nhiệt độ.
+                        </small>
                     </div>
                 </div>
 
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Hủy
                     </button>
-                    <button type="submit" class="btn btn-success px-5" id="submitBtn" disabled>
-                        <i class="bi bi-lightning-charge-fill"></i>
-                        <span id="submitText">Xác nhận sạc</span>
+                    <button type="submit" class="btn btn-success" id="submitBtn">
+                        <i class="bi bi-lightning-charge-fill"></i> Bắt đầu sạc
                     </button>
                 </div>
             </form>
@@ -189,90 +130,121 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        const modal = new bootstrap.Modal(document.getElementById('requestChargingModal'));
-        modal.show();
+<script>
+    $(document).ready(function() {
+        const chargerMaxPower = @(Model.ChargerMaxPower ?? 0);
+        let currentSOC = 0;
+        let batteryCapacity = 0;
 
-        let selectedVehicle = null;
-        const chargerPower = @charger.MaxPowerKW;
-        const chargerType = '@charger.ChargerType';
+        // Khi chọn xe
+        $('#vehicleSelect').on('change', function() {
+            const selectedOption = $(this).find(':selected');
+            currentSOC = parseInt(selectedOption.data('soc')) || 0;
+            batteryCapacity = parseFloat(selectedOption.data('battery')) || 0;
 
-        document.querySelectorAll('.vehicle-radio').forEach(radio => {
-            radio.addEventListener('change', function () {
-                if (this.checked) {
-                    selectedVehicle = JSON.parse(this.closest('.vehicle-card').dataset.vehicle);
-                    document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('active'));
-                    this.closest('.vehicle-card').classList.add('active');
-                    document.getElementById('chargingSettings').style.display = 'block';
-                    document.getElementById('submitBtn').disabled = false;
-                    calculateEstimate();
-                }
-            });
+            if (currentSOC > 0) {
+                $('#vehicleInfo').removeClass('d-none');
+                $('#currentSOC').text(currentSOC + '%');
+                $('#batteryCapacity').text(batteryCapacity + ' kWh');
+                
+                // Set min của slider = currentSOC + 1
+                $('#targetSOCRange').attr('min', currentSOC + 1);
+                $('#targetSOCRange').val(Math.max(currentSOC + 1, 80));
+                updateTargetSOC();
+            } else {
+                $('#vehicleInfo').addClass('d-none');
+                alert('Không xác định được mức pin hiện tại của xe');
+            }
         });
 
-        ['startSOC', 'targetSOC'].forEach(id => {
-            document.getElementById(id)?.addEventListener('input', calculateEstimate);
+        // Khi kéo slider
+        $('#targetSOCRange').on('input', function() {
+            updateTargetSOC();
         });
 
-        function calculateEstimate() {
-            if (!selectedVehicle) return;
+        function updateTargetSOC() {
+            const targetSOC = parseInt($('#targetSOCRange').val());
+            $('#targetSOCDisplay').text(targetSOC + '%');
 
-            const start = parseFloat(document.getElementById('startSOC').value) || 0;
-            const target = parseFloat(document.getElementById('targetSOC').value) || 80;
+            // Tính ước lượng
+            if (currentSOC > 0 && batteryCapacity > 0 && targetSOC > currentSOC) {
+                const socDelta = targetSOC - currentSOC;
+                const energyNeeded = (socDelta / 100) * batteryCapacity;
+                const timeHours = energyNeeded / chargerMaxPower;
+                const timeMinutes = Math.ceil(timeHours * 60);
 
-            if (start >= target) {
-                document.getElementById('estimateBox').style.display = 'none';
+                $('#energyEstimate').text(energyNeeded.toFixed(2) + ' kWh');
+                $('#timeEstimate').text(timeMinutes + ' phút');
+                $('#estimateInfo').removeClass('d-none');
+            } else {
+                $('#estimateInfo').addClass('d-none');
+            }
+        }
+
+        // Submit form
+        $('#chargingRequestForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const vin = $('#vehicleSelect').val();
+            if (!vin) {
+                alert('Vui lòng chọn xe');
                 return;
             }
 
-            const vehiclePower = chargerType === 'AC' ? selectedVehicle.MaxAcChargeKW : selectedVehicle.MaxDcChargeKW;
-            const actualPower = Math.min(vehiclePower || 0, chargerPower);
-            const energyNeeded = ((target - start) / 100) * selectedVehicle.BatteryGrossKWh;
-            const hours = energyNeeded / actualPower;
-            const mins = Math.round(hours * 60);
-            const cost = Math.round(energyNeeded * 3500);
+            const targetSOC = parseInt($('#targetSOCRange').val());
+            if (targetSOC <= currentSOC) {
+                alert('Mức pin mong muốn phải lớn hơn mức pin hiện tại (' + currentSOC + '%)');
+                return;
+            }
 
-            const now = new Date();
-            const endTime = new Date(now.getTime() + mins * 60 * 1000);
+            const $btn = $('#submitBtn');
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý...');
 
-            document.getElementById('estimateContent').innerHTML = `
-                        <div class="col-6"><strong>Công suất:</strong> ${actualPower.toFixed(1)} kW</div>
-                        <div class="col-6"><strong>Điện năng:</strong> ${energyNeeded.toFixed(2)} kWh</div>
-                        <div class="col-6"><strong>Thời gian:</strong> ~${mins} phút</div>
-                        <div class="col-6"><strong>Chi phí:</strong> ${cost.toLocaleString()}₫</div>
-                        <div class="col-12 mt-2"><strong>Hoàn tất lúc:</strong> ${endTime.toLocaleTimeString('vi-VN')}</div>
-                    `;
-            document.getElementById('estimateBox').style.display = 'block';
-        }
-
-        // Cleanup khi đóng modal
-        document.getElementById('requestChargingModal').addEventListener('hidden.bs.modal', () => {
-            document.getElementById('requestChargingModal').remove();
-            document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+            $.ajax({
+                url: '@Url.Action("SubmitChargingRequest")',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        $('#requestChargingModal').modal('hide');
+                        
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            html: `
+                                <p>${response.message}</p>
+                                <p class="mb-1"><strong>Thời gian dự kiến:</strong> ${response.estimatedMinutes} phút</p>
+                                <p class="mb-0"><strong>Hoàn thành lúc:</strong> ${response.expectTime}</p>
+                            `,
+                            confirmButtonText: 'Xem phiên sạc',
+                            showCancelButton: true,
+                            cancelButtonText: 'Đóng'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: response.message
+                        });
+                        $btn.prop('disabled', false).html('<i class="bi bi-lightning-charge-fill"></i> Bắt đầu sạc');
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Có lỗi xảy ra. Vui lòng thử lại.'
+                    });
+                    $btn.prop('disabled', false).html('<i class="bi bi-lightning-charge-fill"></i> Bắt đầu sạc');
+                }
+            });
         });
-    </script>
-
-    <style>
-        .vehicle-card {
-            background: var(--bg-secondary);
-            border: 2px solid transparent !important;
-        }
-
-            .vehicle-card:hover:not([disabled]) {
-                border-color: var(--vgreen) !important;
-                transform: translateY(-4px);
-                box-shadow: var(--shadow-md);
-            }
-
-            .vehicle-card.active {
-                border-color: var(--vgreen) !important;
-                background: var(--vgreen-light);
-                box-shadow: 0 8px 25px rgba(16,185,129,0.2);
-            }
-
-        .form-check-input:checked + .form-check-label .vehicle-card {
-            border-color: var(--vgreen) !important;
-        }
-    </style>
-}
+    });
+</script>

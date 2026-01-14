@@ -1,4 +1,4 @@
-namespace ChargingPoint.Models
+namespace ChargingPoint.ViewModels
 {
     public class ErrorViewModel
     {

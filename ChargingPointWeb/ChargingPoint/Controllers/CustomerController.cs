@@ -1,304 +1,228 @@
-﻿
-// Controllers/CustomerController.cs
-using ChargingPoint.DB;
+﻿using ChargingPoint.DB;
 using ChargingPoint.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-// [Authorize(Roles = "Customer")]
-public class CustomerController : Controller
+namespace ChargingPoint.Controllers
 {
-    private readonly StoreDBContext _context;
-    private readonly UserManager<Users> _userManager;
-
-    public CustomerController(StoreDBContext context, UserManager<Users> userManager)
+    [Authorize(Roles = "Customer")]
+    public class CustomerController : Controller
     {
-        _context = context;
-        _userManager = userManager;
-    }
+        private readonly StoreDBContext _context;
+        private readonly UserManager<Users> _userManager;
 
-    // === MY ACCOUNT ===
-    public async Task<IActionResult> MyAccount()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        var customer = await _context.Customer
-            .FirstOrDefaultAsync(c => c.UserId == user.Id);
-
-        ViewBag.Customer = customer;
-        return View(user);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> MyAccount(Users model, Customer customerModel)
-    {
-        if (!ModelState.IsValid) return View(model);
-
-        var user = await _userManager.GetUserAsync(User);
-        user.Email = model.Email;
-        user.UserName = model.Email;
-
-        var customer = await _context.Customer.FirstOrDefaultAsync(c => c.UserId == user.Id);
-        customer.FullName = customerModel.FullName;
-        customer.PhoneNumber = customerModel.PhoneNumber;
-        customer.Address = customerModel.Address;
-        customer.Birthday = customerModel.Birthday;
-
-        await _userManager.UpdateAsync(user);
-        await _context.SaveChangesAsync();
-
-        TempData["Success"] = "Cập nhật thành công!";
-        return RedirectToAction("MyAccount");
-    }
-    // === MY CARS ===
-    public async Task<IActionResult> MyCars()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        var customer = await _context.Customer
-            .Include(c => c.Vehicles)
-            .FirstOrDefaultAsync(c => c.UserId == user.Id);
-
-        var cars = customer?.Vehicles?
-     .Where(v => v.VehicleType == "Car")
-     .ToList() ?? new List<Vehicle>();
-
-        return View(cars);
-    }
-
-    // === MY MOTORBIKES ===
-    public async Task<IActionResult> MyMotorbikes()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        var customer = await _context.Customer
-            .Include(c => c.Vehicles)
-            .FirstOrDefaultAsync(c => c.UserId == user.Id);
-
-        var bikes = customer?.Vehicles?
-         .Where(v => v.VehicleType == "Motorbike")
-         .ToList() ?? new List<Vehicle>();
-
-        return View(bikes);
-    }
-    [HttpGet]
-    public async Task<IActionResult> CreateCarModal()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        var customer = await _context.Customer.FirstOrDefaultAsync(c => c.UserId == user.Id);
-        var model = new Vehicle { CustomerId = customer.CustomerId, VehicleType = "Car" };
-        ViewBag.Type = "Car";
-        return PartialView("_VehicleModal", model);
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> EditCarModal(long id)
-    {
-        var v = await _context.Vehicle.FindAsync(id);
-        if (v == null || v.VehicleType != "Car") return NotFound();
-        ViewBag.Type = "Car";
-        return PartialView("_VehicleModal", v);
-    }
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateCar(Vehicle model)
-    {
-        if (!ModelState.IsValid)
+        public CustomerController(StoreDBContext context, UserManager<Users> userManager)
         {
-            ViewBag.Type = model.VehicleType;
+            _context = context;
+            _userManager = userManager;
+        }
+
+        #region MY ACCOUNT
+
+        public async Task<IActionResult> MyAccount()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            // Sửa lỗi: Đảm bảo user.Id không null trước khi vào Lambda
+            var userId = user.Id;
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            ViewBag.Customer = customer;
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MyAccount(Users model, Customer customerModel)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var userId = user.Id;
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null) return NotFound();
+
+            user.Email = model.Email;
+            user.UserName = model.Email;
+            user.PhoneNumber = customerModel.PhoneNumber;
+
+            customer.FullName = customerModel.FullName;
+            customer.PhoneNumber = customerModel.PhoneNumber;
+            customer.Address = customerModel.Address;
+            customer.Birthday = customerModel.Birthday;
+            customer.UpdatedAt = DateTime.UtcNow;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Cập nhật thông tin thành công!";
+            }
+            else
+            {
+                TempData["Error"] = "Có lỗi xảy ra khi cập nhật tài khoản!";
+            }
+
+            return RedirectToAction(nameof(MyAccount));
+        }
+
+        #endregion
+
+        #region VEHICLE MANAGEMENT
+
+        public async Task<IActionResult> MyCars()
+        {
+            return await GetVehicleView("Car");
+        }
+
+        public async Task<IActionResult> MyMotorbikes()
+        {
+            return await GetVehicleView("Motorbike");
+        }
+
+        private async Task<IActionResult> GetVehicleView(string type)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var userId = user.Id;
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null) return NotFound();
+
+            var customerId = customer.CustomerId; // Lấy ID ra biến cục bộ
+
+            var vehicles = await _context.IndividualVehicles
+                .Include(iv => iv.Vehicle)
+                .Where(iv => iv.CustomerId == customerId && iv.Vehicle.VehicleType == type)
+                .OrderByDescending(iv => iv.CreatedAt)
+                .ToListAsync();
+
+            ViewBag.VehicleType = type;
+            return View(vehicles);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateVehicleModal(string type)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var userId = user.Id;
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
+
+            var vehicleModels = await _context.Vehicles
+                .Where(v => v.VehicleType == type)
+                .Select(v => new {
+                    v.VehicleId,
+                    DisplayName = v.Manufacturer + " " + v.Model + " - " + v.Version
+                })
+                .ToListAsync();
+
+            ViewBag.VehicleModels = new SelectList(vehicleModels, "VehicleId", "DisplayName");
+            ViewBag.Type = type;
+
+            var model = new IndividualVehicle { CustomerId = customer?.CustomerId };
             return PartialView("_VehicleModal", model);
         }
 
-        var user = await _userManager.GetUserAsync(User);
-        var customer = await _context.Customer.FirstOrDefaultAsync(c => c.UserId == user.Id);
-        model.CustomerId = customer.CustomerId;
-        model.CreatedAt = DateTime.UtcNow;
-
-        _context.Vehicle.Add(model);
-        await _context.SaveChangesAsync();
-
-        var cars = await _context.Vehicle
-            .Where(v => v.CustomerId == customer.CustomerId && v.VehicleType == "Car")
-            .ToListAsync();
-
-        return PartialView("_VehicleList", cars);
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditCar(Vehicle model)
-    {
-        if (!ModelState.IsValid)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateVehicle(IndividualVehicle model)
         {
-            ViewBag.Type = model.VehicleType;
-            return PartialView("_VehicleModal", model);
+            if (ModelState.IsValid)
+            {
+                if (await _context.IndividualVehicles.AnyAsync(v => v.VIN == model.VIN))
+                {
+                    return BadRequest("Số VIN này đã được đăng ký trên hệ thống.");
+                }
+
+                model.CreatedAt = DateTime.UtcNow;
+                model.IsActive = true;
+                _context.IndividualVehicles.Add(model);
+                await _context.SaveChangesAsync();
+
+                return await GetUpdatedVehicleList(model.VehicleId, model.CustomerId);
+            }
+            return BadRequest("Dữ liệu không hợp lệ.");
         }
 
-        var vehicle = await _context.Vehicle.FindAsync(model.VehicleId);
-        if (vehicle == null) return NotFound();
-
-        // Cập nhật
-        vehicle.LicensePlate = model.LicensePlate;
-        vehicle.VIN = model.VIN;
-        // ... các trường khác
-        vehicle.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
-
-        var cars = await _context.Vehicle
-            .Where(v => v.CustomerId == vehicle.CustomerId && v.VehicleType == "Car")
-            .ToListAsync();
-
-        return PartialView("_VehicleList", cars);
-    }
-    // DELETE CAR
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteCar(long id)
-    {
-        var user = await _userManager.GetUserAsync(User);
-        var customer = await _context.Customer.FirstOrDefaultAsync(c => c.UserId == user.Id);
-
-        var vehicle = await _context.Vehicle.FindAsync(id);
-        if (vehicle == null || vehicle.CustomerId != customer.CustomerId)
-            return NotFound();
-
-        // Check active sessions
-        var hasActive = await _context.ChargingSession
-            .AnyAsync(s => s.VehicleId == id && (s.Status == "Charging" || s.Status == "PoweredOff"));
-
-        if (hasActive)
+        [HttpGet]
+        public async Task<IActionResult> EditVehicleModal(string vin)
         {
-            TempData["Error"] = "Không thể xóa xe đang trong phiên sạc!";
-            return RedirectToAction("MyCars");
+            var iv = await _context.IndividualVehicles
+                .Include(iv => iv.Vehicle)
+                .FirstOrDefaultAsync(x => x.VIN == vin);
+
+            if (iv == null) return NotFound();
+
+            ViewBag.Type = iv.Vehicle.VehicleType;
+            return PartialView("_VehicleModal", iv);
         }
 
-        _context.Vehicle.Remove(vehicle);
-        await _context.SaveChangesAsync();
-
-        var cars = await _context.Vehicle
-            .Where(v => v.CustomerId == customer.CustomerId && v.VehicleType == "Car")
-            .ToListAsync();
-
-        return PartialView("_VehicleList", cars);
-    }
-
-    // CREATE MOTORBIKE MODAL
-    [HttpGet]
-    public async Task<IActionResult> CreateMotorbikeModal()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        var customer = await _context.Customer.FirstOrDefaultAsync(c => c.UserId == user.Id);
-        var model = new Vehicle { CustomerId = customer.CustomerId, VehicleType = "Motorbike" };
-        ViewBag.Type = "Motorbike";
-        return PartialView("_VehicleModal", model);
-    }
-
-    // EDIT MOTORBIKE MODAL
-    [HttpGet]
-    public async Task<IActionResult> EditMotorbikeModal(long id)
-    {
-        var v = await _context.Vehicle.FindAsync(id);
-        if (v == null || v.VehicleType != "Motorbike") return NotFound();
-        ViewBag.Type = "Motorbike";
-        return PartialView("_VehicleModal", v);
-    }
-
-    // CREATE MOTORBIKE
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateMotorbike(Vehicle model)
-    {
-        if (!ModelState.IsValid)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditVehicle(IndividualVehicle model)
         {
-            ViewBag.Type = "Motorbike";
-            return PartialView("_VehicleModal", model);
+            var iv = await _context.IndividualVehicles.FindAsync(model.VIN);
+            if (iv == null) return NotFound();
+
+            iv.LicensePlate = model.LicensePlate;
+            iv.Color = model.Color;
+            iv.Note = model.Note;
+            iv.BatterySOH = model.BatterySOH;
+            iv.BatterySOC = model.BatterySOC;
+
+            await _context.SaveChangesAsync();
+
+            return await GetUpdatedVehicleList(iv.VehicleId, iv.CustomerId);
         }
 
-        var user = await _userManager.GetUserAsync(User);
-        var customer = await _context.Customer.FirstOrDefaultAsync(c => c.UserId == user.Id);
-
-        model.CustomerId = customer.CustomerId;
-        model.VehicleType = "Motorbike";
-        _context.Vehicle.Add(model);
-        await _context.SaveChangesAsync();
-
-        var motorbikes = await _context.Vehicle
-            .Where(v => v.CustomerId == customer.CustomerId && v.VehicleType == "Motorbike")
-            .ToListAsync();
-
-        return PartialView("_VehicleList", motorbikes);
-    }
-
-    // EDIT MOTORBIKE
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditMotorbike(Vehicle model)
-    {
-        if (!ModelState.IsValid)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteVehicle(string vin)
         {
-            ViewBag.Type = "Motorbike";
-            return PartialView("_VehicleModal", model);
+            var iv = await _context.IndividualVehicles
+                .Include(iv => iv.Vehicle)
+                .FirstOrDefaultAsync(x => x.VIN == vin);
+
+            if (iv == null) return NotFound();
+
+            // Sửa lỗi logic: Không dùng ?. trong AnyAsync
+            var currentVin = iv.VIN;
+            var hasActiveSession = await _context.ChargingSessions
+                .AnyAsync(s => s.VIN == currentVin && (s.Status == "Charging" || s.Status == "Waiting"));
+
+            if (hasActiveSession)
+            {
+                return Json(new { success = false, message = "Xe đang trong phiên sạc, không thể xóa!" });
+            }
+
+            long? customerId = iv.CustomerId;
+            long vehicleId = iv.VehicleId;
+
+            _context.IndividualVehicles.Remove(iv);
+            await _context.SaveChangesAsync();
+
+            return await GetUpdatedVehicleList(vehicleId, customerId);
         }
 
-        var vehicle = await _context.Vehicle.FindAsync(model.VehicleId);
-        if (vehicle == null) return NotFound();
+        #endregion
 
-        // Update fields
-        vehicle.LicensePlate = model.LicensePlate;
-        vehicle.VIN = model.VIN;
-        vehicle.Manufacturer = model.Manufacturer;
-        vehicle.Model = model.Model;
-        vehicle.Version = model.Version;
-        vehicle.ProductionDate = model.ProductionDate;
-        vehicle.BatteryType = model.BatteryType;
-        vehicle.BatteryGrossKWh = model.BatteryGrossKWh;
-        vehicle.BatteryUsableKWh = model.BatteryUsableKWh;
-        vehicle.AcChargingSupport = model.AcChargingSupport;
-        vehicle.DcChargingSupport = model.DcChargingSupport;
-        vehicle.MaxAcChargeKW = model.MaxAcChargeKW;
-        vehicle.MaxDcChargeKW = model.MaxDcChargeKW;
-
-        await _context.SaveChangesAsync();
-
-        var motorbikes = await _context.Vehicle
-            .Where(v => v.CustomerId == vehicle.CustomerId && v.VehicleType == "Motorbike")
-            .ToListAsync();
-
-        return PartialView("_VehicleList", motorbikes);
-    }
-
-    // DELETE MOTORBIKE
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteMotorbike(long id)
-    {
-        var user = await _userManager.GetUserAsync(User);
-        var customer = await _context.Customer.FirstOrDefaultAsync(c => c.UserId == user.Id);
-
-        var vehicle = await _context.Vehicle.FindAsync(id);
-        if (vehicle == null || vehicle.CustomerId != customer.CustomerId)
-            return NotFound();
-
-        var hasActive = await _context.ChargingSession
-            .AnyAsync(s => s.VehicleId == id && (s.Status == "Charging" || s.Status == "PoweredOff"));
-
-        if (hasActive)
+        private async Task<IActionResult> GetUpdatedVehicleList(long vehicleId, long? customerId)
         {
-            TempData["Error"] = "Không thể xóa xe đang trong phiên sạc!";
-            return RedirectToAction("MyMotorbikes");
+            var vehicleModel = await _context.Vehicles.FindAsync(vehicleId);
+            var list = await _context.IndividualVehicles
+                .Include(iv => iv.Vehicle)
+                .Where(iv => iv.CustomerId == customerId && iv.Vehicle.VehicleType == vehicleModel.VehicleType)
+                .OrderByDescending(iv => iv.CreatedAt)
+                .ToListAsync();
+
+            return PartialView("_VehicleList", list);
         }
-
-        _context.Vehicle.Remove(vehicle);
-        await _context.SaveChangesAsync();
-
-        var motorbikes = await _context.Vehicle
-            .Where(v => v.CustomerId == customer.CustomerId && v.VehicleType == "Motorbike")
-            .ToListAsync();
-
-        return PartialView("_VehicleList", motorbikes);
     }
-
-
-
-
 }

@@ -44,8 +44,7 @@ namespace ChargingPoint.DB
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
-
-
+        
         public virtual ICollection<Invoice> Invoice { get; set; }
         public virtual ICollection<Receipt> Receipt { get; set; }
         public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();

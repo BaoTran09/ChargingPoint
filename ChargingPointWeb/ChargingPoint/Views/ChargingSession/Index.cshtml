@@ -5,17 +5,16 @@
 }
 
 <div class="content-wrapper">
-    <!-- Header -->
     <div class="d-flex align-items-center justify-content-between mb-5">
         <div>
             <h2 class="fw-bold mb-1">Tổng quan phiên sạc</h2>
             <p class="text-secondary mb-0">Theo dõi toàn bộ hoạt động sạc trong hệ thống</p>
         </div>
         <div class="d-flex gap-3">
-            <a asp-action="ActiveSessions" class="btn btn-success d-flex align-items-center gap-2">
+            <a asp-action="ActiveSessions" class="btn btn-success d-flex align-items-center gap-2 shadow-sm px-3">
                 <i class="bi bi-lightning-charge-fill"></i> Đang sạc (@Model.Count(s => s.Status == "Charging"))
             </a>
-            <a asp-action="RequiringSessions" class="btn btn-warning text-white d-flex align-items-center gap-2">
+            <a asp-action="RequiringSessions" class="btn btn-warning text-white d-flex align-items-center gap-2 shadow-sm px-3">
                 <i class="bi bi-patch-question-fill"></i> Chờ duyệt (@Model.Count(s => s.Status == "Requiring"))
             </a>
             <button type="button" class="btn btn-outline-secondary" onclick="location.reload()">
@@ -24,7 +23,6 @@
         </div>
     </div>
 
-    <!-- Stats Cards -->
     <div class="row g-4 mb-5">
         <div class="col-sm-6 col-lg-3">
             <div class="card border-0 shadow-sm h-100">
@@ -72,35 +70,34 @@
                         <i class="bi bi-exclamation-triangle-fill fs-2"></i>
                     </div>
                     <div>
-                        <h4 class="mb-0 fw-bold">@Model.Count(s => s.Status == "Stopped" || s.Status == "Faulted")</h4>
-                        <small class="text-secondary">Bị ngắt / Lỗi</small>
+                        <h4 class="mb-0 fw-bold">@Model.Count(s => s.Status == "Stopped" || s.Status == "Faulted" || s.Status == "Rejected")</h4>
+                        <small class="text-secondary">Bị ngắt / Từ chối</small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Latest Sessions Table -->
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-transparent border-bottom py-4">
             <h5 class="mb-0 fw-semibold">Phiên sạc gần đây</h5>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th>Mã phiên</th>
-                            <th>Trạm</th>
-                            <th>Khách / Xe</th>
-                            <th>Thời gian</th>
+                            <th class="ps-4">Mã phiên</th>
+                            <th>Trạm / Trụ</th>
+                            <th>Khách / Xe thực tế</th>
+                            <th>Thời gian sạc</th>
                             <th>Năng lượng</th>
                             <th>Trạng thái</th>
-                            <th></th>
+                            <th class="text-end pe-4">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var s in Model.Take(10))
+                        @foreach (var s in Model.Take(15))
                         {
                             var statusBadge = s.Status switch
                             {
@@ -108,48 +105,51 @@
                                 "Requiring" => "bg-warning text-white",
                                 "Completed" => "bg-info",
                                 "Stopped" => "bg-danger",
+                                "PoweredOff" => "bg-primary",
+                                "Rejected" => "bg-secondary",
                                 _ => "bg-secondary"
                             };
-                            var statusText = s.Status switch
-                            {
-                                "Charging" => "Đang sạc",
-                                "Requiring" => "Chờ duyệt",
-                                "Completed" => "Hoàn tất",
-                                "Stopped" => "Ngắt",
-                                "PoweredOff" => "Đã ngắt điện",
-                                _ => s.Status
-                            };
+
+                            var individualVeh = s.IndividualVehicle;
+                            var vehTemplate = individualVeh?.Vehicle;
 
                             <tr>
-                                <td><strong class="text-primary">#@s.SessionId</strong></td>
-                                <td>@s.Connector?.Charger?.Station?.Name</td>
+                                <td class="ps-4"><strong class="text-primary">#@s.SessionId</strong></td>
+                                <td>
+                                    <div class="fw-semibold">@s.Connector?.Charger?.Station?.Name</div>
+                                    <small class="text-muted">Trụ: @s.Connector?.Charger?.Name - Cổng @s.Connector?.ConnectorIndex</small>
+                                </td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <div class="avatar bg-success text-white rounded-circle" style="width:32px;height:32px;font-size:0.8rem;">
-                                            @(s.Vehicle?.LicensePlate?.FirstOrDefault() ?? 'V')
+                                        <div class="avatar bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                                             style="width:36px; height:36px; font-size:0.9rem;">
+                                            @(individualVeh?.LicensePlate?.Substring(0, 1).ToUpper() ?? "V")
                                         </div>
                                         <div>
-                                            <div class="small fw-semibold">@s.Vehicle?.Model</div>
-                                            <small class="text-secondary">@s.Vehicle?.Customer?.FullName</small>
+                                            <div class="small fw-bold text-dark">@individualVeh?.LicensePlate</div>
+                                            <small class="text-secondary">@vehTemplate?.Manufacturer @vehTemplate?.Model (@individualVeh?.VIN)</small>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <small>@s.StartTime:HH:mm</small><br>
-                                    <small class="text-secondary">@s.StartTime:dd/MM</small>
+                                    <div class="small"><i class="bi bi-play-circle me-1"></i> @s.StartTime?.ToString("HH:mm")</div>
+                                    <div class="small text-secondary"><i class="bi bi-calendar3 me-1"></i> @s.StartTime?.ToString("dd/MM/yyyy")</div>
                                 </td>
                                 <td>
-                                    @(s.MeterStopKWh.HasValue ? $"{(s.MeterStopKWh - s.MeterStartKWh):F1} kWh" : "—")
+                                    <span class="fw-bold text-dark">
+                                        @(s.MeterStopKWh.HasValue ? $"{(s.MeterStopKWh.Value - (s.MeterStartKWh ?? 0)):F1}" : "—")
+                                    </span>
+                                    <small class="text-muted">kWh</small>
                                 </td>
                                 <td>
-                                    <span class="badge @statusBadge bg-opacity-10 px-3 py-2">
-                                        <i class="bi @(s.Status == "Charging" ? "bi-lightning-charge-fill" : "bi-clock")"></i>
-                                        @statusText
+                                    <span class="badge @statusBadge bg-opacity-10 px-3 py-2" style="font-size: 0.75rem;">
+                                        <i class="bi @(s.Status == "Charging" ? "bi-lightning-charge-fill" : "bi-dot") me-1"></i>
+                                        @s.Status
                                     </span>
                                 </td>
-                                <td class="text-end">
-                                    <a asp-action="Detail" asp-route-id="@s.SessionId" class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-box-arrow-in-right"></i>
+                                <td class="text-end pe-4">
+                                    <a asp-action="Detail" asp-route-id="@s.SessionId" class="btn btn-light btn-sm rounded-circle border shadow-sm">
+                                        <i class="bi bi-eye-fill text-primary"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -160,3 +160,39 @@
         </div>
     </div>
 </div>
+
+
+
+@section Styles {
+    <style>
+        :root {
+            --radius: 12px;
+        }
+
+        .content-wrapper {
+            padding: 1.5rem;
+        }
+
+        .card {
+            border-radius: var(--radius);
+        }
+
+        .avatar {
+            flex-shrink: 0;
+        }
+
+        .table thead th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: #6c757d;
+            border-top: none;
+        }
+
+        .badge.bg-opacity-10 {
+            color: inherit !important;
+            border: 1px solid currentColor;
+        }
+    </style>
+}

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ChargingPoint.DB;
 using ChargingPoint.Models;
@@ -438,4 +438,4 @@ namespace ChargingPoint.Services
             return $"970436|1030946681|{amount:F0}|VGREEN{invoiceNumber:D7}";
         }
     }
-}
+}*/

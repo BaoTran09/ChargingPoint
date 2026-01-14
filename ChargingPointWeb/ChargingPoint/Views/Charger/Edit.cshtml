@@ -1,0 +1,147 @@
+﻿@model ChargingPoint.ViewModels.ChargerFormViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa trụ sạc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-route-stationId="@Model.StationId">Danh sách trụ</a></li>
+            <li class="breadcrumb-item active">Chỉnh sửa #@Model.ChargerId</li>
+        </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Chỉnh sửa: @Model.Name</h5>
+            <span class="badge bg-light text-primary">ID: #@Model.ChargerId</span>
+        </div>
+
+        <div class="card-body p-4">
+            <form asp-action="Edit" asp-route-id="@Model.ChargerId" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <!-- HIDDEN INPUT – Giữ nguyên dữ liệu cũ khi submit fail hoặc reload -->
+                <input type="hidden" asp-for="ChargerId" />
+                <input type="hidden" asp-for="StationId" />
+                <input type="hidden" asp-for="Name" value="@Model.Name" />
+                <input type="hidden" asp-for="MaxPowerKW" value="@Model.MaxPowerKW" />
+                <input type="hidden" asp-for="SerialNumber" value="@Model.SerialNumber" />
+                <input type="hidden" asp-for="Model" value="@Model.Model" />
+                <input type="hidden" asp-for="ChargerType" value="@Model.ChargerType" />
+                <input type="hidden" asp-for="Phases" value="@Model.Phases" />
+                <input type="hidden" asp-for="OutputVoltageMin" value="@Model.OutputVoltageMin" />
+                <input type="hidden" asp-for="OutputVoltageMax" value="@Model.OutputVoltageMax" />
+                <input type="hidden" asp-for="PortCount" value="@Model.PortCount" />
+                <input type="hidden" asp-for="Design" value="@Model.Design" />
+                <input type="hidden" asp-for="Protections" value="@Model.Protections" />
+                <input type="hidden" asp-for="FirmwareVersion" value="@Model.FirmwareVersion" />
+                <input type="hidden" asp-for="InstalledAt" value="@(Model.InstalledAt?.ToString("yyyy-MM-dd"))" />
+                <input type="hidden" asp-for="Status" value="@Model.Status" />
+                <input type="hidden" asp-for="UseFor" value="@Model.UseFor" />
+                <input type="hidden" asp-for="Note" value="@Model.Note" />
+
+                <input type="hidden" name="PrimaryImageUrl" value="@Model.PrimaryImageUrl" />
+
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="StationId" class="form-label fw-bold">Trạm sạc</label>
+                                <select asp-for="StationId" class="form-select" asp-items="@(new SelectList(Model.Stations, "StationId", "Name"))"></select>
+                                <span asp-validation-for="StationId" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Name" class="form-label fw-bold">Tên trụ</label>
+                                <input asp-for="Name" class="form-control" value="@Model.Name" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="MaxPowerKW" class="form-label fw-bold">Công suất (kW)</label>
+                                <input asp-for="MaxPowerKW" class="form-control" type="number" step="0.1" value="@Model.MaxPowerKW" />
+                                <span asp-validation-for="MaxPowerKW" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="ChargerType" class="form-label fw-bold">Loại sạc</label>
+                                <select asp-for="ChargerType" class="form-select">
+                                    <option value="AC" selected="@(Model.ChargerType == "AC")">AC</option>
+                                    <option value="DC" selected="@(Model.ChargerType == "DC")">DC</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="Status" class="form-label fw-bold">Trạng thái</label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Online" selected="@(Model.Status == "Online")">Online</option>
+                                    <option value="Offline" selected="@(Model.Status == "Offline")">Offline</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Note" class="form-label fw-bold">Ghi chú bảo trì</label>
+                                <textarea asp-for="Note" class="form-control" rows="3">@Model.Note</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 border-start">
+                        <div class="ps-3">
+                            <label class="form-label fw-bold">Ảnh hiện tại</label>
+                            <div class="mb-3 text-center border rounded p-2 bg-light">
+                                @if (!string.IsNullOrEmpty(Model.PrimaryImageUrl))
+                                {
+                                    <img src="@Model.PrimaryImageUrl" class="img-fluid rounded shadow-sm" style="max-height: 200px;" alt="Ảnh hiện tại" />
+                                    <small class="d-block text-muted mt-2">Ảnh hiện tại (giữ nếu không thay)</small>
+                                }
+                                else
+                                {
+                                    <div class="py-4 text-muted">
+                                        <i class="bi bi-image" style="font-size: 3rem;"></i>
+                                        <p class="small">Chưa có ảnh</p>
+                                    </div>
+                                }
+                            </div>
+
+                            <label class="form-label fw-bold">Thay ảnh mới (tùy chọn)</label>
+                            <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" />
+                            <span asp-validation-for="ImageFile" class="text-danger small"></span>
+
+                            <div class="alert alert-info small mt-4">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Nếu không chọn ảnh mới, ảnh cũ sẽ được giữ nguyên.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-5 fw-bold">CẬP NHẬT THAY ĐỔI</button>
+                    <a asp-action="Index" asp-route-stationId="@Model.StationId" class="btn btn-outline-secondary px-4">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Preview ảnh mới
+        document.querySelector('input[name="ImageFile"]').addEventListener('change', function (e) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.querySelector('.img-fluid.rounded.shadow-sm');
+                if (preview) preview.src = e.target.result;
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+    </script>
+}

@@ -1,16 +1,15 @@
 ﻿using ChargingPoint.DB;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChargingPoint.Models
 {
     public class Vehicle
     {
         [Key]
-        public long VehicleId { get; set; } // Mã duy nhất cho xe
-        public long? CustomerId { get; set; } // ID khách hàng
+        public long VehicleId { get; set; } // Mã duy nhất cho mẫu xe
         public string? VehicleType { get; set; } // Loại xe (xe máy, ô tô)
-        public string? Model { get; set; } // Mẫu xe (VF8, Klara S)
-        public DateTime? ProductionDate { get; set; } // Ngày sản xuất
+        public string? Model { get; set; } // Mẫu xe (VF8,...)
         public string? BatteryType { get; set; } // Loại pin (LFP, NMC, catl, sdi)
         public string? Version { get; set; } // Phiên bản (ECO, PLUS,..)
         public decimal? BatteryGrossKWh { get; set; } // Dung lượng pin tổng
@@ -19,14 +18,13 @@ namespace ChargingPoint.Models
         public bool DcChargingSupport { get; set; } = true; // Hỗ trợ DC
         public decimal? MaxAcChargeKW { get; set; } // Công suất AC max
         public decimal? MaxDcChargeKW { get; set; } // Công suất DC max
-        public string? LicensePlate { get; set; } // Biển số
-        public string? VIN { get; set; } // Số khung
         public string?  Manufacturer { get; set; }
-        public Customer Customer { get; set; } // Thêm điều hướng đến Customer
+        public int? NominalVoltage { get; set; }
+        public string? ConnectorType { get; set; } // Loại cổng kết nối (CCS2, Type 2,...)
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
-        public ICollection<ChargingSession> ChargingSessions { get; set; } = new List<ChargingSession>();
+  
+        public ICollection<IndividualVehicle> IndividualVehicles { get; set; } = new List<IndividualVehicle>();
 
     }
 }

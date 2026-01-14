@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ChargingPoint.Models.Invoice>
+﻿<!-- -->
+@model IEnumerable<ChargingPoint.Models.Invoice>
 @{
     ViewData["Title"] = "Hóa đơn của tôi";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -134,7 +135,7 @@
                                         </div>
                                         <small class="text-secondary">
                                             <i class="bi bi-car-front-fill me-1"></i>
-                                            @(i.ChargingSession?.Vehicle?.LicensePlate ?? "—")
+                                            @(i.ChargingSession?.IndividualVehicle?.LicensePlate ?? "—")
                                         </small>
                                     </td>
                                     <td class="text-end">

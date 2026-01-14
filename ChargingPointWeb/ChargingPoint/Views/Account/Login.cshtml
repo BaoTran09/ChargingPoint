@@ -6,7 +6,7 @@
 }
 
 <div class="Account-contrainer">
-    <div class="Account-box">
+    <fieldset class="Account-box">
         <h2 class="text-center mb-4">Login</h2>
         
         <form asp-action="Login" method="post">
@@ -14,8 +14,9 @@
             @Html.AntiForgeryToken()
 
             <!-- Phân loại người dùng - Đặt lên đầu -->
-            <div class="mb-4">
-                <label class="form-label fw-bold">Đăng nhập với tư cách:</label>
+            <fieldset class="mb-4">
+
+                <legend class="form-label fw-bold">Đăng nhập với tư cách:</legend>
                 <div class="btn-group w-100" role="group">
                     <input type="radio" class="btn-check" name="UserType" id="customerRadio" value="Customer" checked autocomplete="off">
                     <label class="btn btn-outline-primary" for="customerRadio">
@@ -27,20 +28,24 @@
                         <i class="fas fa-user-tie"></i> Nhân viên
                     </label>
                 </div>
-            </div>
+            </fieldset>
 
             <!-- Email Input -->
             <div class="mb-3">
-                <label asp-for="Email" class="form-label">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="example@email.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+
+                <!-- <label asp-for="Email" class="form-label">
                     <i class="fas fa-envelope"></i> Email
                 </label>
                 <input asp-for="Email" class="form-control" placeholder="example@email.com" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <span asp-validation-for="Email" class="text-danger"></span>-->
             </div>
 
             <!-- Username Input - Chỉ hiện cho Employee -->
             <div class="mb-3" id="usernameGroup" style="display: none;">
-                <label class="form-label">
+                <label asp-for="Username" class="form-label">
                     <i class="fas fa-id-badge"></i> Username <span class="text-danger">*</span>
                 </label>
                 <input asp-for="Username" class="form-control" placeholder="Username" />
@@ -48,8 +53,10 @@
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
 
+
             <!-- Password Input -->
             <div class="mb-3">
+
                 <label asp-for="Password" class="form-label">
                     <i class="fas fa-lock"></i> Password
                 </label>
