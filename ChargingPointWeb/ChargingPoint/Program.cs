@@ -294,57 +294,6 @@ static async Task SeedRolesAndAdminAsync(
 
 
 
-    ///BỎ ĐOẠN NÀY
-    // 2. Tạo Admin
-    string adminEmail = "lebaotran.forwork@gmail.com";
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-    if (adminUser == null)
-    {
-        adminUser = new Users
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            EmailConfirmed = true,
-            EmployeeUsername = "admin",
-            Status = "Active"
-        };
-
-        var result = await userManager.CreateAsync(adminUser, "Admin@123456");
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
-
-            var adminEmployee = new Employee
-            {
-                UserId = adminUser.Id,
-                FullName = "System Administrator",
-                JobTitle = "Administrator",
-                PhoneNumber = "0123456789",
-                Status = "Active",
-                CreatedAt = DateTime.UtcNow
-            };
-            context.Employees.Add(adminEmployee);
-            await context.SaveChangesAsync();
-
-            Console.WriteLine($"✓ Created admin: {adminEmail}");
-            Console.WriteLine($"  Password: Admin@123456");
-        }
-        else
-        {
-            Console.WriteLine("✗ Failed to create admin:");
-            foreach (var error in result.Errors)
-                Console.WriteLine($"  - {error.Description}");
-        }
-    }
-    else
-    {
-        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
-        {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
-        }
-        Console.WriteLine($"✓ Admin exists: {adminEmail}");
-    }
     
 
 
